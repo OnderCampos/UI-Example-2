@@ -4,10 +4,18 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --radius-sm: var(--radius-sm-token);
+  --radius-md: var(--radius-md-token);
+  --radius-lg: var(--radius-lg-token);
+  --radius-xl: var(--radius-xl-token);
+  --spacing-xs: var(--spacing-xs-token);
+  --spacing-sm: var(--spacing-sm-token);
+  --spacing-md: var(--spacing-md-token);
+  --spacing-lg: var(--spacing-lg-token);
+  --spacing-xl: var(--spacing-xl-token);
+  --spacing-xxl: var(--spacing-xxl-token);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -26,6 +34,11 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-blue: var(--brand-blue);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -42,80 +55,108 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 10px;
+  --radius-sm-token: 6px;
+  --radius-md-token: 10px;
+  --radius-lg-token: 16px;
+  --radius-xl-token: 9999px;
+  --spacing-xs-token: 4px;
+  --spacing-sm-token: 8px;
+  --spacing-md-token: 16px;
+  --spacing-lg-token: 24px;
+  --spacing-xl-token: 32px;
+  --spacing-xxl-token: 48px;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --secondary: #eef2ff;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #eff6ff;
+  --accent-foreground: #0f172a;
+  --destructive: #ef4444;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #4f46e5;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --brand-navy: #182b6b;
+  --brand-blue: #1f49bd;
+  --chart-1: #6366f1;
+  --chart-2: #22c55e;
+  --chart-3: #f59e0b;
+  --chart-4: #ef4444;
+  --chart-5: #64748b;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #6366f1;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eef2ff;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #4f46e5;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #111c35;
+  --card-foreground: #f8fafc;
+  --popover: #111c35;
+  --popover-foreground: #f8fafc;
+  --primary: #818cf8;
+  --primary-foreground: #0f172a;
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #1e293b;
+  --accent-foreground: #f8fafc;
+  --destructive: #f87171;
+  --border: rgb(226 232 240 / 16%);
+  --input: rgb(226 232 240 / 20%);
+  --ring: #818cf8;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --error: #f87171;
+  --brand-navy: #0f172a;
+  --brand-blue: #1e40af;
+  --chart-1: #818cf8;
+  --chart-2: #4ade80;
+  --chart-3: #fbbf24;
+  --chart-4: #f87171;
+  --chart-5: #cbd5e1;
+  --sidebar: #111c35;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #818cf8;
+  --sidebar-primary-foreground: #0f172a;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: rgb(226 232 240 / 16%);
+  --sidebar-ring: #818cf8;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
+  html {
+    font-size: 16px;
+  }
+
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-geist-sans), Inter, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
   }
 }
 
