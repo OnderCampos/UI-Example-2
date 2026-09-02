@@ -16,8 +16,8 @@ export function MembershipActionCard({
   return (
     <Card
       className={cn(
-        "min-h-[124px] flex-row items-center gap-5 rounded-[8px] border px-10 py-8 shadow-none",
-        active ? "border-transparent bg-[#f3f4f6]" : "bg-card"
+        "min-h-[124px] flex-row items-center gap-5 rounded-[10px] border px-10 py-8 shadow-none",
+        active ? "border-transparent bg-[color:rgb(from_var(--foreground)_r_g_b_/_0.055)]" : "bg-card"
       )}
     >
       <div className="flex size-[56px] items-center justify-center rounded-full border-2 border-brand-blue text-brand-blue">
