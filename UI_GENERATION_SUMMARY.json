@@ -2,7 +2,7 @@
   {
     "relativePath": "src/app/page.tsx",
     "shortDescription": "Membership registration and lookup home view.",
-    "fullDescription": "Main membership management screen with a branded top bar, quick action cards for starting a new membership or reviewing pending processes, and a centered membership search section with a search field and disabled submit action for locating customer profiles by name, phone, email, or membership ID. The view composes shared Button, Card, InputGroup, and Separator primitives and includes small reusable local action-card and header-select compositions for this screen.",
+    "fullDescription": "Main membership management screen with a branded top bar, quick action cards for starting a new membership or reviewing pending processes, a centered membership search form for looking up customer profiles by name, phone, email, or membership ID, and an empty-state panel that guides users to create a new membership when no results are found. The view composes shared Button, Card, Empty, InputGroup, and Separator primitives alongside small local action-card and top-bar select compositions.",
     "isView": true
   }
 ]

@@ -1,6 +1,13 @@
-import { CreditCard, Globe, MapPin, Search, ShieldAlert, ChevronDown } from "lucide-react";
+import { ChevronDown, CreditCard, Globe, MapPin, Search, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import {
   InputGroup,
   InputGroupAddon,
@@ -12,25 +19,23 @@ import { Separator } from "@/components/ui/separator";
 function MembershipActionCard({
   icon,
   title,
-  muted = false,
+  highlighted = false,
 }: {
   icon: React.ReactNode;
   title: string;
-  muted?: boolean;
+  highlighted?: boolean;
 }) {
   return (
     <Card
       className={[
-        "flex min-h-[124px] flex-row items-center gap-5 rounded-lg border px-8 py-8 shadow-none",
-        muted ? "border-transparent bg-[#f1f1f4]" : "border-[#d7dbe5] bg-white",
+        "min-h-[124px] flex-row items-center gap-5 rounded-lg px-10 py-8 shadow-none",
+        highlighted ? "border-transparent bg-[#f2f2f4]" : "border-[#d4d9e3] bg-white",
       ].join(" ")}
     >
       <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#2755d8] text-[#2755d8]">
         {icon}
       </div>
-      <h2 className="text-[20px] font-semibold tracking-[-0.02em] text-[#1f3f8e]">
-        {title}
-      </h2>
+      <h2 className="text-[19px] font-semibold tracking-[-0.02em] text-[#1f3f8e]">{title}</h2>
     </Card>
   );
 }
@@ -68,13 +73,13 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div className="h-[38px] bg-[#0f46d7]" />
+        <div className="h-[39px] bg-[#1145d5]" />
       </header>
 
-      <section className="mx-auto max-w-[1080px] px-[60px] pb-24 pt-6">
+      <section className="mx-auto max-w-[1080px] px-[59px] pb-24 pt-[23px]">
         <div className="grid gap-6 md:grid-cols-2">
           <MembershipActionCard
-            muted
+            highlighted
             title="New Membership"
             icon={<CreditCard className="h-6 w-6 stroke-[1.75]" />}
           />
@@ -86,9 +91,9 @@ export default function HomePage() {
 
         <Separator className="my-6 bg-[#d8dbe4]" />
 
-        <div className="px-6 pt-14">
-          <div className="max-w-[840px]">
-            <h1 className="text-[24px] font-medium tracking-[-0.02em] text-[#1f3f8e]">
+        <div className="px-6 pt-[54px]">
+          <div className="max-w-[885px]">
+            <h1 className="text-[24px] font-normal tracking-[-0.02em] text-[#1f3f8e]">
               Search for membership
             </h1>
             <p className="mt-2 text-[15px] leading-6 text-[#4f638f]">
@@ -97,8 +102,8 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mt-7 flex flex-col items-center gap-5">
-            <InputGroup className="h-10 w-full max-w-[444px] rounded-[10px] border-[#cfd5df] bg-white shadow-none">
+          <div className="mt-7 flex flex-col items-center gap-[14px]">
+            <InputGroup className="h-10 w-full max-w-[445px] rounded-[10px] border-[#cfd5df] bg-white shadow-none">
               <InputGroupAddon className="pl-3 text-[#6f7d96]">
                 <InputGroupText>
                   <Search className="h-4 w-4" />
@@ -106,18 +111,35 @@ export default function HomePage() {
               </InputGroupAddon>
               <InputGroupInput
                 aria-label="Search membership"
-                placeholder="Search by name, mobile phone, email or membership number"
-                className="h-10 px-0 text-[14px] text-[#394867] placeholder:text-[#7b879a]"
+                defaultValue="Treviño"
+                className="h-10 px-0 text-[14px] text-[#5d6c8a] placeholder:text-[#7b879a]"
               />
             </InputGroup>
 
-            <Button
-              className="h-9 rounded-md bg-[#eef1f6] px-6 text-[14px] font-semibold text-[#8c98ad] shadow-none hover:bg-[#e7ebf2]"
-              disabled
-            >
+            <Button className="h-9 rounded-md bg-[#1f3f8e] px-6 text-[14px] font-semibold text-white shadow-none hover:bg-[#1b387e]">
               Search Membership
             </Button>
           </div>
+
+          <Empty className="mt-6 rounded-none border-0 bg-[#f4f4f6] px-6 py-[38px]">
+            <EmptyHeader className="max-w-[510px] gap-4">
+              <EmptyTitle className="text-[18px] font-semibold tracking-[-0.02em] text-[#1f3f8e]">
+                No matching profiles found
+              </EmptyTitle>
+              <EmptyDescription className="text-[15px] leading-8 text-[#68768f]">
+                We couldn&apos;t find any records with the information provided. Please verify the data or
+                create a new membership.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent className="max-w-none gap-0">
+              <Button
+                variant="outline"
+                className="h-[36px] rounded-md border-[#4f83e9] bg-white px-7 text-[14px] font-semibold text-[#3f78e2] shadow-none hover:bg-[#f7fbff] hover:text-[#3f78e2]"
+              >
+                Create new membership
+              </Button>
+            </EmptyContent>
+          </Empty>
         </div>
       </section>
     </main>
