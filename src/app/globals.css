@@ -79,6 +79,10 @@
   --brand-header-foreground: #FFFFFF;
   --brand-accent: #FF5A1F;
   --brand-copy: #475569;
+  --brand-surface-muted: #F1F2F4;
+  --brand-panel: #F8F8FA;
+  --brand-link: #3B82F6;
+  --brand-link-border: #6AA0FF;
 }
 
 .dark {
@@ -118,6 +122,10 @@
   --brand-header-foreground: #FFFFFF;
   --brand-accent: #FF5A1F;
   --brand-copy: #475569;
+  --brand-surface-muted: #F1F2F4;
+  --brand-panel: #F8F8FA;
+  --brand-link: #3B82F6;
+  --brand-link-border: #6AA0FF;
 }
 
 @layer base {
