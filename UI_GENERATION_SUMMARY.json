@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Membership search and creation landing screen.",
-    "fullDescription": "Primary membership management view that presents top-level actions for starting a new membership or checking pending processes, followed by a centered search flow for existing customer profiles and an empty-state panel that guides users to create a new membership when no records are found.",
+    "shortDescription": "Member profile photo capture screen.",
+    "fullDescription": "Primary profile-photo capture view for member verification. It presents the branded top navigation, a camera selector, a large live-preview placeholder, a capture guidance panel, and footer actions for returning home, canceling, taking, and confirming a compliant member photo using the shared capture component.",
     "isView": true
   },
   {
@@ -21,6 +21,12 @@
     "relativePath": "src/components/membership-verification-dialog.tsx",
     "shortDescription": "Reusable membership verification dialog.",
     "fullDescription": "Compact verification dialog for confirming multiple member contacts in one flow. It supports verified and pending rows, avatar presentation, warning and success status states, grouped four-digit code inputs, resend actions, and a primary completion button so other membership flows can reuse the same confirmation pattern.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/member-photo-capture.tsx",
+    "shortDescription": "Reusable member photo capture workspace.",
+    "fullDescription": "Profile-photo capture component that renders the branded application header, camera selection control, neutral preview stage, instructional compliance card, and bottom action bar for navigation, canceling, capturing, and confirming a saved image. It reuses the shared button and select primitives and can support additional photo-capture states in other member flows.",
     "isView": false
   }
 ]

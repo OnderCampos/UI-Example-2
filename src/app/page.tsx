@@ -1,5 +1,5 @@
-import { MembershipRegistration } from "@/components/membership-registration";
+import { MemberPhotoCapture } from "@/components/member-photo-capture";
 
 export default function HomePage() {
-  return <MembershipRegistration />;
+  return <MemberPhotoCapture />;
 }
