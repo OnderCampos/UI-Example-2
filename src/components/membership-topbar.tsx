@@ -38,19 +38,21 @@ function TopbarItem({
 
 export function MembershipTopbar() {
   return (
-    <header className="w-full bg-[#192a63] text-white">
-      <div className="mx-auto flex h-[60px] w-full max-w-[1120px] items-center justify-between px-6 lg:px-8">
-        <PriceSmartLogo />
-        <div className="flex items-center gap-7">
-          <TopbarItem
-            icon={<MapPin className="size-4" strokeWidth={2.1} />}
-            label="Miraflores"
-          />
-          <TopbarItem icon={<span className="text-[10px]">🌐</span>} label="Guatemala" flag="🌐" />
-          <TopbarItem icon={<Globe className="size-4" strokeWidth={2.1} />} label="English" />
+    <header className="w-full text-white">
+      <div className="bg-[color:color-mix(in_srgb,var(--primary)_32%,#0b245f)]">
+        <div className="mx-auto flex h-[58px] w-full max-w-[1120px] items-center justify-between px-6 lg:px-8">
+          <PriceSmartLogo />
+          <div className="flex items-center gap-7">
+            <TopbarItem
+              icon={<MapPin className="size-4" strokeWidth={2.1} />}
+              label="Miraflores"
+            />
+            <TopbarItem icon={<span className="text-[10px]">🌐</span>} label="Guatemala" flag="🌐" />
+            <TopbarItem icon={<Globe className="size-4" strokeWidth={2.1} />} label="English" />
+          </div>
         </div>
       </div>
-      <div className="h-[39px] w-full bg-[#1847b8]" />
+      <div className="h-[35px] w-full bg-[color:color-mix(in_srgb,var(--primary)_72%,#0b245f)]" />
     </header>
   );
 }

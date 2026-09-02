@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Membership landing screen for creating or locating customer profiles.",
-    "fullDescription": "Main membership management view with a branded top bar, two primary action cards for starting a new membership or opening pending processes, a centered search section for finding an existing member by name, phone, email, or membership number, and an empty-state panel that guides users to create a new membership when no records match.",
+    "shortDescription": "Membership lookup screen with search results and account actions.",
+    "fullDescription": "Main membership management view with a branded top bar, two primary action cards for starting a new membership or reviewing pending processes, a centered member search form, and a results table listing customer identity details, membership numbers, contact information, status badges, and view actions for each matching record.",
     "isView": true
   },
   {
