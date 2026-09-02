@@ -1,5 +1,5 @@
-import { MemberPhotoCapture } from "@/components/member-photo-capture";
+import { MembershipNewForm } from "@/components/membership-new-form";
 
 export default function HomePage() {
-  return <MemberPhotoCapture />;
+  return <MembershipNewForm />;
 }

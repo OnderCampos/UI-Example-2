@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Member profile photo capture screen.",
-    "fullDescription": "Primary profile-photo capture view for member verification. It presents the branded top navigation, a camera selector, a large live-preview placeholder, a capture guidance panel, and footer actions for returning home, canceling, taking, and confirming a compliant member photo using the shared capture component.",
+    "shortDescription": "New membership creation screen.",
+    "fullDescription": "Primary membership registration view for creating a new account. It renders the branded header, left step rail, personal details, contact and address sections, a secondary memberships area, and footer actions for returning home, saving progress, and proceeding to payment using shared form primitives and the reusable membership form component.",
     "isView": true
   },
   {
@@ -27,6 +27,12 @@
     "relativePath": "src/components/member-photo-capture.tsx",
     "shortDescription": "Reusable member photo capture workspace.",
     "fullDescription": "Profile-photo capture component that renders the branded application header, camera selection control, neutral preview stage, instructional compliance card, and bottom action bar for navigation, canceling, capturing, and confirming a saved image. It reuses the shared button and select primitives and can support additional photo-capture states in other member flows.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/membership-new-form.tsx",
+    "shortDescription": "Reusable new membership registration form.",
+    "fullDescription": "Full-page membership form component for opening a new member account. It includes the branded application header, a two-step progress rail, personal information inputs, contact verification rows, address fields, a secondary memberships section, and footer actions for saving or advancing to payment. It reuses the shared button, input, select, and checkbox primitives so future membership screens can share the same sections and shell.",
     "isView": false
   }
 ]
