@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Membership search and lookup screen.",
-    "fullDescription": "Primary membership management view for searching existing customer profiles before opening a new account. It renders the branded top bar, action tiles for new and pending memberships, a centered search form, and a results table with member details, status badges, and membership action links using the reusable membership registration shell.",
+    "shortDescription": "Membership completion confirmation screen.",
+    "fullDescription": "Default membership management view that presents a centered completion confirmation overlay with the created member name, membership number, and final task actions for printing the card, adding another member, or returning home. It renders the reusable membership-ready dialog as the route entry for the current flow.",
     "isView": true
   },
   {
@@ -33,6 +33,12 @@
     "relativePath": "src/components/membership-new-form.tsx",
     "shortDescription": "Reusable new membership registration form.",
     "fullDescription": "Full-page membership form component for opening a new member account. It includes the branded application header, a two-step progress rail, personal information inputs, contact verification rows, address fields, a secondary memberships section, and footer actions for saving or advancing to payment. It reuses the shared button, input, select, and checkbox primitives so future membership screens can share the same sections and shell.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/membership-ready-dialog.tsx",
+    "shortDescription": "Reusable membership completion dialog.",
+    "fullDescription": "Compact confirmation dialog that communicates a completed membership setup with a success icon, member identity details, and stacked actions for printing a membership card, adding a secondary membership, or returning to the home flow. It is designed as a reusable overlay pattern for completion states in membership workflows and consumes the shared button, card, and global token styles.",
     "isView": false
   }
 ]

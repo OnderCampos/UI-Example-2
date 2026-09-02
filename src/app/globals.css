@@ -95,6 +95,9 @@
   --disabled-surface: #eef2f6;
   --disabled-text: #b4bdc9;
   --overlay: rgba(87, 103, 137, 0.88);
+  --membership-ready-icon-bg: #cfe59b;
+  --membership-ready-icon-foreground: #7ca11b;
+  --membership-ready-ripple: rgba(15, 23, 42, 0.07);
 }
 
 .dark {
@@ -146,6 +149,9 @@
   --disabled-surface: #eef2f6;
   --disabled-text: #b4bdc9;
   --overlay: rgba(87, 103, 137, 0.88);
+  --membership-ready-icon-bg: #cfe59b;
+  --membership-ready-icon-foreground: #7ca11b;
+  --membership-ready-ripple: rgba(15, 23, 42, 0.07);
 }
 
 @layer base {
