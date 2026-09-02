@@ -13,14 +13,14 @@ export function MembershipActionCard({
   return (
     <Card
       className={cn(
-        "flex min-h-[124px] flex-row items-center gap-5 rounded-[10px] border border-border px-10 py-8 shadow-none",
-        subtle ? "bg-[#f1f5f9]" : "bg-card"
+        "flex min-h-[124px] flex-row items-center gap-5 rounded-md border px-10 py-8 shadow-none",
+        subtle ? "bg-[#f1f2f6]" : "bg-card"
       )}
     >
-      <div className="flex size-[58px] items-center justify-center rounded-full border-2 border-primary text-primary">
+      <div className="flex size-[56px] items-center justify-center rounded-full border-2 border-[#3663d8] text-[#3663d8]">
         {icon}
       </div>
-      <h2 className="text-[22px] font-bold tracking-[-0.02em] text-[#1f3b82]">
+      <h2 className="text-[21px] font-bold tracking-[-0.02em] text-[#223b7b]">
         {title}
       </h2>
     </Card>

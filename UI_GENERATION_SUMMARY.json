@@ -2,13 +2,13 @@
   {
     "relativePath": "src/app/page.tsx",
     "shortDescription": "Membership landing screen for creating or locating customer profiles.",
-    "fullDescription": "Main membership management view with a branded top bar, two primary action cards for starting a new membership or opening pending processes, and a centered search section for finding an existing member by name, phone, email, or membership number. The view composes the shared membership top bar, action cards, button, input, and separator components.",
+    "fullDescription": "Main membership management view with a branded top bar, two primary action cards for starting a new membership or opening pending processes, a centered search section for finding an existing member by name, phone, email, or membership number, and an empty-state panel that guides users to create a new membership when no records match.",
     "isView": true
   },
   {
     "relativePath": "src/components/membership-topbar.tsx",
     "shortDescription": "Reusable branded top navigation bar for membership screens.",
-    "fullDescription": "Header component for membership-related views that shows the brand mark on the left and location, country, and language selectors on the right. It includes the stacked navy and blue bars used as the primary application chrome for this section and can be reused across related membership flows.",
+    "fullDescription": "Header component for membership-related views that shows the PriceSmart brand on the left and location, country, and language selectors on the right. It includes the stacked navy and blue bars used as the primary application chrome for this section and can be reused across related membership flows.",
     "isView": false
   },
   {
