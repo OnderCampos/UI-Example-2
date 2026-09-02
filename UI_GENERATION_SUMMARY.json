@@ -1,14 +1,14 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Membership registration review screen.",
-    "fullDescription": "Home view for reviewing a new membership before payment. It renders the registration shell with a top utility header, a left step rail, personal data, contact details, address information, secondary membership cards, and footer actions for navigation, saving, and continuing to payment.",
+    "shortDescription": "Membership search and onboarding home screen.",
+    "fullDescription": "Home view for membership registration workflows. It renders a branded utility header, two primary entry tiles for starting a new membership or resuming a pending process, and a centered lookup form for finding existing member profiles by name, phone, email, or membership ID.",
     "isView": true
   },
   {
     "relativePath": "src/components/membership-registration.tsx",
-    "shortDescription": "Reusable membership registration layout and sections.",
-    "fullDescription": "Composable membership registration component that assembles the page header, progress rail, data review sections, and action footer. It includes reusable internal patterns for labeled detail fields, titled content sections, and compact secondary membership cards with edit and remove states for reuse in related registration or profile-review views.",
+    "shortDescription": "Reusable membership landing layout.",
+    "fullDescription": "Composable membership landing component that assembles the branded top bar, large action tiles, and centered membership search section. It includes reusable tile styling for alternate workflow entry points and uses shared input and button primitives so related membership screens can reuse the same visual shell.",
     "isView": false
   }
 ]
