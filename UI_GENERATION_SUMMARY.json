@@ -1,14 +1,20 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Membership search and onboarding home screen.",
-    "fullDescription": "Home view for membership registration workflows. It renders a branded utility header, two primary entry tiles for starting a new membership or resuming a pending process, and a centered lookup form for finding existing member profiles by name, phone, email, or membership ID.",
+    "shortDescription": "Membership verification overlay screen.",
+    "fullDescription": "Primary membership confirmation view rendered as a centered verification overlay on a dimmed application backdrop. It presents member contact rows, verification status indicators, code-entry groups, and a final confirmation action using the shared membership verification dialog component.",
     "isView": true
   },
   {
     "relativePath": "src/components/membership-registration.tsx",
     "shortDescription": "Reusable membership landing layout.",
     "fullDescription": "Composable membership landing component that assembles the branded top bar, large action tiles, and centered membership search section. It includes reusable tile styling for alternate workflow entry points and uses shared input and button primitives so related membership screens can reuse the same visual shell.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/membership-verification-dialog.tsx",
+    "shortDescription": "Reusable membership verification dialog.",
+    "fullDescription": "Compact verification dialog for confirming multiple member contacts in one flow. It supports verified and pending rows, avatar presentation, warning and success status states, grouped four-digit code inputs, resend actions, and a primary completion button so other membership flows can reuse the same confirmation pattern.",
     "isView": false
   }
 ]
