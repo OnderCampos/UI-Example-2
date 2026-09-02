@@ -1,0 +1,26 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Membership registration and lookup landing screen.",
+    "fullDescription": "Home view for membership operations with a branded top header, quick action cards for starting a new membership or reviewing pending processes, a centered member search form, and a results table listing matched profiles with statuses and membership actions.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/components/membership-header.tsx",
+    "shortDescription": "Branded membership application header.",
+    "fullDescription": "Reusable top navigation header for membership-related screens. It renders the brand mark, location selectors, country selector, and language selector with a secondary color bar beneath the main navigation area.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/membership-action-card.tsx",
+    "shortDescription": "Action card for membership workflow entry points.",
+    "fullDescription": "Reusable card used to present key membership actions with an icon, title, and optional highlighted background state. It supports entry points such as creating a membership or opening pending process flows and consumes shared semantic brand surface tokens.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/membership-results-table.tsx",
+    "shortDescription": "Membership lookup form and results table.",
+    "fullDescription": "Reusable membership search section with a centered query field, submit action, and structured results table showing member identity, masked ID, membership number, contact details, status badges, and a contextual action link for each row.",
+    "isView": false
+  }
+]

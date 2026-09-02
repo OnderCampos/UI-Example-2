@@ -1,37 +1,25 @@
-import Link from "next/link";
+import { AlertTriangle, CreditCard } from "lucide-react";
 
-/**
- * Home page placeholder.
- *
- * Override this component with your application's landing or main screen.
- * Do not leave the home page empty — replace this content when building the app.
- *
- * Working examples (auth, React Query, server actions, UI) are in:
- * src/app/reference/page.tsx — also available at /reference
- */
+import { MembershipActionCard } from "@/components/membership-action-card";
+import { MembershipHeader } from "@/components/membership-header";
+import { MembershipResultsTable } from "@/components/membership-results-table";
+import { Separator } from "@/components/ui/separator";
+
 export default function HomePage() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center">
-      <h1 className="text-2xl font-semibold text-foreground mb-2">
-        Override this component
-      </h1>
-      <p className="text-muted-foreground max-w-md mb-6">
-        This is the template home page. Replace the content of{" "}
-        <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">
-          src/app/page.tsx
-        </code>{" "}
-        with your application&apos;s main screen. Do not leave it empty.
-      </p>
-      <p className="text-sm text-muted-foreground">
-        See working examples at{" "}
-        <Link
-          href="/reference"
-          className="text-primary underline underline-offset-2 hover:no-underline"
-        >
-          /reference
-        </Link>
-        .
-      </p>
-    </div>
+    <main className="min-h-screen bg-background text-foreground" style={{ colorScheme: "light" }}>
+      <MembershipHeader />
+
+      <section className="mx-auto w-full max-w-[1080px] px-[58px] pt-[25px] pb-20">
+        <div className="grid gap-[22px] md:grid-cols-2">
+          <MembershipActionCard title="New Membership" icon={CreditCard} highlighted />
+          <MembershipActionCard title="Pending process" icon={AlertTriangle} />
+        </div>
+
+        <Separator className="mt-[22px] mb-[54px]" />
+
+        <MembershipResultsTable />
+      </section>
+    </main>
   );
 }
