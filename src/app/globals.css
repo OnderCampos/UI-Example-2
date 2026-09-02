@@ -81,8 +81,14 @@
   --brand-copy: #475569;
   --brand-surface-muted: #F1F2F4;
   --brand-panel: #F8F8FA;
-  --brand-link: #3B82F6;
+  --brand-link: #60A5FA;
   --brand-link-border: #6AA0FF;
+  --status-active-bg: #DCF2C1;
+  --status-active-border: #B6D77F;
+  --status-active-text: #5D8A13;
+  --status-cancelled-bg: #FFF0E8;
+  --status-cancelled-border: #F6C7B8;
+  --status-cancelled-text: #D55A3C;
 }
 
 .dark {
@@ -124,8 +130,14 @@
   --brand-copy: #475569;
   --brand-surface-muted: #F1F2F4;
   --brand-panel: #F8F8FA;
-  --brand-link: #3B82F6;
+  --brand-link: #60A5FA;
   --brand-link-border: #6AA0FF;
+  --status-active-bg: #DCF2C1;
+  --status-active-border: #B6D77F;
+  --status-active-text: #5D8A13;
+  --status-cancelled-bg: #FFF0E8;
+  --status-cancelled-border: #F6C7B8;
+  --status-cancelled-text: #D55A3C;
 }
 
 @layer base {
