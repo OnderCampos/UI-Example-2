@@ -1,14 +1,14 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Secondary membership registration screen.",
-    "fullDescription": "Membership enrollment view for adding a new secondary member to an existing primary account. It presents a branded header, a left-side step indicator, grouped sections for personal data, contact details, and address information, plus footer actions for saving progress and completing the member addition flow using reusable form primitives.",
+    "shortDescription": "Membership search and creation landing screen.",
+    "fullDescription": "Primary membership management view that presents top-level actions for starting a new membership or checking pending processes, followed by a centered search flow for existing customer profiles and an empty-state panel that guides users to create a new membership when no records are found.",
     "isView": true
   },
   {
     "relativePath": "src/components/membership-registration.tsx",
     "shortDescription": "Reusable membership landing layout.",
-    "fullDescription": "Composable membership landing component that assembles the branded top bar, large action tiles, and centered membership search section. It includes reusable tile styling for alternate workflow entry points and uses shared input and button primitives so related membership screens can reuse the same visual shell.",
+    "fullDescription": "Composable membership landing component that assembles the branded top bar, large action tiles, centered membership search section, and reusable empty-state callout for unmatched customer searches. It supports related membership entry flows by reusing shared input and button primitives inside a consistent branded shell.",
     "isView": false
   },
   {

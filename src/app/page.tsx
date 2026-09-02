@@ -1,5 +1,5 @@
-import { MembershipSecondaryForm } from "@/components/membership-secondary-form";
+import { MembershipRegistration } from "@/components/membership-registration";
 
 export default function HomePage() {
-  return <MembershipSecondaryForm />;
+  return <MembershipRegistration />;
 }
