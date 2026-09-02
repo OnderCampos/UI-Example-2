@@ -1,14 +1,14 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "New membership creation screen.",
-    "fullDescription": "Primary membership registration view for creating a new account. It renders the branded header, left step rail, personal details, contact and address sections, a secondary memberships area, and footer actions for returning home, saving progress, and proceeding to payment using shared form primitives and the reusable membership form component.",
+    "shortDescription": "Membership search and lookup screen.",
+    "fullDescription": "Primary membership management view for searching existing customer profiles before opening a new account. It renders the branded top bar, action tiles for new and pending memberships, a centered search form, and a results table with member details, status badges, and membership action links using the reusable membership registration shell.",
     "isView": true
   },
   {
     "relativePath": "src/components/membership-registration.tsx",
-    "shortDescription": "Reusable membership landing layout.",
-    "fullDescription": "Composable membership landing component that assembles the branded top bar, large action tiles, centered membership search section, and reusable empty-state callout for unmatched customer searches. It supports related membership entry flows by reusing shared input and button primitives inside a consistent branded shell.",
+    "shortDescription": "Reusable membership lookup layout.",
+    "fullDescription": "Composable membership management component that assembles the branded application header, high-level membership action tiles, centered lookup form, and a reusable result table for member records. It supports searchable membership workflows with status badges, contact details, and action links while reusing shared input, button, badge, and table primitives inside a consistent branded shell.",
     "isView": false
   },
   {
