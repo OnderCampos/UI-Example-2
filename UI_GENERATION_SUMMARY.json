@@ -2,7 +2,7 @@
   {
     "relativePath": "src/app/page.tsx",
     "shortDescription": "Membership registration landing screen.",
-    "fullDescription": "Main membership management view with a branded top bar, two action cards for starting a new membership or reviewing pending processes, and a centered search section for locating an existing membership profile by customer details or membership number. The view composes the shared MembershipTopbar, MembershipActionCard, Button, Input, and Separator components.",
+    "fullDescription": "Main membership management view with a branded top bar, two action cards for starting a new membership or reviewing pending processes, and a centered search section for locating an existing membership profile by customer details or membership number. The view composes the shared MembershipTopbar, MembershipActionCard, MembershipResultsTable, Button, Input, and Separator components.",
     "isView": true
   },
   {
@@ -15,6 +15,12 @@
     "relativePath": "src/components/membership-action-card.tsx",
     "shortDescription": "Selectable action card for membership tasks.",
     "fullDescription": "Reusable card component for primary membership actions. It accepts an icon, title, and active state to present large option tiles such as creating a new membership or reviewing pending processes while staying aligned with the shared token-based visual system.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/membership-results-table.tsx",
+    "shortDescription": "Membership search results table.",
+    "fullDescription": "Reusable results table for membership lookup flows. It displays member identity details, masked identification numbers, contact information, membership status badges, and an action link so multiple membership screens can present searchable account records with a consistent layout.",
     "isView": false
   }
 ]
