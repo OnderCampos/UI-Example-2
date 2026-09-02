@@ -1,0 +1,14 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Membership registration review screen.",
+    "fullDescription": "Home view for reviewing a new membership before payment. It renders the registration shell with a top utility header, a left step rail, personal data, contact details, address information, secondary membership cards, and footer actions for navigation, saving, and continuing to payment.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/components/membership-registration.tsx",
+    "shortDescription": "Reusable membership registration layout and sections.",
+    "fullDescription": "Composable membership registration component that assembles the page header, progress rail, data review sections, and action footer. It includes reusable internal patterns for labeled detail fields, titled content sections, and compact secondary membership cards with edit and remove states for reuse in related registration or profile-review views.",
+    "isView": false
+  }
+]
