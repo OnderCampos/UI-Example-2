@@ -86,6 +86,14 @@
   --brand-header: #15357a;
   --brand-button: #233a84;
   --brand-button-hover: #1d316f;
+  --brand-label: #41506b;
+  --section-heading: #4a5d87;
+  --border-strong: #d7dee8;
+  --avatar-bg: #cfd4df;
+  --action-danger: #e34a2a;
+  --action-danger-hover: #cc3f21;
+  --disabled-surface: #eef2f6;
+  --disabled-text: #b4bdc9;
   --overlay: rgba(87, 103, 137, 0.88);
 }
 
@@ -129,6 +137,14 @@
   --brand-header: #15357a;
   --brand-button: #233a84;
   --brand-button-hover: #1d316f;
+  --brand-label: #41506b;
+  --section-heading: #4a5d87;
+  --border-strong: #d7dee8;
+  --avatar-bg: #cfd4df;
+  --action-danger: #e34a2a;
+  --action-danger-hover: #cc3f21;
+  --disabled-surface: #eef2f6;
+  --disabled-text: #b4bdc9;
   --overlay: rgba(87, 103, 137, 0.88);
 }
 

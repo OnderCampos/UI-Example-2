@@ -1,5 +1,5 @@
-import { MembershipVerificationDialog } from "@/components/membership-verification-dialog";
+import { MembershipSecondaryForm } from "@/components/membership-secondary-form";
 
 export default function HomePage() {
-  return <MembershipVerificationDialog />;
+  return <MembershipSecondaryForm />;
 }

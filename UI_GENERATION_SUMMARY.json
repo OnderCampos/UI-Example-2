@@ -1,14 +1,20 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Membership verification overlay screen.",
-    "fullDescription": "Primary membership confirmation view rendered as a centered verification overlay on a dimmed application backdrop. It presents member contact rows, verification status indicators, code-entry groups, and a final confirmation action using the shared membership verification dialog component.",
+    "shortDescription": "Secondary membership registration screen.",
+    "fullDescription": "Membership enrollment view for adding a new secondary member to an existing primary account. It presents a branded header, a left-side step indicator, grouped sections for personal data, contact details, and address information, plus footer actions for saving progress and completing the member addition flow using reusable form primitives.",
     "isView": true
   },
   {
     "relativePath": "src/components/membership-registration.tsx",
     "shortDescription": "Reusable membership landing layout.",
     "fullDescription": "Composable membership landing component that assembles the branded top bar, large action tiles, and centered membership search section. It includes reusable tile styling for alternate workflow entry points and uses shared input and button primitives so related membership screens can reuse the same visual shell.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/membership-secondary-form.tsx",
+    "shortDescription": "Reusable secondary member registration form.",
+    "fullDescription": "Structured membership form component for attaching a secondary member to a primary account. It includes the branded header, step rail, personal identity fields, contact verification rows, address checkboxes, and bottom action groups, and is composed from shared button, input, select, and checkbox primitives so other membership views can reuse the same form sections or shell.",
     "isView": false
   },
   {
