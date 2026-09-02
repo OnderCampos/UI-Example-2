@@ -1,0 +1,20 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Membership lookup screen with search results and account actions.",
+    "fullDescription": "Main membership management view with a branded top bar, two primary action cards for starting a new membership or reviewing pending processes, a centered member search form, and a results table listing customer identity details, membership numbers, contact information, status badges, and view actions for each matching record.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/components/membership-topbar.tsx",
+    "shortDescription": "Reusable branded top navigation bar for membership screens.",
+    "fullDescription": "Header component for membership-related views that shows the PriceSmart brand on the left and location, country, and language selectors on the right. It includes the stacked navy and blue bars used as the primary application chrome for this section and can be reused across related membership flows.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/membership-action-card.tsx",
+    "shortDescription": "Reusable large action card for membership entry points.",
+    "fullDescription": "Card component for prominent membership actions with a circular icon container, bold title text, and optional subtle surface styling. It is designed for side-by-side dashboard actions and can be reused for additional membership entry states without duplicating layout code.",
+    "isView": false
+  }
+]
