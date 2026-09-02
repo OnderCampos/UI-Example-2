@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Membership completion confirmation screen.",
-    "fullDescription": "Default membership management view that presents a centered completion confirmation overlay with the created member name, membership number, and final task actions for printing the card, adding another member, or returning home. It renders the reusable membership-ready dialog as the route entry for the current flow.",
+    "shortDescription": "Membership payment screen for a new membership flow.",
+    "fullDescription": "Default route that renders the payment step of the membership creation workflow. It presents the payment form, step rail, membership pricing summary, support shortcut, and footer actions for finishing or navigating within the flow through the reusable membership payment view.",
     "isView": true
   },
   {
@@ -39,6 +39,12 @@
     "relativePath": "src/components/membership-ready-dialog.tsx",
     "shortDescription": "Reusable membership completion dialog.",
     "fullDescription": "Compact confirmation dialog that communicates a completed membership setup with a success icon, member identity details, and stacked actions for printing a membership card, adding a secondary membership, or returning to the home flow. It is designed as a reusable overlay pattern for completion states in membership workflows and consumes the shared button, card, and global token styles.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/membership-payment-form.tsx",
+    "shortDescription": "Reusable membership payment step view.",
+    "fullDescription": "Payment-stage membership workflow component that renders the branded header, completed and active step rail, payment method fields, invoice request checkbox, tax ID input, membership charge summary card, floating support shortcut, and footer navigation actions. It reuses the shared button, input, checkbox, select, and separator primitives while consuming the global token-based color and spacing system for other payment-related membership screens.",
     "isView": false
   }
 ]

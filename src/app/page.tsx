@@ -1,5 +1,5 @@
-import { MembershipReadyDialog } from "@/components/membership-ready-dialog";
+import { MembershipPaymentForm } from "@/components/membership-payment-form";
 
 export default function HomePage() {
-  return <MembershipReadyDialog />;
+  return <MembershipPaymentForm />;
 }
