@@ -1,5 +1,5 @@
-import { MembershipRenewalUpgrade } from "@/components/membership-renewal-upgrade";
+import { MembershipCardPrinting } from "@/components/membership-card-printing";
 
 export default function HomePage() {
-  return <MembershipRenewalUpgrade />;
+  return <MembershipCardPrinting />;
 }

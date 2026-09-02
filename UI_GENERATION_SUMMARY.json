@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Membership renewal and upgrade management screen.",
-    "fullDescription": "Default route that renders a membership management workspace for renewing the current plan or upgrading to a higher tier. It shows the branded application header, a left-side membership task navigation, renewal and upgrade form fields, benefits comparison content, summary cards, and a home action built from reusable membership UI sections.",
+    "shortDescription": "Membership card printing management screen.",
+    "fullDescription": "Default route that renders a membership card printing workspace for a primary member and related household members. It shows the branded top navigation, member identity summary, printer selection control, large card preview with membership details and barcode, selectable secondary member print tiles, and footer actions for returning home or starting card printing using reusable membership UI components.",
     "isView": true
   },
   {
@@ -51,6 +51,12 @@
     "relativePath": "src/components/membership-renewal-upgrade.tsx",
     "shortDescription": "Reusable membership renewal and upgrade workspace.",
     "fullDescription": "Membership management component for renewing an active plan or renewing while upgrading to a higher tier. It includes the branded header, left navigation of membership actions, tax ID and payment method inputs, benefits comparison content, pricing summary cards with status and totals, and a bottom return action so additional membership administration views can reuse the same shell and summary patterns.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/membership-card-printing.tsx",
+    "shortDescription": "Reusable membership card printing workspace.",
+    "fullDescription": "Membership administration component for selecting a printer and preparing physical membership cards for a primary member and related members. It provides the branded top bar, printer selection dropdown, detailed card preview with membership tier, portrait, dates, and barcode, selectable secondary member print tiles, and footer actions, allowing future membership views to reuse the same shell and print preparation patterns.",
     "isView": false
   }
 ]
