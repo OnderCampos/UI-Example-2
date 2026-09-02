@@ -1,0 +1,28 @@
+{
+  "cSpell.words": [
+    "Frida",
+    "shadcn",
+    "supabase"
+  ],
+  "deno.enable": false,
+  "deno.path": "./node_modules/.bin/deno",
+  "deno.enablePaths": [
+    "supabase/functions"
+  ],
+  "deno.lint": true,
+  "deno.unstable": [
+    "bare-node-builtins",
+    "byonm",
+    "sloppy-imports",
+    "unsafe-proto",
+    "webgpu",
+    "broadcast-channel",
+    "worker-options",
+    "cron",
+    "kv",
+    "ffi",
+    "fs",
+    "http",
+    "net"
+  ]
+}
