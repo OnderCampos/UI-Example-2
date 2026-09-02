@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Membership payment screen for a new membership flow.",
-    "fullDescription": "Default route that renders the payment step of the membership creation workflow. It presents the payment form, step rail, membership pricing summary, support shortcut, and footer actions for finishing or navigating within the flow through the reusable membership payment view.",
+    "shortDescription": "Membership renewal and upgrade management screen.",
+    "fullDescription": "Default route that renders a membership management workspace for renewing the current plan or upgrading to a higher tier. It shows the branded application header, a left-side membership task navigation, renewal and upgrade form fields, benefits comparison content, summary cards, and a home action built from reusable membership UI sections.",
     "isView": true
   },
   {
@@ -45,6 +45,12 @@
     "relativePath": "src/components/membership-payment-form.tsx",
     "shortDescription": "Reusable membership payment step view.",
     "fullDescription": "Payment-stage membership workflow component that renders the branded header, completed and active step rail, payment method fields, invoice request checkbox, tax ID input, membership charge summary card, floating support shortcut, and footer navigation actions. It reuses the shared button, input, checkbox, select, and separator primitives while consuming the global token-based color and spacing system for other payment-related membership screens.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/membership-renewal-upgrade.tsx",
+    "shortDescription": "Reusable membership renewal and upgrade workspace.",
+    "fullDescription": "Membership management component for renewing an active plan or renewing while upgrading to a higher tier. It includes the branded header, left navigation of membership actions, tax ID and payment method inputs, benefits comparison content, pricing summary cards with status and totals, and a bottom return action so additional membership administration views can reuse the same shell and summary patterns.",
     "isView": false
   }
 ]

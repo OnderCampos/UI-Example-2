@@ -1,5 +1,5 @@
-import { MembershipPaymentForm } from "@/components/membership-payment-form";
+import { MembershipRenewalUpgrade } from "@/components/membership-renewal-upgrade";
 
 export default function HomePage() {
-  return <MembershipPaymentForm />;
+  return <MembershipRenewalUpgrade />;
 }
