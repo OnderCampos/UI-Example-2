@@ -1,5 +1,5 @@
-import { MembershipSecondaryMemberships } from "@/components/membership-secondary-memberships";
+import { MembershipSecondaryMemberDetails } from "@/components/membership-secondary-member-details";
 
 export default function HomePage() {
-  return <MembershipSecondaryMemberships />;
+  return <MembershipSecondaryMemberDetails />;
 }

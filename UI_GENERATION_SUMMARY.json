@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Secondary memberships management screen.",
-    "fullDescription": "Default route that renders a membership administration workspace for viewing linked secondary cards on a primary account. It shows the branded top navigation, member identity summary, left membership action menu, explanatory section copy, a linked-members table with activation switches and selection controls, and a footer action for returning home using reusable membership administration components.",
+    "shortDescription": "Secondary member detail management screen.",
+    "fullDescription": "Default route that renders a membership administration detail view for a secondary member linked to a primary account. It shows the branded top navigation, primary member summary, left membership action menu, detailed personal data, contact information, address information, inline edit actions, a photo area, and a return-home footer action using reusable membership administration components.",
     "isView": true
   },
   {
@@ -63,6 +63,12 @@
     "relativePath": "src/components/membership-secondary-memberships.tsx",
     "shortDescription": "Reusable secondary memberships management workspace.",
     "fullDescription": "Membership administration component for reviewing and managing linked secondary cards associated with a primary member. It combines the branded top bar, left-side membership action navigation, descriptive account guidance, and a reusable table layout with activation switches, member selection checkboxes, status rows, and return actions so related membership views can share the same shell and list-management patterns.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/membership-secondary-member-details.tsx",
+    "shortDescription": "Reusable secondary member profile detail workspace.",
+    "fullDescription": "Membership administration component for viewing the profile details of a linked secondary member within a primary account. It includes the branded header, left membership action rail, profile photo area, grouped personal data, contact details, address information, inline edit triggers, a support shortcut button, and a footer navigation action so other membership service screens can reuse the same shell and structured detail sections.",
     "isView": false
   }
 ]
