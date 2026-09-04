@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Membership registration and lookup dashboard view.",
-    "fullDescription": "Main membership management view with a branded top header, quick action cards for starting a new membership or checking pending processes, a centered membership search form, and a results table listing customer identity details, contact information, membership status badges, and row-level membership links. The view reuses shared button, badge, card, input, separator, and table components.",
+    "shortDescription": "Member profile photo capture screen.",
+    "fullDescription": "Primary verification photo view with a branded two-tier header, a camera selector, a large live-preview placeholder, a right-side instruction card explaining capture requirements, and footer actions for returning home, canceling, taking a photo, and using the selected image. The view reuses shared button, card, native select, and separator components.",
     "isView": true
   }
 ]

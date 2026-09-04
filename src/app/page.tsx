@@ -1,85 +1,10 @@
 import Image from "next/image";
-import {
-  ChevronDown,
-  CircleAlert,
-  CreditCard,
-  Globe,
-  MapPin,
-  Search,
-} from "lucide-react";
+import { Camera, Check, ChevronDown, Globe, House, MapPin } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { Separator } from "@/components/ui/separator";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
-const membershipRows = [
-  {
-    member: "Sarah Treviño",
-    idNumber: "**************856F",
-    membershipNumber: "8596312475894",
-    email: "sarah.j@email.com",
-    phone: "+502 9874 5612",
-    status: "Active",
-  },
-  {
-    member: "Michael Treviño",
-    idNumber: "**************459G",
-    membershipNumber: "8542135039750",
-    email: "nicolas.trevino@gmail.com",
-    phone: "+502 1234 5678",
-    status: "Active",
-  },
-  {
-    member: "Nicolas Treviño",
-    idNumber: "**************123S",
-    membershipNumber: "25639885621471",
-    email: "mtrevinob@email.com",
-    phone: "+502 1472 5836",
-    status: "Cancelled",
-  },
-  {
-    member: "Emily Treviño",
-    idNumber: "**************234E",
-    membershipNumber: "10254852306589",
-    email: "emily.davis.t@email.com",
-    phone: "+502 9638 5274",
-    status: "Active",
-  },
-];
-
-function MembershipActionCard({
-  icon,
-  title,
-  highlighted = false,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  highlighted?: boolean;
-}) {
-  return (
-    <Card
-      className={[
-        "flex min-h-[152px] flex-row items-center gap-7 rounded-lg border border-[#d6dae3] px-14 py-11 shadow-none",
-        highlighted ? "bg-[#f1f1f3]" : "bg-white",
-      ].join(" ")}
-    >
-      <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#2f5edb] text-[#2f5edb]">
-        {icon}
-      </div>
-      <span className="text-[19px] font-semibold tracking-[-0.01em] text-[#233f8c]">{title}</span>
-    </Card>
-  );
-}
 
 function HeaderSelection({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
@@ -91,27 +16,38 @@ function HeaderSelection({ icon, label }: { icon: React.ReactNode; label: string
   );
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const isActive = status === "Active";
-
+function CaptureInstructions() {
   return (
-    <Badge
-      variant="outline"
-      className={[
-        "rounded-md border px-3 py-1 text-[12px] font-medium shadow-none",
-        isActive
-          ? "border-[#bddc7a] bg-[#e7f2c5] text-[#658d18]"
-          : "border-[#f1c4ba] bg-[#fdf0ec] text-[#d35a43]",
-      ].join(" ")}
-    >
-      {status}
-    </Badge>
+    <Card className="gap-0 rounded-2xl border-0 bg-[#f2f2f5] px-6 py-6 shadow-none">
+      <div className="-mx-6 -mt-6 mb-5 h-1 rounded-t-2xl bg-[#2f5edb]" />
+      <h2 className="text-[22px] font-semibold tracking-[-0.02em] text-[#233f8c]">
+        Profile photo capture
+      </h2>
+      <ol className="mt-5 space-y-5 pl-5 text-[15px] leading-8 text-[#59657e]">
+        <li>
+          Have the member stand in front of the camera, facing forward. Ensure the
+          member&apos;s face and shoulders are fully visible and centered within the frame.
+        </li>
+        <li>
+          Check for adequate lighting, avoiding harsh shadows or glares.
+        </li>
+        <li>
+          Confirm the capture is sharp and meets all requirements.
+        </li>
+      </ol>
+      <Button
+        variant="outline"
+        className="mt-6 h-11 rounded-lg border-[#5d88ef] bg-white text-[14px] font-semibold text-[#3d82f6] hover:bg-white hover:text-[#3d82f6]"
+      >
+        Take photo
+      </Button>
+    </Card>
   );
 }
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[#f7f7f8] text-[#233f8c]">
+    <main className="min-h-screen bg-[#f6f6f7] text-[#233f8c]">
       <header className="w-full">
         <div className="bg-[#16295f] text-white">
           <div className="mx-auto flex h-[58px] max-w-[1120px] items-center justify-between px-6 lg:px-8">
@@ -134,98 +70,73 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div className="h-[38px] bg-[#1f47b8]" />
+        <div className="h-[39px] bg-[#1f47b8]" />
       </header>
 
-      <section className="mx-auto max-w-[1120px] px-6 pb-20 pt-7 lg:px-8">
-        <div className="grid gap-6 md:grid-cols-2">
-          <MembershipActionCard
-            icon={<CreditCard className="h-7 w-7 stroke-[1.8]" />}
-            title="New Membership"
-            highlighted
-          />
-          <MembershipActionCard
-            icon={<CircleAlert className="h-7 w-7 stroke-[1.8]" />}
-            title="Pending process"
-          />
-        </div>
+      <section className="mx-auto max-w-[1120px] px-6 pb-6 pt-6 lg:px-8">
+        <div className="ml-4 max-w-[980px]">
+          <h1 className="text-[22px] font-medium tracking-[-0.02em] text-[#2a438b]">
+            Member profile photo
+          </h1>
+          <p className="mt-2 text-[14px] leading-6 text-[#49608e]">
+            Ask the member to look directly at the camera to capture their profile picture
+            for verification and digital use.
+          </p>
 
-        <Separator className="my-6 bg-[#d9dde4]" />
-
-        <div className="px-6 pt-12">
-          <div className="max-w-[860px]">
-            <h1 className="text-[25px] font-medium tracking-[-0.01em] text-[#233f8c]">
-              Search for membership
-            </h1>
-            <p className="mt-3 text-[14px] leading-6 text-[#37508f]">
-              Search for an existing profile before creating a new membership. Enter the customer&apos;s last name, phone number, email, or membership ID.
-            </p>
-          </div>
-
-          <div className="mt-6 flex flex-col items-center gap-4">
-            <div className="relative w-full max-w-[434px]">
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6d7890]" />
-              <Input
-                type="text"
-                defaultValue="Treviño"
-                className="h-[42px] rounded-[10px] border-[#ced5e1] bg-white pl-11 text-[14px] text-[#233f8c] shadow-none focus-visible:border-[#ced5e1] focus-visible:ring-0"
-              />
+          <div className="mt-10 grid grid-cols-[210px_1fr_292px] gap-6">
+            <div>
+              <label
+                htmlFor="camera"
+                className="mb-2 block text-[13px] font-medium text-[#49566d]"
+              >
+                Camera
+              </label>
+              <NativeSelect
+                id="camera"
+                defaultValue=""
+                className="h-11 w-full rounded-lg border-[#cfd6e2] bg-white text-[15px] text-[#7b879d] shadow-none focus-visible:ring-0"
+              >
+                <NativeSelectOption value="" disabled>
+                  Select camera
+                </NativeSelectOption>
+                <NativeSelectOption value="front">Front camera</NativeSelectOption>
+                <NativeSelectOption value="usb">USB camera</NativeSelectOption>
+                <NativeSelectOption value="built-in">Built-in webcam</NativeSelectOption>
+              </NativeSelect>
             </div>
 
-            <Button className="h-[35px] rounded-md bg-[#233f8c] px-9 text-[14px] font-semibold text-white hover:bg-[#233f8c]/95">
-              Search Membership
+            <div className="h-[370px] rounded-md bg-[#f0f1f4]" />
+
+            <CaptureInstructions />
+          </div>
+        </div>
+
+        <Separator className="mt-28 bg-[#d6dbe4]" />
+
+        <div className="flex items-center justify-between px-6 pt-6">
+          <div className="flex items-center gap-6">
+            <Button
+              variant="outline"
+              className="h-[37px] rounded-lg border-[#4f85ea] px-4 text-[14px] font-semibold text-[#3d82f6] hover:bg-white hover:text-[#3d82f6]"
+            >
+              <House className="h-4 w-4" />
+              Go back home
+            </Button>
+            <Button
+              variant="outline"
+              className="h-[37px] min-w-[132px] rounded-lg border-[#4f85ea] text-[14px] font-semibold text-[#3d82f6] hover:bg-white hover:text-[#3d82f6]"
+            >
+              Cancel
             </Button>
           </div>
 
-          <div className="mt-6 overflow-hidden rounded-xl border border-[#d9dde4] bg-white">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-[#e5e8ee] hover:bg-transparent">
-                  {[
-                    "Member",
-                    "ID Number",
-                    "Membership number",
-                    "Email address",
-                    "Phone number",
-                    "Membership status",
-                    "Actions",
-                  ].map((heading) => (
-                    <TableHead
-                      key={heading}
-                      className="h-[31px] px-4 text-[12px] font-medium text-[#57647f]"
-                    >
-                      <div className="flex items-center gap-1.5">
-                        <span>{heading}</span>
-                        {heading !== "Actions" && <ChevronDown className="h-3.5 w-3.5" />}
-                      </div>
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {membershipRows.map((row) => (
-                  <TableRow
-                    key={`${row.member}-${row.membershipNumber}`}
-                    className="h-[52px] border-[#e5e8ee] bg-white hover:bg-white"
-                  >
-                    <TableCell className="px-4 text-[12px] text-[#667289]">{row.member}</TableCell>
-                    <TableCell className="px-4 text-[12px] text-[#667289]">{row.idNumber}</TableCell>
-                    <TableCell className="px-4 text-[12px] text-[#667289]">{row.membershipNumber}</TableCell>
-                    <TableCell className="px-4 text-[12px] text-[#667289]">{row.email}</TableCell>
-                    <TableCell className="px-4 text-[12px] text-[#667289]">{row.phone}</TableCell>
-                    <TableCell className="px-4">
-                      <StatusBadge status={row.status} />
-                    </TableCell>
-                    <TableCell className="px-4 text-[12px] font-medium text-[#4b94f6]">
-                      <button type="button" className="hover:underline">
-                        View membership
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+          <Button
+            disabled
+            className="h-[37px] rounded-lg bg-[#eef0f4] px-7 text-[14px] font-semibold text-[#aab3c2] hover:bg-[#eef0f4]"
+          >
+            <Check className="h-4 w-4" />
+            Use this photo
+          </Button>
         </div>
       </section>
     </main>
