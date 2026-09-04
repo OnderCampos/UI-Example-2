@@ -2,7 +2,7 @@
   {
     "relativePath": "src/app/page.tsx",
     "shortDescription": "Membership registration and search landing view.",
-    "fullDescription": "Main membership management view with a branded top header, quick action cards for starting a new membership or viewing pending processes, and a centered search section for locating existing member profiles by name, phone, email, or membership ID.",
+    "fullDescription": "Main membership management view with a branded top header, quick action cards for starting a new membership or viewing pending processes, a centered membership search form with a prefilled query state, and an empty-result panel that guides users to create a new membership when no matching profiles are found. The view reuses shared button, card, input, separator, and empty-state components.",
     "isView": true
   }
 ]
