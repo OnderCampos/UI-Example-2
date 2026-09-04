@@ -1,0 +1,14 @@
+[
+  {
+    "relativePath": "src/components/membership-action-card.tsx",
+    "shortDescription": "Reusable action card for membership entry points.",
+    "fullDescription": "Displays a large clickable membership action with a circular icon, emphasized title, and optional muted surface styling. It is designed for dashboard-style launch sections where views need consistent action tiles for creating memberships, resuming pending work, or similar flows.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Membership search landing screen.",
+    "fullDescription": "Renders the main membership management landing view with a branded top bar, two primary action cards for starting a new membership or opening pending processes, and a centered search section for locating existing member profiles by name, phone, email, or membership number. The screen composes the reusable membership action card together with shared button, separator, and input-group components.",
+    "isView": true
+  }
+]
