@@ -7,8 +7,8 @@
   },
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Membership search and results screen.",
-    "fullDescription": "Renders the main membership management screen with a branded top bar, two primary action cards for starting a new membership or opening pending processes, and a centered search section for locating existing member profiles by name, phone, email, or membership ID. The lower content area shows member search results in a bordered table with sortable-style column labels, contact details, membership status badges, and action links while reusing the shared membership action card together with the shared button, badge, input-group, separator, and table components.",
+    "shortDescription": "Member profile photo capture screen.",
+    "fullDescription": "Renders a branded member verification capture screen with a top navigation bar, a camera selector, a centered photo preview stage, a right-side instruction panel, and footer actions for returning home, canceling, taking a photo, and confirming a saved image. The view reuses the shared button, select, and separator components to keep the image capture workflow visually consistent with the rest of the application.",
     "isView": true
   }
 ]
