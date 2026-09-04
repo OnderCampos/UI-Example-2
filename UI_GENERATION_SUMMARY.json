@@ -7,8 +7,8 @@
   },
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Membership search landing screen.",
-    "fullDescription": "Renders the main membership management landing view with a branded top bar, two primary action cards for starting a new membership or opening pending processes, and a centered search section for locating existing member profiles by name, phone, email, or membership ID. The lower content area includes an empty-state panel that guides users to create a new membership when no matching profiles are found, and the screen composes the reusable membership action card together with shared button, card, separator, and input-group components.",
+    "shortDescription": "Membership search and results screen.",
+    "fullDescription": "Renders the main membership management screen with a branded top bar, two primary action cards for starting a new membership or opening pending processes, and a centered search section for locating existing member profiles by name, phone, email, or membership ID. The lower content area shows member search results in a bordered table with sortable-style column labels, contact details, membership status badges, and action links while reusing the shared membership action card together with the shared button, badge, input-group, separator, and table components.",
     "isView": true
   }
 ]
