@@ -1,0 +1,8 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Membership registration and search landing screen.",
+    "fullDescription": "Main membership management view with a branded top bar, two large action cards for starting a new membership or reviewing pending processes, and a centered search section for locating existing member profiles by personal details or membership number. The view composes shared button, card, input, and separator primitives and uses the global semantic token layer for its light visual theme.",
+    "isView": true
+  }
+]
