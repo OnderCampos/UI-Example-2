@@ -7,8 +7,8 @@
   },
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Member profile photo capture screen.",
-    "fullDescription": "Renders a branded member verification capture screen with a top navigation bar, a camera selector, a centered photo preview stage, a right-side instruction panel, and footer actions for returning home, canceling, taking a photo, and confirming a saved image. The view reuses the shared button, select, and separator components to keep the image capture workflow visually consistent with the rest of the application.",
+    "shortDescription": "New membership registration workspace.",
+    "fullDescription": "Renders a membership enrollment screen with a branded top bar, a left step tracker, a personal data section with profile photo placeholder, contact and address forms, an inactive secondary memberships area, and footer actions for returning home, saving progress, and moving to payment. The view reuses the shared button, checkbox, input, label, select, and separator components to keep the registration workflow visually consistent with the rest of the application.",
     "isView": true
   }
 ]
