@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Member profile photo capture screen.",
-    "fullDescription": "Primary verification photo view with a branded two-tier header, a camera selector, a large live-preview placeholder, a right-side instruction card explaining capture requirements, and footer actions for returning home, canceling, taking a photo, and using the selected image. The view reuses shared button, card, native select, and separator components.",
+    "shortDescription": "New membership registration screen.",
+    "fullDescription": "Main membership onboarding view with a branded header, a left-side two-step progress list, personal data fields with photo capture placeholder, contact details with verification action buttons and decline checkboxes, address inputs, a muted secondary memberships section, and footer actions for returning home, saving, and moving to payment. The view reuses shared button, checkbox, input, native select, and separator components.",
     "isView": true
   }
 ]
