@@ -2,7 +2,19 @@
   {
     "relativePath": "src/app/page.tsx",
     "shortDescription": "Membership registration and search landing screen.",
-    "fullDescription": "Main membership management view with a branded top bar, two large action cards for starting a new membership or reviewing pending processes, a centered search form for locating existing member profiles by personal details or membership number, a results table with status indicators and action links, and a muted call to proceed with a new membership. The view composes shared button, card, input, separator, badge, and table primitives and uses the global semantic token layer for its light visual theme.",
+    "fullDescription": "Main membership management view with a branded top bar, two large action cards for starting a new membership or reviewing pending processes, a centered search form for locating existing member profiles by personal details or membership number, a results table with status indicators and action links, and a muted call to proceed with a new membership. The view composes the shared application header plus button, card, input, separator, badge, and table primitives and uses the global semantic token layer for its light visual theme.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/components/app-header.tsx",
+    "shortDescription": "Reusable branded application header with location and language controls.",
+    "fullDescription": "Shared top navigation header with the PriceSmart brand mark, contextual location text, country and language selectors, and a secondary blue accent bar. The component accepts configurable location, country, and language labels so multiple views can reuse the same shell without duplicating header markup.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/app/reference/page.tsx",
+    "shortDescription": "Member profile photo capture screen.",
+    "fullDescription": "Profile photo capture view for verification workflows with a page heading, camera source selector, centered capture preview area, a guidance card listing photo requirements, and footer actions for returning home, cancelling, taking a photo, and confirming the selected image. The screen reuses the shared application header together with button, card, select, and separator primitives styled through the global semantic token layer.",
     "isView": true
   }
 ]

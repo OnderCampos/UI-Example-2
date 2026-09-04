@@ -83,16 +83,26 @@
   --navy: #192b62;
   --brand-blue: #2345b3;
   --brand-blue-hover: #1e3da0;
+  --brand-blue-deep: #243b7a;
   --brand-orange: #ff6a13;
   --surface-muted: #f1f1f3;
+  --panel-background: #f3f3f6;
+  --capture-surface: #f1f2f5;
+  --capture-icon: #c6ceda;
   --button-muted: #eef2f7;
   --button-muted-hover: #e4eaf4;
   --button-muted-border: #d8e2f1;
   --button-muted-foreground: #8a95ab;
+  --disabled-surface: #eef1f6;
+  --disabled-foreground: #a6afbf;
   --placeholder: #7a8699;
   --text-subtle: #5d6779;
   --table-text: #667085;
   --brand-link: #5b9bf3;
+  --header-background: #192b62;
+  --header-foreground: #ffffff;
+  --header-accent: #2345b3;
+  --text-muted: #64748b;
 }
 
 .dark {

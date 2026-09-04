@@ -1,12 +1,5 @@
-import {
-  BadgeCheck,
-  ChevronDown,
-  CircleAlert,
-  CreditCard,
-  Globe,
-  MapPin,
-  Search,
-} from "lucide-react";
+import { BadgeCheck, CircleAlert, CreditCard, Search } from "lucide-react";
+import { AppHeader } from "@/components/app-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -82,40 +75,6 @@ function MembershipActionCard({
   );
 }
 
-function TopBar() {
-  return (
-    <header className="w-full">
-      <div className="bg-[color:var(--navy)] text-white">
-        <div className="mx-auto flex h-[58px] w-full max-w-[1060px] items-center justify-between px-6 lg:px-4">
-          <div className="flex items-center gap-2.5 text-[14px] font-semibold tracking-[-0.02em]">
-            <span className="relative inline-flex h-5 w-5 items-center justify-center text-[color:var(--brand-orange)]">
-              <span className="absolute text-[18px] leading-none">✶</span>
-            </span>
-            <span className="text-[15px]">PriceSmart</span>
-          </div>
-          <div className="flex items-center gap-7 text-[14px] font-medium text-white/95">
-            <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4" />
-              <span>Miraflores</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Globe className="h-4 w-4" />
-              <span>Guatemala</span>
-              <ChevronDown className="h-4 w-4 text-white/70" />
-            </div>
-            <div className="flex items-center gap-2">
-              <Globe className="h-4 w-4" />
-              <span>English</span>
-              <ChevronDown className="h-4 w-4 text-white/70" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="h-[36px] bg-[color:var(--brand-blue)]" />
-    </header>
-  );
-}
-
 function StatusBadge({ status }: { status: string }) {
   const active = status === "Active";
 
@@ -152,10 +111,7 @@ function MembersTable() {
                 key={label}
                 className="h-[32px] px-4 text-[11px] font-medium text-[color:var(--text-subtle)]"
               >
-                <span className="inline-flex items-center gap-1.5">
-                  {label}
-                  <ChevronDown className="h-3.5 w-3.5 -rotate-90 text-[color:var(--text-subtle)]" />
-                </span>
+                {label}
               </TableHead>
             ))}
             <TableHead className="h-[32px] px-4 text-[11px] font-medium text-[color:var(--text-subtle)]">
@@ -166,21 +122,11 @@ function MembersTable() {
         <TableBody>
           {membershipRows.map((row) => (
             <TableRow key={row.membershipNumber} className="h-[52px] border-border hover:bg-muted/30">
-              <TableCell className="px-4 py-4 text-[13px] text-[color:var(--table-text)]">
-                {row.member}
-              </TableCell>
-              <TableCell className="px-4 py-4 text-[13px] text-[color:var(--table-text)]">
-                {row.idNumber}
-              </TableCell>
-              <TableCell className="px-4 py-4 text-[13px] text-[color:var(--table-text)]">
-                {row.membershipNumber}
-              </TableCell>
-              <TableCell className="px-4 py-4 text-[13px] text-[color:var(--table-text)]">
-                {row.email}
-              </TableCell>
-              <TableCell className="px-4 py-4 text-[13px] text-[color:var(--table-text)]">
-                {row.phone}
-              </TableCell>
+              <TableCell className="px-4 py-4 text-[13px] text-[color:var(--table-text)]">{row.member}</TableCell>
+              <TableCell className="px-4 py-4 text-[13px] text-[color:var(--table-text)]">{row.idNumber}</TableCell>
+              <TableCell className="px-4 py-4 text-[13px] text-[color:var(--table-text)]">{row.membershipNumber}</TableCell>
+              <TableCell className="px-4 py-4 text-[13px] text-[color:var(--table-text)]">{row.email}</TableCell>
+              <TableCell className="px-4 py-4 text-[13px] text-[color:var(--table-text)]">{row.phone}</TableCell>
               <TableCell className="px-4 py-4">
                 <StatusBadge status={row.status} />
               </TableCell>
@@ -198,7 +144,7 @@ function MembersTable() {
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <TopBar />
+      <AppHeader />
 
       <section className="mx-auto flex w-full max-w-[1060px] flex-col px-6 pb-16 pt-6 lg:px-4">
         <div className="grid gap-6 md:grid-cols-2">
@@ -221,8 +167,7 @@ export default function HomePage() {
               Search for membership
             </h1>
             <p className="mt-2 max-w-[860px] text-[15px] leading-6 text-[color:var(--brand-blue)]/85">
-              Search for an existing profile before creating a new membership. Enter the customer&apos;s
-              last name, phone number, email, or membership ID.
+              Search for an existing profile before creating a new membership. Enter the customer&apos;s last name, phone number, email, or membership ID.
             </p>
           </div>
 
@@ -235,7 +180,7 @@ export default function HomePage() {
                 className="h-[42px] rounded-[var(--radius-md)] border-border bg-card pl-11 text-[15px] text-[color:var(--brand-blue)] shadow-none"
               />
             </div>
-            <Button className="h-[34px] rounded-[var(--radius-sm)] bg-[color:var(--brand-blue)] px-7 text-[15px] font-semibold text-white shadow-none hover:bg-[color:var(--brand-blue-hover)]">
+            <Button className="h-[34px] rounded-[var(--radius-sm-token)] bg-[color:var(--brand-blue)] px-7 text-[15px] font-semibold text-white shadow-none hover:bg-[color:var(--brand-blue-hover)]">
               Search Membership
             </Button>
           </div>
