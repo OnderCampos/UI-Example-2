@@ -1,8 +1,0 @@
-[
-  {
-    "relativePath": "src/app/page.tsx",
-    "shortDescription": "New membership registration screen.",
-    "fullDescription": "Main membership onboarding view with a branded header, a left-side two-step progress list, personal data fields with photo capture placeholder, contact details with verification action buttons and decline checkboxes, address inputs, a muted secondary memberships section, and footer actions for returning home, saving, and moving to payment. The view reuses shared button, checkbox, input, native select, and separator components.",
-    "isView": true
-  }
-]
