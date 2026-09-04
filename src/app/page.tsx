@@ -1,142 +1,142 @@
-import { BadgeCheck, CircleAlert, CreditCard, Search } from "lucide-react";
-import { AppHeader } from "@/components/app-header";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  CalendarDays,
+  CircleUserRound,
+  Folder,
+  House,
+  MapPinned,
+  Phone,
+  Plus,
+} from "lucide-react";
+import { AppHeader } from "@/components/app-header";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 
-const membershipRows = [
-  {
-    member: "Sarah Treviño",
-    idNumber: "*************856F",
-    membershipNumber: "8596312475894",
-    email: "sarah.j@email.com",
-    phone: "+502 9874 5612",
-    status: "Active",
-  },
-  {
-    member: "Michael Treviño",
-    idNumber: "*************459G",
-    membershipNumber: "8542135039750",
-    email: "nicolas.trevino@gmail.com",
-    phone: "+502 1234 5678",
-    status: "Active",
-  },
-  {
-    member: "Nicolas Treviño",
-    idNumber: "*************123S",
-    membershipNumber: "25639885621471",
-    email: "mtrevinob@email.com",
-    phone: "+502 1472 5836",
-    status: "Cancelled",
-  },
-  {
-    member: "Emily Treviño",
-    idNumber: "*************234E",
-    membershipNumber: "10254852306589",
-    email: "emily.davis.t@email.com",
-    phone: "+502 9638 5274",
-    status: "Active",
-  },
-];
+const selectOptions = ["Select", "Option 1", "Option 2"];
 
-function MembershipActionCard({
-  icon,
-  title,
-  emphasized = false,
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return <label className="mb-1.5 block text-[11px] font-medium text-foreground">{children}</label>;
+}
+
+function TextField({
+  label,
+  placeholder,
+  rightIcon,
 }: {
-  icon: React.ReactNode;
-  title: string;
-  emphasized?: boolean;
+  label: string;
+  placeholder: string;
+  rightIcon?: React.ReactNode;
 }) {
   return (
-    <Card
-      className={[
-        "min-h-[152px] flex-row items-center gap-5 rounded-[var(--radius-panel)] border border-border px-10 py-8 shadow-none",
-        emphasized ? "bg-[color:var(--surface-muted)]" : "bg-card",
-      ].join(" ")}
-    >
-      <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-[color:var(--brand-blue)] text-[color:var(--brand-blue)]">
-        {icon}
+    <div>
+      <FieldLabel>{label}</FieldLabel>
+      <div className="relative">
+        <Input
+          placeholder={placeholder}
+          className="h-[34px] rounded-[var(--radius-sm-token)] border-[color:var(--border)] bg-card pr-9 text-[12px] text-foreground shadow-none placeholder:text-[color:var(--placeholder)] focus-visible:ring-0"
+        />
+        {rightIcon ? (
+          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[color:var(--text-muted)]">
+            {rightIcon}
+          </span>
+        ) : null}
       </div>
-      <span className="text-[clamp(1.75rem,2vw,2.15rem)] font-bold tracking-[-0.02em] text-[color:var(--brand-blue)]">
-        {title}
-      </span>
-    </Card>
+    </div>
   );
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const active = status === "Active";
-
+function SelectField({ label }: { label: string }) {
   return (
-    <Badge
-      variant="outline"
-      className={[
-        "min-w-[50px] rounded-[8px] border px-2.5 py-1 text-[12px] font-medium shadow-none",
-        active
-          ? "border-[#B7DB7A] bg-[#E8F4C8] text-[#6A911A]"
-          : "border-[#F2C0B5] bg-[#FFF1EC] text-[#CC5A41]",
-      ].join(" ")}
-    >
-      {status}
-    </Badge>
-  );
-}
-
-function MembersTable() {
-  return (
-    <div className="mt-8 overflow-hidden rounded-[12px] border border-border bg-card">
-      <Table>
-        <TableHeader>
-          <TableRow className="border-border bg-card hover:bg-card">
-            {[
-              "Member",
-              "ID Number",
-              "Membership number",
-              "Email address",
-              "Phone number",
-              "Membership status",
-            ].map((label) => (
-              <TableHead
-                key={label}
-                className="h-[32px] px-4 text-[11px] font-medium text-[color:var(--text-subtle)]"
-              >
-                {label}
-              </TableHead>
-            ))}
-            <TableHead className="h-[32px] px-4 text-[11px] font-medium text-[color:var(--text-subtle)]">
-              Actions
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {membershipRows.map((row) => (
-            <TableRow key={row.membershipNumber} className="h-[52px] border-border hover:bg-muted/30">
-              <TableCell className="px-4 py-4 text-[13px] text-[color:var(--table-text)]">{row.member}</TableCell>
-              <TableCell className="px-4 py-4 text-[13px] text-[color:var(--table-text)]">{row.idNumber}</TableCell>
-              <TableCell className="px-4 py-4 text-[13px] text-[color:var(--table-text)]">{row.membershipNumber}</TableCell>
-              <TableCell className="px-4 py-4 text-[13px] text-[color:var(--table-text)]">{row.email}</TableCell>
-              <TableCell className="px-4 py-4 text-[13px] text-[color:var(--table-text)]">{row.phone}</TableCell>
-              <TableCell className="px-4 py-4">
-                <StatusBadge status={row.status} />
-              </TableCell>
-              <TableCell className="px-4 py-4 text-[13px] font-medium">
-                <button className="text-[color:var(--brand-link)] hover:underline">View membership</button>
-              </TableCell>
-            </TableRow>
+    <div>
+      <FieldLabel>{label}</FieldLabel>
+      <Select>
+        <SelectTrigger className="h-[34px] w-full rounded-[var(--radius-sm-token)] border-[color:var(--border)] bg-card text-[12px] text-[color:var(--placeholder)] shadow-none focus-visible:ring-0">
+          <SelectValue placeholder="Select" />
+        </SelectTrigger>
+        <SelectContent>
+          {selectOptions.map((option) => (
+            <SelectItem key={option} value={option.toLowerCase().replace(/\s+/g, "-")}>
+              {option}
+            </SelectItem>
           ))}
-        </TableBody>
-      </Table>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function DeclineOption({ id, text }: { id: string; text: string }) {
+  return (
+    <label htmlFor={id} className="flex items-center gap-2 pt-6 text-[12px] font-medium text-[color:var(--text-subtle)]">
+      <Checkbox id={id} className="border-[color:var(--border)] data-[state=checked]:border-primary" />
+      <span>{text}</span>
+    </label>
+  );
+}
+
+function SectionTitle({ icon, title, faded = false }: { icon: React.ReactNode; title: string; faded?: boolean }) {
+  return (
+    <div className={["mb-5 flex items-center gap-2", faded ? "text-[color:#c3cad7]" : "text-[color:var(--brand-blue-deep)]"].join(" ")}>
+      <span>{icon}</span>
+      <h2 className="text-[14px] font-medium">{title}</h2>
+    </div>
+  );
+}
+
+function Stepper() {
+  return (
+    <aside className="w-[160px] shrink-0 border-r border-[color:var(--border)] pr-4 pt-6">
+      <h1 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--brand-blue-deep)]">New membership</h1>
+      <div className="mt-7 space-y-4">
+        <div className="flex items-center gap-2 text-[12px] font-semibold text-[color:var(--brand-blue-deep)]">
+          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[color:var(--brand-blue-deep)] text-[10px] text-white">1</span>
+          <span>Membership data</span>
+        </div>
+        <div className="flex items-center gap-2 text-[12px] text-[color:#c6ceda]">
+          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[color:#eef1f6] text-[10px] text-[color:#9aa7bc]">2</span>
+          <span>Payment</span>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+function ProfilePhotoPanel() {
+  return (
+    <div className="flex flex-col items-center pt-3">
+      <div className="flex h-[112px] w-[112px] items-center justify-center rounded-full bg-[color:#c7ccd7] shadow-[0_3px_8px_rgba(15,23,42,0.08)]" />
+      <button className="mt-2 text-[11px] font-medium text-[color:var(--brand-link)]">Take photo</button>
+    </div>
+  );
+}
+
+function FooterActions() {
+  return (
+    <div className="mt-8 flex flex-col gap-4 border-t border-[color:var(--border)] px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex gap-4">
+        <Button
+          variant="outline"
+          className="h-[36px] rounded-[var(--radius-sm-token)] border-[color:var(--header-accent)] bg-card px-4 text-[13px] font-semibold text-[color:var(--header-accent)] shadow-none hover:bg-[color:var(--accent)] hover:text-[color:var(--header-accent)]"
+        >
+          <House className="h-4 w-4" />
+          Go back home
+        </Button>
+        <Button
+          disabled
+          className="h-[36px] rounded-[var(--radius-sm-token)] border border-[color:var(--border)] bg-[color:var(--disabled-surface)] px-6 text-[13px] font-semibold text-[color:var(--disabled-foreground)] shadow-none hover:bg-[color:var(--disabled-surface)]"
+        >
+          Save changes
+        </Button>
+      </div>
+
+      <Button
+        disabled
+        className="h-[36px] min-w-[112px] rounded-[var(--radius-sm-token)] border border-[color:var(--border)] bg-[color:var(--disabled-surface)] px-6 text-[13px] font-semibold text-[color:var(--disabled-foreground)] shadow-none hover:bg-[color:var(--disabled-surface)]"
+      >
+        Payment
+      </Button>
     </div>
   );
 }
@@ -146,57 +146,101 @@ export default function HomePage() {
     <main className="min-h-screen bg-background text-foreground">
       <AppHeader />
 
-      <section className="mx-auto flex w-full max-w-[1060px] flex-col px-6 pb-16 pt-6 lg:px-4">
-        <div className="grid gap-6 md:grid-cols-2">
-          <MembershipActionCard
-            emphasized
-            icon={<CreditCard className="h-6 w-6 stroke-[1.75]" />}
-            title="New Membership"
-          />
-          <MembershipActionCard
-            icon={<CircleAlert className="h-6 w-6 stroke-[1.75]" />}
-            title="Pending process"
-          />
-        </div>
+      <section className="mx-auto max-w-[1120px] px-8 pb-8 pt-6 lg:px-6">
+        <div className="rounded-[var(--radius-lg-token)] bg-background">
+          <div className="flex items-start">
+            <Stepper />
 
-        <Separator className="my-6" />
+            <div className="flex-1 pl-6">
+              <div className="flex items-start justify-between pt-4">
+                <SectionTitle icon={<Folder className="h-4 w-4" strokeWidth={1.8} />} title="Personal data" />
+                <Button
+                  variant="outline"
+                  className="h-[28px] rounded-[var(--radius-sm-token)] border-[color:var(--brand-link)] bg-card px-3 text-[11px] font-semibold text-[color:var(--brand-link)] shadow-none hover:bg-[color:var(--accent)] hover:text-[color:var(--brand-link)]"
+                >
+                  Capture Member ID
+                </Button>
+              </div>
 
-        <section className="px-6 pt-12">
-          <div className="max-w-[900px]">
-            <h1 className="text-[24px] font-normal tracking-[-0.02em] text-[color:var(--brand-blue)]">
-              Search for membership
-            </h1>
-            <p className="mt-2 max-w-[860px] text-[15px] leading-6 text-[color:var(--brand-blue)]/85">
-              Search for an existing profile before creating a new membership. Enter the customer&apos;s last name, phone number, email, or membership ID.
-            </p>
-          </div>
+              <div className="grid gap-6 lg:grid-cols-[118px_minmax(0,1fr)]">
+                <ProfilePhotoPanel />
 
-          <div className="mt-6 flex flex-col items-center gap-3">
-            <div className="relative w-full max-w-[435px]">
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                type="text"
-                defaultValue="Treviño"
-                className="h-[42px] rounded-[var(--radius-md)] border-border bg-card pl-11 text-[15px] text-[color:var(--brand-blue)] shadow-none"
-              />
+                <div className="space-y-6">
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <SelectField label="ID Type *" />
+                    <TextField label="ID Number *" placeholder="Enter ID number" />
+                    <SelectField label="Membership type *" />
+                    <SelectField label="Abbreviation" />
+                    <TextField label="First Name *" placeholder="Enter first name" />
+                    <TextField label="Last Name *" placeholder="Enter last name" />
+                    <SelectField label="Gender" />
+                    <TextField label="Date of birth *" placeholder="Select" rightIcon={<CalendarDays className="h-3.5 w-3.5" />} />
+                    <SelectField label="Occupation" />
+                  </div>
+
+                  <Separator />
+
+                  <section>
+                    <SectionTitle icon={<Phone className="h-4 w-4" strokeWidth={1.8} />} title="Contact" faded />
+                    <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_96px_260px]">
+                      <TextField label="Email address *" placeholder="Enter your email address" />
+                      <div>
+                        <FieldLabel>&nbsp;</FieldLabel>
+                        <Button
+                          disabled
+                          className="h-[34px] w-full rounded-[var(--radius-sm-token)] border border-[color:var(--border)] bg-[color:var(--disabled-surface)] px-0 text-[12px] font-semibold text-[color:var(--disabled-foreground)] shadow-none hover:bg-[color:var(--disabled-surface)]"
+                        >
+                          Send code
+                        </Button>
+                      </div>
+                      <DeclineOption id="decline-email" text="Customer declines to provide email address" />
+
+                      <TextField label="Mobile phone number *" placeholder="Enter your phone number" />
+                      <div>
+                        <FieldLabel>&nbsp;</FieldLabel>
+                        <Button
+                          disabled
+                          className="h-[34px] w-full rounded-[var(--radius-sm-token)] border border-[color:var(--border)] bg-[color:var(--disabled-surface)] px-0 text-[12px] font-semibold text-[color:var(--disabled-foreground)] shadow-none hover:bg-[color:var(--disabled-surface)]"
+                        >
+                          Send code
+                        </Button>
+                      </div>
+                      <DeclineOption id="decline-mobile" text="Customer declines to provide mobile phone number" />
+                    </div>
+
+                    <div className="mt-4 grid gap-4 md:grid-cols-3">
+                      <TextField label="Home phone number" placeholder="Enter your home phone number" />
+                      <SelectField label="Notifications" />
+                    </div>
+                  </section>
+
+                  <Separator />
+
+                  <section>
+                    <SectionTitle icon={<MapPinned className="h-4 w-4" strokeWidth={1.8} />} title="Address" faded />
+                    <div className="grid gap-4 md:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,0.65fr))]">
+                      <TextField label="Address *" placeholder="Enter your address" />
+                      <SelectField label="Country" />
+                      <SelectField label="State" />
+                      <SelectField label="City" />
+                    </div>
+                  </section>
+
+                  <Separator />
+
+                  <section>
+                    <SectionTitle icon={<CircleUserRound className="h-4 w-4" strokeWidth={1.8} />} title="Secondary memberships" faded />
+                    <button className="inline-flex items-center gap-1 text-[12px] font-medium text-[color:#c3cad7]">
+                      Add secondary <Plus className="h-3.5 w-3.5" />
+                    </button>
+                  </section>
+                </div>
+              </div>
             </div>
-            <Button className="h-[34px] rounded-[var(--radius-sm-token)] bg-[color:var(--brand-blue)] px-7 text-[15px] font-semibold text-white shadow-none hover:bg-[color:var(--brand-blue-hover)]">
-              Search Membership
-            </Button>
           </div>
 
-          <MembersTable />
-
-          <div className="mt-8 flex justify-center">
-            <Button
-              variant="outline"
-              className="h-[42px] rounded-[var(--radius-md)] border-[color:var(--button-muted-border)] bg-[color:var(--button-muted)] px-6 text-[15px] font-medium text-[color:var(--button-muted-foreground)] shadow-none hover:bg-[color:var(--button-muted-hover)] hover:text-[color:var(--button-muted-foreground)]"
-            >
-              <BadgeCheck className="h-4.5 w-4.5" />
-              Proceed with the new membership
-            </Button>
-          </div>
-        </section>
+          <FooterActions />
+        </div>
       </section>
     </main>
   );

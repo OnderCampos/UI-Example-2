@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Membership registration and search landing screen.",
-    "fullDescription": "Main membership management view with a branded top bar, two large action cards for starting a new membership or reviewing pending processes, a centered search form for locating existing member profiles by personal details or membership number, a results table with status indicators and action links, and a muted call to proceed with a new membership. The view composes the shared application header plus button, card, input, separator, badge, and table primitives and uses the global semantic token layer for its light visual theme.",
+    "shortDescription": "New membership creation form screen.",
+    "fullDescription": "Primary membership enrollment view with the shared branded header, a two-step sidebar progress indicator, personal data entry fields, contact and address sections, a secondary memberships area, profile photo placeholder, capture action, and footer buttons for returning home, saving changes, and continuing to payment. The screen reuses the shared header and form primitives including buttons, inputs, selects, checkboxes, and separators while following the global light semantic token layer.",
     "isView": true
   },
   {
