@@ -1,6 +1,13 @@
-import { CircleAlert, CreditCard, Globe, MapPin, Search } from "lucide-react";
+import { CircleAlert, CreditCard, Globe, MapPin, Search, UserRoundPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
@@ -20,10 +27,10 @@ function MembershipActionCard({
         emphasized ? "bg-[color:var(--surface-muted)]" : "bg-card",
       ].join(" ")}
     >
-      <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-primary text-primary">
+      <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-[color:var(--brand-blue)] text-[color:var(--brand-blue)]">
         {icon}
       </div>
-      <span className="text-[clamp(1.6rem,2vw,2.05rem)] font-bold tracking-[-0.02em] text-[color:var(--brand-blue)]">
+      <span className="text-[clamp(1.55rem,2vw,2.05rem)] font-bold tracking-[-0.02em] text-[color:var(--brand-blue)]">
         {title}
       </span>
     </Card>
@@ -84,33 +91,53 @@ export default function HomePage() {
 
         <Separator className="my-6" />
 
-        <section className="px-6 pt-12 md:px-6">
+        <section className="px-6 pt-12">
           <div className="max-w-[900px]">
-            <h1 className="text-[46px] font-normal leading-[1.1] tracking-[-0.03em] text-[color:var(--brand-blue)]">
+            <h1 className="text-[24px] font-normal tracking-[-0.02em] text-[color:var(--brand-blue)]">
               Search for membership
             </h1>
-            <p className="mt-3 max-w-[840px] text-[16px] leading-6 text-muted-foreground">
+            <p className="mt-2 max-w-[850px] text-[15px] leading-6 text-[color:var(--brand-blue)]/85">
               Search for an existing profile before creating a new membership. Enter the
               customer&apos;s last name, phone number, email, or membership ID.
             </p>
           </div>
 
-          <div className="mt-10 flex flex-col items-center gap-5">
+          <div className="mt-6 flex flex-col items-center gap-4">
             <div className="relative w-full max-w-[445px]">
               <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search by name, mobile phone, email or membership number"
-                className="h-10 rounded-[var(--radius-md)] border-border bg-card pl-12 text-[15px] shadow-none placeholder:text-[color:var(--placeholder)]"
+                defaultValue="Treviño"
+                className="h-10 rounded-[var(--radius-md)] border-border bg-card pl-12 text-[15px] text-[color:var(--brand-blue)] shadow-none"
               />
             </div>
             <Button
-              variant="secondary"
-              className="h-10 rounded-[var(--radius-md)] bg-[color:var(--button-muted)] px-8 text-[15px] font-semibold text-[color:var(--button-muted-foreground)] shadow-none hover:bg-[color:var(--button-muted-hover)]"
+              className="h-9 rounded-[var(--radius-sm)] bg-[color:var(--brand-blue)] px-7 text-[15px] font-semibold text-white shadow-none hover:bg-[color:var(--brand-blue)]/95"
             >
               Search Membership
             </Button>
           </div>
+
+          <Empty className="mt-6 rounded-none border-0 bg-[color:var(--surface-muted)] px-6 py-10 md:px-10 md:py-12">
+            <EmptyHeader className="max-w-[560px] gap-4">
+              <EmptyTitle className="text-[18px] font-bold text-[color:var(--brand-blue)]">
+                No matching profiles found
+              </EmptyTitle>
+              <EmptyDescription className="text-[16px] leading-8 text-foreground/65">
+                We couldn&apos;t find any records with the information provided. Please verify the
+                data or create a new membership.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent className="pt-1">
+              <Button
+                variant="outline"
+                className="h-9 rounded-[var(--radius-sm)] border-[color:var(--primary)] bg-transparent px-11 text-[15px] font-semibold text-[color:var(--primary)] shadow-none hover:bg-[color:var(--secondary)] hover:text-[color:var(--primary)]"
+              >
+                <UserRoundPlus className="h-4 w-4" />
+                Create new membership
+              </Button>
+            </EmptyContent>
+          </Empty>
         </section>
       </section>
     </main>
