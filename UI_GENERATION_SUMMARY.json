@@ -8,7 +8,7 @@
   {
     "relativePath": "src/components/member-check-in-result.tsx",
     "shortDescription": "Reusable member check-in result screen component.",
-    "fullDescription": "Shared presentation component for the gym member check-in flow. It renders the connected header, member-number search bar, status hero, member details, amenities list, and bottom guidance banner, and supports success, payment warning, and cancelled-membership states through a state prop and shared member fixtures.",
+    "fullDescription": "Shared presentation component for the gym member check-in flow. It renders the connected top bar, member-number search row, status hero, member details, amenities list, and the final guidance banner. The component supports success, payment warning, and cancelled-membership states through a state prop with per-state member fixtures, visual treatments, and access messaging.",
     "isView": false
   }
 ]
