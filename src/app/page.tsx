@@ -1,6 +1,6 @@
 import { MemberCheckInResult, type MemberCheckInState } from "@/components/member-check-in-result";
 
-const state: MemberCheckInState = "payment-method-invalid";
+const state: MemberCheckInState = "membership-cancelled";
 
 export default function HomePage() {
   return <MemberCheckInResult state={state} />;
