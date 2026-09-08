@@ -1,8 +1,0 @@
-[
-  {
-    "relativePath": "src/app/page.tsx",
-    "shortDescription": "Member check-in result view with multiple account states.",
-    "fullDescription": "Displays the member check-in result screen with a search bar, top utility header, account summary banner, membership details, included amenities, and a full-width action footer. The view supports active-member success, past-due invalid-payment failure, and cancelled access-denied failure states through a state query parameter so one route can render multiple check-in outcomes without duplicating the screen structure.",
-    "isView": true
-  }
-]
