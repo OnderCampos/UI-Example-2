@@ -1,0 +1,14 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Gym member check-in result view with multiple account states.",
+    "fullDescription": "Home route for the member check-in result experience. It resolves the requested check-in state from route search params and renders the shared member result layout for success-active-member, payment-method-invalid-past-due, and membership-cancelled-access-denied scenarios.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/components/member-check-in-result.tsx",
+    "shortDescription": "Reusable member check-in result screen component.",
+    "fullDescription": "Shared presentation component for the gym member check-in flow. It renders the connected header, member-number search bar, status hero, member details, amenities list, and bottom guidance banner, and supports success, payment warning, and cancelled-membership states through a state prop and shared member fixtures.",
+    "isView": false
+  }
+]
