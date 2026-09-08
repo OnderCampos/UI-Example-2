@@ -2,13 +2,13 @@
   {
     "relativePath": "src/app/page.tsx",
     "shortDescription": "Member check-in result view entry point.",
-    "fullDescription": "Renders the member check-in result screen on the home route and passes the current view state into the shared member check-in result component. Supports the planned check-in-success, payment-method-invalid, and membership-cancelled states through the shared component contract.",
+    "fullDescription": "Renders the member check-in result screen on the home route and passes the current view state into the shared member check-in result component. Supports the planned check-in-success, payment-method-invalid, and membership-cancelled states through the shared component contract, with the route currently configured to show the payment-method-invalid state.",
     "isView": true
   },
   {
     "relativePath": "src/components/member-check-in-result.tsx",
     "shortDescription": "Reusable gym member check-in result screen component.",
-    "fullDescription": "Displays the gym member check-in result experience with a top bar, member number search control, hero status banner, member details, amenities grid, and status footer. Accepts serializable props for state, member data, defaultMemberNumber, and onSearch so the same component can render check-in-success, payment-method-invalid, and membership-cancelled variants while keeping the search input and action immediately usable.",
+    "fullDescription": "Displays the gym member check-in result experience with a top bar, member number search control, state-driven hero banner, member details panel, amenities grid, and bottom status banner. Accepts serializable props for state, member data, defaultMemberNumber, and onSearch so the same component can render check-in-success, payment-method-invalid, and membership-cancelled variants while keeping the search input and action immediately usable and initializing each state with matching fixture member data.",
     "isView": false
   }
 ]
