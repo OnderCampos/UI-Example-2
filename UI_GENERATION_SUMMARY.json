@@ -8,7 +8,7 @@
   {
     "relativePath": "src/components/member-check-in-result-view.tsx",
     "shortDescription": "Reusable member check-in result screen component.",
-    "fullDescription": "Displays a gym member check-in result layout with a top check-in header, member number search row, hero status banner, member details section, amenity cards, and a status footer. Accepts state, member, memberNumber, defaultMemberNumber, onMemberNumberChange, and onSearch props so the same screen can render success-active-member, payment-method-invalid-past-due, and membership-cancelled-access-denied states while keeping the search control interactive and preserving state-specific titles, statuses, icons, and messages.",
+    "fullDescription": "Displays a gym member check-in result layout with a lightweight application header, interactive member number search row, hero status banner, member details section, amenity cards, and a full-width result footer. Accepts state, member, memberNumber, defaultMemberNumber, onMemberNumberChange, and onSearch props so the same component can render success-active-member, payment-method-invalid-past-due, and membership-cancelled-access-denied states while preserving state-specific member data, titles, labels, icons, amenity styling, and footer messaging.",
     "isView": false
   }
 ]
