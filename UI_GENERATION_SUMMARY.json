@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Gym member check-in success view",
-    "fullDescription": "Main check-in screen for a gym front desk workflow. It includes a compact top bar, a member number search row, a large success hero with member photo and confirmation state, a member details section, an amenities grid, and a success footer message using shared avatar, badge, button, card, and input components.",
+    "shortDescription": "Gym member check-in payment warning view",
+    "fullDescription": "Main check-in screen for a gym front desk workflow showing an unsuccessful membership validation caused by billing issues. It includes a compact staff header, a member number search row, a warning hero with member photo and payment failure messaging, a member details panel with a past-due status badge, an amenities grid, and a bottom warning callout prompting the member to update payment information.",
     "isView": true
   }
 ]
