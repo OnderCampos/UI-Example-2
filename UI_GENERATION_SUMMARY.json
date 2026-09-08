@@ -8,7 +8,7 @@
   {
     "relativePath": "src/components/member-check-in-result.tsx",
     "shortDescription": "Reusable member check-in result screen component.",
-    "fullDescription": "Composes the gym member check-in result layout with editable member number input, interactive state switcher for success, invalid payment, and cancelled membership states, top utility header, member profile summary, status badge, amenity cards, and state-specific warning or confirmation footer styling driven by shared theme tokens.",
+    "fullDescription": "Composes the gym member check-in result layout with editable member number input, interactive state switcher for success, invalid payment, and cancelled membership states, top utility header, member profile summary, status badge, amenity cards, and state-specific footer messaging and styling driven by the shared global theme tokens.",
     "isView": false
   }
 ]

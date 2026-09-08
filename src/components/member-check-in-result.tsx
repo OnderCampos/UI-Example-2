@@ -2,12 +2,12 @@
 
 import { useMemo, useState } from "react";
 import {
-  AlertTriangle,
   Bell,
   CalendarDays,
   Check,
   CreditCard,
   Dumbbell,
+  Lock,
   Search,
   UserRound,
   Waves,
@@ -42,6 +42,7 @@ type MemberStateData = {
   footerIcon: React.ComponentType<{ className?: string }>;
   member: {
     name: string;
+    memberNumber: string;
     memberSince: string;
     imageSrc?: string;
     fallback: string;
@@ -73,6 +74,7 @@ const stateData: Record<CheckInState, MemberStateData> = {
     footerIcon: Check,
     member: {
       name: "Sarah Johnson",
+      memberNumber: "987654",
       memberSince: "Jan 15, 2023",
       imageSrc: "/Frida.png",
       fallback: "SJ",
@@ -89,7 +91,7 @@ const stateData: Record<CheckInState, MemberStateData> = {
     rightLabel: "Check-In Successful",
     icon: X,
     bannerClassName:
-      "bg-[linear-gradient(135deg,#f7c832_0%,var(--color-warning)_62%,#f28c1b_100%)] text-[color:var(--color-text)]",
+      "bg-[linear-gradient(135deg,#f7c832_0%,var(--color-warning)_62%,#f28c1b_100%)] text-[color:var(--foreground)]",
     bannerIconWrapClassName: "border-white/55 bg-white/10",
     detailsIconClassName: "text-[color:var(--color-warning-strong)]",
     statusLabel: "Past Due",
@@ -99,9 +101,10 @@ const stateData: Record<CheckInState, MemberStateData> = {
       "To continue enjoying your membership, please update your payment information at your earliest convenience.",
     footerClassName:
       "border-t-[color:var(--color-warning)] bg-[color:color-mix(in_srgb,var(--color-warning-soft)_86%,#fef08a)] text-[color:#5b4106]",
-    footerIcon: AlertTriangle,
+    footerIcon: CreditCard,
     member: {
       name: "Michael Davis",
+      memberNumber: "987654",
       memberSince: "Mar 10, 2023",
       imageSrc: "/Frida.png",
       fallback: "MD",
@@ -114,29 +117,28 @@ const stateData: Record<CheckInState, MemberStateData> = {
   },
   "membership-cancelled": {
     title: "Membership\nCancelled",
-    rightLabel: "Unable to Check In",
-    icon: Bell,
+    rightLabel: "Check-In Successful",
+    icon: X,
     bannerClassName:
-      "bg-[linear-gradient(135deg,color-mix(in_srgb,var(--color-error)_88%,#7f1d1d),var(--color-error))] text-white",
-    bannerIconWrapClassName: "border-white/25 bg-white/10",
+      "bg-[linear-gradient(135deg,color-mix(in_srgb,var(--color-error)_86%,#991b1b),#ff2f37_58%,var(--color-error)_100%)] text-white",
+    bannerIconWrapClassName: "border-white/55 bg-white/6",
     detailsIconClassName: "text-[color:var(--color-error-strong)]",
     statusLabel: "Cancelled",
     statusVariant: "error",
-    footerTitle: "Contact Member Services",
-    footerMessage:
-      "Please speak with a team member if you believe this membership should still be active.",
-    footerClassName:
-      "border-t-[color:var(--color-error)] bg-[color:color-mix(in_srgb,var(--color-error-soft)_90%,white)] text-[color:var(--color-error-strong)]",
-    footerIcon: AlertTriangle,
+    footerTitle: "Access Denied",
+    footerMessage: "For assistance, please visit the front desk.",
+    footerClassName: "border-t-[color:var(--color-error)] bg-[color:var(--color-error)] text-white",
+    footerIcon: Lock,
     member: {
-      name: "Jordan Lee",
-      memberSince: "Sep 02, 2021",
-      imageSrc: "/Frida.png",
-      fallback: "JL",
+      name: "Lisa Roberts",
+      memberNumber: "654321",
+      memberSince: "Oct 1, 2022",
+      imageSrc: undefined,
+      fallback: "LR",
     },
     amenities: [
       { label: "Weights", icon: Dumbbell },
-      { label: "Pool", icon: Waves },
+      { label: "Basketball Court", icon: Dumbbell },
       { label: "Sauna", icon: Waves },
     ],
   },
@@ -148,28 +150,28 @@ function StatusBadge({ status, variant }: { status: string; variant: MemberState
       ? "border-[color:var(--color-success-soft)] bg-[color:var(--color-success-soft)] text-[color:var(--color-success-strong)]"
       : variant === "warning"
         ? "border-[color:var(--color-warning-soft)] bg-[color:var(--color-warning-soft)] text-[color:var(--color-warning-strong)]"
-        : "border-[color:var(--color-error-soft)] bg-[color:var(--color-error-soft)] text-[color:var(--color-error-strong)]";
+        : "border-[color:var(--color-error-soft)] bg-[color:var(--color-error)] text-white";
 
-  return <Badge className={cn("rounded-full px-2.5 py-1 text-xs font-semibold", className)}>{status}</Badge>;
+  return <Badge className={cn("rounded-[var(--radius-sm)] px-2.5 py-1 text-xs font-semibold", className)}>{status}</Badge>;
 }
 
 function AmenityCard({ label, icon: Icon, toneClassName }: Amenity & { toneClassName: string }) {
   return (
     <div
       className={cn(
-        "flex min-h-[92px] flex-col items-center justify-center gap-2 rounded-[var(--radius-sm)] border border-border px-3 py-3 text-center",
+        "flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-[var(--radius-sm)] border border-transparent px-3 py-3 text-center",
         toneClassName,
       )}
     >
       <Icon className="h-7 w-7" />
-      <span className="text-xs font-semibold text-foreground">{label}</span>
+      <span className="text-[11px] font-medium text-foreground">{label}</span>
     </div>
   );
 }
 
 export function MemberCheckInResult() {
   const [memberNumber, setMemberNumber] = useState("987654");
-  const [viewState, setViewState] = useState<CheckInState>("invalid-payment-method");
+  const [viewState, setViewState] = useState<CheckInState>("membership-cancelled");
 
   const config = stateData[viewState];
   const BannerIcon = config.icon;
@@ -177,21 +179,23 @@ export function MemberCheckInResult() {
 
   const amenityToneClassName = useMemo(() => {
     if (viewState === "invalid-payment-method") {
-      return "bg-[color:color-mix(in_srgb,var(--color-warning-soft)_78%,white)] text-[color:var(--color-warning-strong)]";
+      return "bg-[color:color-mix(in_srgb,var(--color-warning-soft)_82%,white)] text-[color:var(--color-warning-strong)]";
     }
 
     if (viewState === "membership-cancelled") {
-      return "bg-[color:color-mix(in_srgb,var(--color-error-soft)_78%,white)] text-[color:var(--color-error-strong)]";
+      return "bg-[color:color-mix(in_srgb,var(--color-error-soft)_86%,white)] text-[color:#6b7280]";
     }
 
     return "bg-[color:color-mix(in_srgb,var(--color-success-soft)_72%,white)] text-[color:var(--color-success-strong)]";
   }, [viewState]);
 
+  const displayedMemberNumber = memberNumber || config.member.memberNumber;
+
   return (
     <main className="min-h-screen bg-background text-foreground [color-scheme:light]">
-      <div className="mx-auto flex min-h-screen w-full max-w-[1100px] flex-col px-3 py-4 sm:px-6 sm:py-6">
+      <div className="mx-auto flex min-h-screen w-full max-w-[1100px] flex-col px-3 py-4 sm:px-5 sm:py-6">
         <Card className="overflow-hidden border-border bg-card py-0 shadow-[0_14px_34px_rgba(15,23,42,0.08)]">
-          <div className="flex items-center justify-between border-b border-border bg-card px-4 py-3 sm:px-5">
+          <div className="flex items-center justify-between border-b border-border bg-[#f3f4f6] px-4 py-3 sm:px-5">
             <div className="text-[15px] font-semibold tracking-[-0.01em] text-foreground">Gym Member Check-In</div>
             <div className="flex items-center gap-4 text-xs text-muted-foreground sm:text-sm">
               <Bell className="h-4 w-4" />
@@ -207,9 +211,9 @@ export function MemberCheckInResult() {
             </div>
           </div>
 
-          <CardContent className="space-y-4 bg-[color:color-mix(in_srgb,var(--color-background)_88%,white)] px-4 py-4 sm:px-5 sm:py-5">
+          <CardContent className="space-y-4 bg-[#f7f7f8] px-4 py-4 sm:px-5 sm:py-5">
             <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-              <label htmlFor="member-number" className="text-[11px] text-muted-foreground">
+              <label htmlFor="member-number" className="text-[11px] text-foreground">
                 Enter Member Number:
               </label>
               <div className="flex w-full max-w-[420px] gap-2">
@@ -217,13 +221,12 @@ export function MemberCheckInResult() {
                   id="member-number"
                   value={memberNumber}
                   onChange={(event) => setMemberNumber(event.target.value)}
-                  className="h-8 rounded-[var(--radius-sm)] bg-white text-sm"
+                  className="h-8 rounded-[var(--radius-sm)] border-border bg-white text-sm"
                 />
                 <Button
                   type="button"
-                  className="h-8 rounded-[var(--radius-sm)] bg-[color:#4b7b4c] px-4 text-xs font-semibold tracking-[0.02em] text-white hover:bg-[color:#3f693f]"
+                  className="h-8 rounded-[var(--radius-sm)] bg-[#4b7b4c] px-4 text-xs font-semibold tracking-[0.02em] text-white hover:bg-[#3f693f]"
                 >
-                  <Search className="h-3.5 w-3.5" />
                   SEARCH
                 </Button>
               </div>
@@ -234,7 +237,11 @@ export function MemberCheckInResult() {
                 <span>State</span>
                 <select
                   value={viewState}
-                  onChange={(event) => setViewState(event.target.value as CheckInState)}
+                  onChange={(event) => {
+                    const nextState = event.target.value as CheckInState;
+                    setViewState(nextState);
+                    setMemberNumber(stateData[nextState].member.memberNumber);
+                  }}
                   className="h-9 rounded-[var(--radius-sm)] border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
                 >
                   {stateOptions.map((option) => (
@@ -247,16 +254,16 @@ export function MemberCheckInResult() {
             </div>
 
             <section className="overflow-hidden rounded-[var(--radius-sm)] border border-border bg-card">
-              <div className={cn("grid gap-4 px-3 py-3 sm:grid-cols-[108px_minmax(0,1fr)_150px] sm:items-center sm:px-4 sm:py-4", config.bannerClassName)}>
-                <Avatar className="h-[94px] w-[94px] rounded-[var(--radius-sm)] border border-white/70 bg-white shadow-sm">
+              <div className={cn("grid gap-4 px-3 py-3 sm:grid-cols-[112px_minmax(0,1fr)_150px] sm:items-center sm:px-4 sm:py-4", config.bannerClassName)}>
+                <Avatar className="h-[92px] w-[110px] rounded-[var(--radius-sm)] border border-white/70 bg-[#676d78] shadow-sm">
                   <AvatarImage src={config.member.imageSrc} alt={config.member.name} className="object-cover" />
-                  <AvatarFallback className="rounded-[var(--radius-sm)] bg-secondary text-base font-semibold text-foreground">
-                    {config.member.fallback}
+                  <AvatarFallback className="rounded-[var(--radius-sm)] bg-[#676d78] text-white">
+                    <UserRound className="h-14 w-14" />
                   </AvatarFallback>
                 </Avatar>
 
                 <div>
-                  <h1 className="whitespace-pre-line text-[30px] leading-[1.05] font-bold tracking-[-0.03em] text-inherit sm:text-[42px]">
+                  <h1 className="whitespace-pre-line text-[32px] leading-[1.02] font-bold tracking-[-0.03em] text-inherit sm:text-[44px]">
                     {config.title}
                   </h1>
                 </div>
@@ -264,7 +271,7 @@ export function MemberCheckInResult() {
                 <div className="flex flex-col items-end gap-3 justify-self-end text-right">
                   <div
                     className={cn(
-                      "flex h-20 w-20 items-center justify-center rounded-full border-[3px] shadow-inner sm:h-[90px] sm:w-[90px]",
+                      "flex h-20 w-20 items-center justify-center rounded-full border-[4px] shadow-inner sm:h-[92px] sm:w-[92px]",
                       config.bannerIconWrapClassName,
                     )}
                   >
@@ -274,24 +281,21 @@ export function MemberCheckInResult() {
                 </div>
               </div>
 
-              <div className="grid divide-y divide-border sm:grid-cols-[320px_minmax(0,1fr)] sm:divide-x sm:divide-y-0">
+              <div className="grid divide-y divide-border sm:grid-cols-[330px_minmax(0,1fr)] sm:divide-x sm:divide-y-0">
                 <section className="px-4 py-4 sm:px-5">
                   <div className="mb-4 flex items-center gap-2 text-[15px] font-semibold text-foreground">
                     <CreditCard className={cn("h-4 w-4", config.detailsIconClassName)} />
                     Member Details
                   </div>
 
-                  <div className="grid grid-cols-[74px_1fr] gap-x-6 gap-y-3 text-sm">
-                    <span className="text-muted-foreground">Name</span>
+                  <div className="grid grid-cols-[80px_1fr] gap-x-6 gap-y-3 text-sm">
+                    <span className="text-foreground">Name</span>
                     <span className="font-medium text-foreground">{config.member.name}</span>
-                    <span className="text-muted-foreground">Member Number</span>
-                    <span className="font-medium text-foreground">{memberNumber || "—"}</span>
-                    <span className="text-muted-foreground">Member Since</span>
-                    <span className="flex items-center gap-2 font-medium text-foreground">
-                      <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                      {config.member.memberSince}
-                    </span>
-                    <span className="text-muted-foreground">Status</span>
+                    <span className="text-foreground">Member Number</span>
+                    <span className="font-medium text-foreground">{displayedMemberNumber}</span>
+                    <span className="text-foreground">Member Since</span>
+                    <span className="font-medium text-foreground">{config.member.memberSince}</span>
+                    <span className="text-foreground">Status</span>
                     <StatusBadge status={config.statusLabel} variant={config.statusVariant} />
                   </div>
                 </section>
@@ -301,7 +305,7 @@ export function MemberCheckInResult() {
                     <X className={cn("h-4 w-4", config.detailsIconClassName)} />
                     Amenities Included
                   </div>
-                  <p className="mb-4 text-sm text-muted-foreground">
+                  <p className="mb-4 text-sm text-foreground">
                     This membership includes access to the following amenities:
                   </p>
                   <div className={cn("grid gap-3", config.amenities.length === 3 ? "grid-cols-3" : "grid-cols-2 sm:grid-cols-4")}>
@@ -314,11 +318,11 @@ export function MemberCheckInResult() {
             </section>
           </CardContent>
 
-          <CardFooter className={cn("justify-center px-4 py-3 text-center", config.footerClassName)}>
+          <CardFooter className={cn("justify-center px-4 py-4 text-center", config.footerClassName)}>
             <div className="flex flex-col items-center gap-1">
-              <div className="flex items-center gap-2 text-base font-semibold">
-                <FooterIcon className="h-4 w-4" />
-                <span>{config.footerTitle}</span>
+              <div className="flex items-center gap-2 text-[34px] font-semibold leading-none sm:text-[36px]">
+                <FooterIcon className="h-8 w-8" />
+                <span className="text-[18px] sm:text-[20px]">{config.footerTitle}</span>
               </div>
               <p className="max-w-3xl text-xs sm:text-sm">{config.footerMessage}</p>
             </div>
