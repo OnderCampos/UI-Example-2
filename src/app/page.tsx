@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Bell,
   ChevronDown,
@@ -53,6 +54,8 @@ const stateOptions: CheckInViewState[] = [
   "membership-cancelled-access-denied",
 ];
 
+const defaultCheckInViewState: CheckInViewState = "success-active-member";
+
 const memberCheckInFixtures: Record<CheckInViewState, MemberCheckInResult> = {
   "success-active-member": {
     memberName: "Sarah Johnson",
@@ -96,12 +99,11 @@ const memberCheckInFixtures: Record<CheckInViewState, MemberCheckInResult> = {
     memberNumber: "654321",
     startDate: "Oct 1, 2022",
     statusLabel: "Cancelled",
-    enteredNumber: "987654",
+    enteredNumber: "654321",
     title: "Membership\nCancelled",
     sideMessage: "Check-In Successful",
     bannerLabel: "Access Denied",
-    bannerDescription:
-      "For assistance, please visit the front desk.",
+    bannerDescription: "For assistance, please visit the front desk.",
     tone: "error",
     statusIcon: X,
     amenities: [
@@ -111,6 +113,10 @@ const memberCheckInFixtures: Record<CheckInViewState, MemberCheckInResult> = {
     ],
   },
 };
+
+function isCheckInViewState(value: string | null): value is CheckInViewState {
+  return value !== null && stateOptions.includes(value as CheckInViewState);
+}
 
 function GymShellHeader() {
   return (
@@ -194,7 +200,7 @@ function AmenityTile({ amenity, tone }: { amenity: Amenity; tone: ResultTone }) 
 }
 
 function MemberCheckInResultView({
-  initialState = "success-active-member",
+  initialState = defaultCheckInViewState,
 }: {
   initialState?: CheckInViewState;
 }) {
@@ -355,7 +361,11 @@ function MemberCheckInResultView({
 }
 
 export default function HomePage() {
-  return (
-    <MemberCheckInResultView initialState="membership-cancelled-access-denied" />
-  );
+  const searchParams = useSearchParams();
+  const requestedState = searchParams.get("state");
+  const initialState = isCheckInViewState(requestedState)
+    ? requestedState
+    : defaultCheckInViewState;
+
+  return <MemberCheckInResultView initialState={initialState} />;
 }

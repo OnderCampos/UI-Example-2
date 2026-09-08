@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Member check-in result view with switchable membership states.",
-    "fullDescription": "Home route rendering the gym member check-in result screen. It includes a front-desk header, an interactive member number search field, configurable result presentation for the success-active-member, payment-invalid-past-due, and membership-cancelled-access-denied states, member details, amenity tiles, a status banner, and local state controls for switching between supported check-in outcomes.",
+    "shortDescription": "Member check-in result view with route-selectable membership states.",
+    "fullDescription": "Home route rendering the gym member check-in result screen. It includes a front-desk header, an interactive member number search field, configurable result presentation for the success-active-member, payment-invalid-past-due, and membership-cancelled-access-denied states, member details, amenity tiles, a status banner, and local controls that preserve every supported outcome while also allowing the initial state to be selected through the route's state query parameter.",
     "isView": true
   }
 ]
