@@ -1,0 +1,8 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Gym member check-in success view",
+    "fullDescription": "Main check-in screen for a gym front desk workflow. It includes a compact top bar, a member number search row, a large success hero with member photo and confirmation state, a member details section, an amenities grid, and a success footer message using shared avatar, badge, button, card, and input components.",
+    "isView": true
+  }
+]
