@@ -1,0 +1,8 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Member check-in result view with switchable membership states.",
+    "fullDescription": "Home route rendering the member check-in result screen. It includes a front-desk header, interactive member number search field, a configurable success or access-status result banner, member details, amenity tiles, and local state controls for the success-active-member, payment-invalid-past-due, and membership-cancelled-access-denied states.",
+    "isView": true
+  }
+]
