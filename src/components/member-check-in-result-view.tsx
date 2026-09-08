@@ -1,6 +1,18 @@
 "use client";
 
-import { Check, CircleAlert, CreditCard, Dumbbell, ShieldCheck, Waves, Leaf, Trophy, CalendarDays, Hash, BadgeCheck } from "lucide-react";
+import {
+  AlertTriangle,
+  Ban,
+  CalendarDays,
+  Check,
+  CreditCard,
+  Dumbbell,
+  Hash,
+  ShieldCheck,
+  Square,
+  Waves,
+  X,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +25,7 @@ type CheckInState = "success-active-member" | "payment-method-invalid-past-due" 
 
 type Amenity = {
   label: string;
-  icon: "weights" | "pool" | "recovery" | "basketball";
+  icon: "weights" | "basketball" | "sauna" | "pool";
 };
 
 type MemberRecord = {
@@ -26,15 +38,15 @@ type MemberRecord = {
 };
 
 type StateConfig = {
-  tone: "success" | "warning" | "error";
   title: string;
   subtitle: string;
+  footerTitle: string;
   footerMessage: string;
-  bannerIcon: typeof Check;
   badgeClassName: string;
-  bannerClassName: string;
-  bannerIconWrapClassName: string;
+  heroClassName: string;
+  heroIconClassName: string;
   footerClassName: string;
+  bannerIcon: typeof Check;
   footerIcon: typeof Check;
 };
 
@@ -57,21 +69,20 @@ const defaultMembers: Record<CheckInState, MemberRecord> = {
     amenities: [
       { label: "Weights", icon: "weights" },
       { label: "Pool", icon: "pool" },
-      { label: "Recovery Room", icon: "recovery" },
       { label: "Basketball Court", icon: "basketball" },
+      { label: "Sauna", icon: "sauna" },
     ],
   },
   "payment-method-invalid-past-due": {
-    name: "Sarah Johnson",
-    memberNumber: "123456",
-    membershipSince: "Jan 15, 2023",
-    statusLabel: "Past Due",
+    name: "Michael Davis",
+    memberNumber: "997654",
+    membershipSince: "Mar 10, 2023",
     avatarSrc: "/Frida.png",
+    statusLabel: "Past Due",
     amenities: [
       { label: "Weights", icon: "weights" },
-      { label: "Pool", icon: "pool" },
-      { label: "Recovery Room", icon: "recovery" },
       { label: "Basketball Court", icon: "basketball" },
+      { label: "Sauna", icon: "sauna" },
     ],
   },
   "membership-cancelled-access-denied": {
@@ -83,7 +94,6 @@ const defaultMembers: Record<CheckInState, MemberRecord> = {
     amenities: [
       { label: "Weights", icon: "weights" },
       { label: "Pool", icon: "pool" },
-      { label: "Recovery Room", icon: "recovery" },
       { label: "Basketball Court", icon: "basketball" },
     ],
   },
@@ -91,40 +101,40 @@ const defaultMembers: Record<CheckInState, MemberRecord> = {
 
 const stateConfigs: Record<CheckInState, StateConfig> = {
   "success-active-member": {
-    tone: "success",
-    title: "Welcome, Sarah Johnson!",
+    title: "Welcome\nBack",
     subtitle: "Check-In Successful",
-    footerMessage: "Enjoy your workout! Thank you for being a valued member.",
+    footerTitle: "Enjoy Your Visit",
+    footerMessage: "Thanks for checking in. Have a great workout.",
+    badgeClassName: "border-transparent bg-[color:color-mix(in_srgb,var(--status-success)_16%,white)] text-[color:var(--status-success-deep)]",
+    heroClassName: "bg-[image:linear-gradient(180deg,#34d399_0%,#22c55e_100%)] text-white",
+    heroIconClassName: "border-white/60 text-white",
+    footerClassName: "border-[color:color-mix(in_srgb,var(--status-success)_22%,white)] bg-[color:color-mix(in_srgb,var(--status-success)_14%,white)] text-[color:var(--status-success-deep)]",
     bannerIcon: Check,
-    badgeClassName: "border-transparent bg-[color:var(--status-success-soft)] text-[color:var(--status-success)]",
-    bannerClassName: "bg-[image:linear-gradient(135deg,var(--status-success)_0%,color-mix(in_srgb,var(--status-success)_86%,black)_100%)] text-[color:var(--status-success-foreground)]",
-    bannerIconWrapClassName: "bg-white/16 text-[color:var(--status-success-foreground)] ring-1 ring-white/16",
-    footerClassName: "border-[color:var(--status-success-soft)] bg-[color:var(--status-success-bg)] text-[color:var(--status-success-deep)]",
     footerIcon: Check,
   },
   "payment-method-invalid-past-due": {
-    tone: "warning",
-    title: "Payment issue for Sarah Johnson",
-    subtitle: "Billing Update Needed",
-    footerMessage: "Please update your payment method at the front desk before continuing.",
-    bannerIcon: CreditCard,
-    badgeClassName: "border-transparent bg-[color:var(--status-warning-soft)] text-[color:var(--status-warning)]",
-    bannerClassName: "bg-[image:linear-gradient(135deg,var(--status-warning)_0%,color-mix(in_srgb,var(--status-warning)_84%,black)_100%)] text-white",
-    bannerIconWrapClassName: "bg-white/16 text-white ring-1 ring-white/16",
-    footerClassName: "border-[color:var(--status-warning-soft)] bg-[#fffbeb] text-[#b45309]",
-    footerIcon: CreditCard,
+    title: "Invalid\nPayment Method",
+    subtitle: "Check-In Successful",
+    footerTitle: "Please Update Payment Info",
+    footerMessage: "To continue enjoying your membership, please update your payment information at your earliest convenience.",
+    badgeClassName: "border-transparent bg-[color:color-mix(in_srgb,var(--status-warning)_18%,white)] text-[#b45309]",
+    heroClassName: "bg-[image:linear-gradient(180deg,#f7cf35_0%,#f3bb1f_100%)] text-[color:var(--foreground)]",
+    heroIconClassName: "border-[#f6e3a4] text-[#fff5ce]",
+    footerClassName: "border-[color:#ebc447] bg-[image:linear-gradient(180deg,#f7cf35_0%,#f3bb1f_100%)] text-[color:var(--foreground)]",
+    bannerIcon: X,
+    footerIcon: AlertTriangle,
   },
   "membership-cancelled-access-denied": {
-    tone: "error",
-    title: "Access denied for Sarah Johnson",
-    subtitle: "Membership Cancelled",
-    footerMessage: "Please speak with the front desk for membership assistance.",
-    bannerIcon: CircleAlert,
-    badgeClassName: "border-transparent bg-[color:var(--status-error-soft)] text-[color:var(--status-error)]",
-    bannerClassName: "bg-[image:linear-gradient(135deg,var(--status-error)_0%,color-mix(in_srgb,var(--status-error)_84%,black)_100%)] text-white",
-    bannerIconWrapClassName: "bg-white/16 text-white ring-1 ring-white/16",
-    footerClassName: "border-[color:var(--status-error-soft)] bg-[#fef2f2] text-[#b91c1c]",
-    footerIcon: CircleAlert,
+    title: "Membership\nCancelled",
+    subtitle: "Access Denied",
+    footerTitle: "Membership Assistance Required",
+    footerMessage: "Please speak with the front desk to review membership options.",
+    badgeClassName: "border-transparent bg-[color:color-mix(in_srgb,var(--destructive)_12%,white)] text-[color:#b91c1c]",
+    heroClassName: "bg-[image:linear-gradient(180deg,#f87171_0%,#ef4444_100%)] text-white",
+    heroIconClassName: "border-white/50 text-white",
+    footerClassName: "border-[color:color-mix(in_srgb,var(--destructive)_16%,white)] bg-[color:color-mix(in_srgb,var(--destructive)_10%,white)] text-[color:#991b1b]",
+    bannerIcon: Ban,
+    footerIcon: Ban,
   },
 };
 
@@ -134,12 +144,12 @@ function AmenityIcon({ icon }: { icon: Amenity["icon"] }) {
   switch (icon) {
     case "weights":
       return <Dumbbell className={className} />;
+    case "basketball":
+      return <Square className={className} />;
+    case "sauna":
+      return <Waves className={className} />;
     case "pool":
       return <Waves className={className} />;
-    case "recovery":
-      return <Leaf className={className} />;
-    case "basketball":
-      return <Trophy className={className} />;
     default:
       return null;
   }
@@ -178,112 +188,116 @@ export function MemberCheckInResultView({
 
   return (
     <main className="min-h-screen bg-background text-foreground [color-scheme:light]">
-      <div className="mx-auto flex min-h-screen w-full max-w-[1180px] flex-col px-4 py-3 sm:px-6 lg:px-10">
+      <div className="mx-auto flex min-h-screen w-full max-w-[1180px] flex-col px-3 py-3 lg:px-4">
         <header className="flex items-center justify-between border-b border-border pb-3">
-          <div className="text-[22px] font-bold tracking-[-0.02em] text-foreground">Gym Member Check-In</div>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <div className="text-xl font-semibold text-foreground">Gym Member Check-In</div>
+          <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <ShieldCheck className="h-4 w-4" />
             <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-muted text-[11px] font-semibold text-muted-foreground">TB</div>
-              <div className="hidden text-right leading-tight sm:block">
+              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-muted text-[10px] font-semibold text-muted-foreground">
+                TB
+              </div>
+              <div className="hidden leading-tight sm:block">
                 <div className="font-medium text-foreground">Team Member</div>
-                <div>Desk</div>
+                <div>.com</div>
               </div>
             </div>
           </div>
         </header>
 
-        <section className="mx-auto mt-8 flex w-full max-w-[720px] items-center justify-center gap-3">
-          <label htmlFor="member-number" className="text-sm text-muted-foreground">
-            Enter Member Number
+        <section className="mx-auto mt-5 flex w-full max-w-[620px] flex-wrap items-center justify-center gap-2 text-xs">
+          <label htmlFor="member-number" className="text-muted-foreground">
+            Enter Member Number:
           </label>
           <Input
             id="member-number"
             value={resolvedMemberNumber}
             onChange={(event) => handleMemberNumberChange(event.target.value)}
-            className="h-11 max-w-[340px] bg-surface shadow-none"
+            className="h-8 w-[120px] rounded-[4px] border-border bg-white px-2 text-xs shadow-none"
           />
           <Button
             type="button"
             onClick={handleSearch}
-            className="h-11 bg-primary px-6 text-primary-foreground hover:bg-[color:var(--primary-hover)]"
+            className="h-8 rounded-[4px] bg-[color:#4d8f54] px-4 text-[11px] font-semibold uppercase tracking-[0.02em] text-white hover:bg-[color:#447d4a]"
           >
             Search
           </Button>
         </section>
 
-        <Card className="mx-auto mt-8 w-full max-w-[1120px] gap-0 overflow-hidden rounded-[var(--radius-lg)] border border-border bg-card py-0 shadow-[0_20px_50px_rgba(15,23,42,0.08)]">
-          <div className={cn("grid gap-6 px-5 py-5 md:grid-cols-[120px_minmax(0,1fr)_180px] md:items-center md:px-7 md:py-6", config.bannerClassName)}>
-            <div className="flex justify-center md:justify-start">
-              <Avatar className="h-[104px] w-[104px] rounded-[var(--radius-md)] border-4 border-white/60 shadow-lg">
-                {enteredMember.avatarSrc ? (
-                  <AvatarImage src={enteredMember.avatarSrc} alt={enteredMember.name} className="object-cover" />
-                ) : null}
-                <AvatarFallback className="rounded-[var(--radius-md)] bg-white/15 text-3xl font-bold text-white">
-                  {enteredMember.name
-                    .split(" ")
-                    .map((part) => part[0])
-                    .join("")}
-                </AvatarFallback>
-              </Avatar>
+        <Card className="mx-auto mt-4 w-full max-w-[1120px] gap-0 overflow-hidden rounded-[2px] border border-border bg-card py-0 shadow-[0_2px_10px_rgba(15,23,42,0.08)]">
+          <div className={cn("grid items-center gap-4 px-3 py-3 md:grid-cols-[108px_1fr_180px] md:px-4 md:py-4", config.heroClassName)}>
+            <Avatar className="mx-auto h-[94px] w-[94px] rounded-[2px] border-4 border-white/75 md:mx-0">
+              {enteredMember.avatarSrc ? <AvatarImage src={enteredMember.avatarSrc} alt={enteredMember.name} className="object-cover" /> : null}
+              <AvatarFallback className="rounded-[2px] bg-white/20 text-2xl font-bold text-white">
+                {enteredMember.name
+                  .split(" ")
+                  .map((part) => part[0])
+                  .join("")}
+              </AvatarFallback>
+            </Avatar>
+
+            <div className="text-center md:text-left">
+              <h1 className="whitespace-pre-line text-[30px] font-bold leading-[1.05] tracking-[-0.03em] text-balance">
+                {config.title}
+              </h1>
             </div>
-            <div className="space-y-3 text-center md:text-left">
-              <h1 className="max-w-[430px] text-4xl font-bold leading-[1.08] tracking-[-0.03em]">{config.title}</h1>
-            </div>
-            <div className="flex flex-col items-center justify-center gap-3 text-center">
-              <div className={cn("flex h-28 w-28 items-center justify-center rounded-full", config.bannerIconWrapClassName)}>
-                <BannerIcon className="h-14 w-14 stroke-[2.8]" />
+
+            <div className="flex flex-col items-center justify-center gap-2 text-center">
+              <div className={cn("flex h-[74px] w-[74px] items-center justify-center rounded-full border-[4px] bg-transparent", config.heroIconClassName)}>
+                <BannerIcon className="h-10 w-10 stroke-[3]" />
               </div>
-              <div className="text-base font-semibold">{config.subtitle}</div>
+              <div className="text-base font-medium">{config.subtitle}</div>
             </div>
           </div>
 
-          <CardContent className="grid gap-8 px-5 py-5 md:grid-cols-[1fr_1.25fr] md:px-7 md:py-6">
-            <section>
-              <div className="mb-4 flex items-center gap-2 text-xl font-semibold">
-                <BadgeCheck className="h-5 w-5 text-muted-foreground" />
+          <CardContent className="grid gap-0 px-0 py-0 md:grid-cols-[330px_1fr]">
+            <section className="border-b border-border px-3 py-4 md:border-r md:border-b-0 md:px-4">
+              <div className="mb-3 flex items-center gap-2 text-[18px] font-semibold">
+                <CreditCard className="h-4 w-4 text-muted-foreground" />
                 <span>Member Details</span>
               </div>
-              <div className="grid grid-cols-2 gap-x-6 gap-y-5 text-sm">
+
+              <div className="grid grid-cols-2 gap-x-5 gap-y-4 text-sm">
                 <DetailItem label="Name" value={enteredMember.name} />
-                <DetailItem label="Member Number" value={enteredMember.memberNumber} icon={<Hash className="h-4 w-4 text-muted-foreground" />} />
-                <DetailItem label="Member Since" value={enteredMember.membershipSince} icon={<CalendarDays className="h-4 w-4 text-muted-foreground" />} />
-                <div className="space-y-2">
-                  <div className="text-[13px] text-muted-foreground">Status</div>
-                  <Badge className={cn("rounded-full px-3 py-1 text-sm font-semibold", config.badgeClassName)}>
+                <DetailItem label="Member Number" value={enteredMember.memberNumber} icon={<Hash className="h-3.5 w-3.5 text-muted-foreground" />} />
+                <DetailItem label="Member Since" value={enteredMember.membershipSince} icon={<CalendarDays className="h-3.5 w-3.5 text-muted-foreground" />} />
+                <div className="space-y-1">
+                  <div className="text-[12px] text-muted-foreground">Status</div>
+                  <Badge className={cn("rounded-[4px] px-2 py-0.5 text-xs font-medium", config.badgeClassName)}>
                     {enteredMember.statusLabel}
                   </Badge>
                 </div>
               </div>
             </section>
 
-            <section>
-              <div className="mb-2 flex items-center gap-2 text-xl font-semibold">
-                <Dumbbell className="h-5 w-5 text-muted-foreground" />
+            <section className="px-3 py-4 md:px-4">
+              <div className="mb-2 flex items-center gap-2 text-[18px] font-semibold">
+                <X className="h-4 w-4 text-muted-foreground" />
                 <span>Amenities Included</span>
               </div>
-              <p className="mb-5 text-sm text-muted-foreground">
+              <p className="mb-4 text-[12px] text-muted-foreground">
                 This membership includes access to the following amenities:
               </p>
-              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+              <div className={cn("grid gap-3", enteredMember.amenities.length === 3 ? "grid-cols-3" : "grid-cols-2 lg:grid-cols-4")}>
                 {enteredMember.amenities.map((amenity) => (
                   <div
                     key={amenity.label}
-                    className="flex min-h-[108px] flex-col items-center justify-center gap-3 rounded-[var(--radius-md)] border border-border bg-muted/50 px-3 py-4 text-center"
+                    className="flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-[4px] border border-[#e6d7a2] bg-[#f3e4bb] px-2 py-3 text-center"
                   >
                     <AmenityIcon icon={amenity.icon} />
-                    <div className="text-sm font-medium text-foreground">{amenity.label}</div>
+                    <div className="text-[12px] font-medium leading-4 text-foreground">{amenity.label}</div>
                   </div>
                 ))}
               </div>
             </section>
           </CardContent>
 
-          <CardFooter className={cn("justify-center border-t px-5 py-4 text-center text-sm font-medium md:px-7", config.footerClassName)}>
-            <div className="flex items-center gap-2">
+          <CardFooter className={cn("block border-t px-3 py-3 text-center md:px-4", config.footerClassName)}>
+            <div className="flex items-center justify-center gap-2 text-[16px] font-semibold">
               <FooterIcon className="h-4 w-4" />
-              <span>{config.footerMessage}</span>
+              <span>{config.footerTitle}</span>
             </div>
+            <p className="mt-2 text-[11px] font-normal leading-4">{config.footerMessage}</p>
           </CardFooter>
         </Card>
       </div>
@@ -299,9 +313,9 @@ type DetailItemProps = {
 
 function DetailItem({ label, value, icon }: DetailItemProps) {
   return (
-    <div className="space-y-2">
-      <div className="text-[13px] text-muted-foreground">{label}</div>
-      <div className="flex items-center gap-2 text-base font-semibold text-foreground">
+    <div className="space-y-1">
+      <div className="text-[12px] text-muted-foreground">{label}</div>
+      <div className="flex items-center gap-1.5 text-[14px] font-medium text-foreground">
         {icon}
         <span>{value}</span>
       </div>
