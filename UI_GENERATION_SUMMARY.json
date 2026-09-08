@@ -2,7 +2,7 @@
   {
     "relativePath": "src/app/page.tsx",
     "shortDescription": "Member check-in result view entry point.",
-    "fullDescription": "Renders the member check-in result screen on the home route and passes the current view state into the shared member check-in result component. Supports the planned check-in-success, payment-method-invalid, and membership-cancelled states through the shared component contract, with the route currently configured to show the membership-cancelled state.",
+    "fullDescription": "Renders the member check-in result screen on the home route and resolves the visible state from the optional state query parameter before passing it into the shared member check-in result component. Supports the check-in-success, payment-method-invalid, and membership-cancelled variants from one implementation so each state remains available through the same route.",
     "isView": true
   },
   {
