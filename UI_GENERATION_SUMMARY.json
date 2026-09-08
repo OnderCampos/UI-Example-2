@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Gym member check-in payment warning view",
-    "fullDescription": "Main check-in screen for a gym front desk workflow showing an unsuccessful membership validation caused by billing issues. It includes a compact staff header, a member number search row, a warning hero with member photo and payment failure messaging, a member details panel with a past-due status badge, an amenities grid, and a bottom warning callout prompting the member to update payment information.",
+    "shortDescription": "Gym member check-in cancelled membership view",
+    "fullDescription": "Main gym check-in screen for a front desk workflow showing a denied member access state when a membership has been cancelled. It includes the staff header, member number lookup row, a red status hero with cancellation messaging, a member details section with a cancelled badge, an amenities panel, and a bottom denied-access banner directing the member to the front desk.",
     "isView": true
   }
 ]
