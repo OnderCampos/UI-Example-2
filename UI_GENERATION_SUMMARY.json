@@ -1,0 +1,14 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Member check-in result route with state-based rendering.",
+    "fullDescription": "Renders the member check-in result screen on the root route and selects the visible state from the optional searchParams.state value. Supports the success-active-member, payment-method-invalid-past-due, and membership-cancelled-access-denied states through the shared member check-in result view component.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/components/member-check-in-result-view.tsx",
+    "shortDescription": "Reusable member check-in result screen component.",
+    "fullDescription": "Displays a gym member check-in result layout with a header, member number search row, result banner, member details, and amenity cards. Accepts state, member, memberNumber, defaultMemberNumber, onMemberNumberChange, and onSearch props so the same screen can render success, billing issue, and cancelled membership states while keeping the visible controls interactive.",
+    "isView": false
+  }
+]
