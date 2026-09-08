@@ -3,12 +3,10 @@
 import { useMemo, useState } from "react";
 import {
   Bell,
-  CalendarDays,
   Check,
   CreditCard,
   Dumbbell,
   Lock,
-  Search,
   UserRound,
   Waves,
   X,
@@ -18,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { cn } from "@/lib/utils";
 
 type CheckInState = "check-in-success" | "invalid-payment-method" | "membership-cancelled";
@@ -169,9 +168,13 @@ function AmenityCard({ label, icon: Icon, toneClassName }: Amenity & { toneClass
   );
 }
 
-export function MemberCheckInResult() {
-  const [memberNumber, setMemberNumber] = useState("987654");
-  const [viewState, setViewState] = useState<CheckInState>("membership-cancelled");
+type MemberCheckInResultProps = {
+  initialState?: CheckInState;
+};
+
+export function MemberCheckInResult({ initialState = "check-in-success" }: MemberCheckInResultProps) {
+  const [memberNumber, setMemberNumber] = useState(stateData[initialState].member.memberNumber);
+  const [viewState, setViewState] = useState<CheckInState>(initialState);
 
   const config = stateData[viewState];
   const BannerIcon = config.icon;
@@ -225,7 +228,7 @@ export function MemberCheckInResult() {
                 />
                 <Button
                   type="button"
-                  className="h-8 rounded-[var(--radius-sm)] bg-[#4b7b4c] px-4 text-xs font-semibold tracking-[0.02em] text-white hover:bg-[#3f693f]"
+                  className="h-8 rounded-[var(--radius-sm)] bg-[color:color-mix(in_srgb,var(--color-success)_72%,#14532d)] px-4 text-xs font-semibold tracking-[0.02em] text-white hover:bg-[color:color-mix(in_srgb,var(--color-success)_60%,#14532d)]"
                 >
                   SEARCH
                 </Button>
@@ -235,21 +238,22 @@ export function MemberCheckInResult() {
             <div className="flex justify-end">
               <label className="flex items-center gap-2 text-sm text-muted-foreground">
                 <span>State</span>
-                <select
+                <NativeSelect
                   value={viewState}
                   onChange={(event) => {
                     const nextState = event.target.value as CheckInState;
                     setViewState(nextState);
                     setMemberNumber(stateData[nextState].member.memberNumber);
                   }}
-                  className="h-9 rounded-[var(--radius-sm)] border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                  className="h-9 rounded-[var(--radius-sm)] border-border bg-card text-sm text-foreground"
+                  aria-label="Check-in result state"
                 >
                   {stateOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
+                    <NativeSelectOption key={option.value} value={option.value}>
                       {option.label}
-                    </option>
+                    </NativeSelectOption>
                   ))}
-                </select>
+                </NativeSelect>
               </label>
             </div>
 
