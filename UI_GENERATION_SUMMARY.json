@@ -1,0 +1,14 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Member check-in result view route.",
+    "fullDescription": "Home route that renders the member check-in result experience, including the gym check-in header, member number search controls, state selector, success banner, member details, amenities grid, and supportive footer message using the shared result component.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/components/member-check-in-result.tsx",
+    "shortDescription": "Reusable member check-in result screen component.",
+    "fullDescription": "Composes the gym member check-in result layout with editable member number input, interactive state switcher for success, invalid payment, and cancelled membership states, branded top bar, status badge, amenity cards, and adaptive banner styling driven by shared theme tokens.",
+    "isView": false
+  }
+]
