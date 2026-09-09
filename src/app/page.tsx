@@ -8,10 +8,12 @@ import {
   ChevronDown,
   Github,
   Grid3X3,
+  Home,
   Link2,
   MapPin,
   Menu,
   Package,
+  Plus,
   Search,
   Settings2,
   Star,
@@ -25,6 +27,9 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
+type ViewName = "github-home-dashboard" | "github-user-profile";
+type DashboardState = "default";
+type ProfileState = "overview";
 type ProfileTab = "overview" | "repositories" | "projects" | "packages" | "stars";
 
 type RepositoryLanguage = {
@@ -40,28 +45,69 @@ type PopularRepository = {
   language: RepositoryLanguage;
 };
 
+type DashboardFeedItem = {
+  id: string;
+  actor: string;
+  action: string;
+  repo: string;
+  branch?: string;
+  time: string;
+  summary?: string;
+};
+
+type DashboardRepository = {
+  name: string;
+  visibility: "Public" | "Private";
+  language: RepositoryLanguage;
+  updatedAt: string;
+};
+
 type ContributionDay = {
   level: 0 | 1 | 2 | 3 | 4;
 };
 
+type SharedProfile = {
+  name: string;
+  username: string;
+  avatarUrl: string;
+  followers: number;
+  following: number;
+  organization: string;
+  bio?: string;
+  location?: string;
+  website?: string;
+};
+
+type GitHubDashboardProps = {
+  state?: DashboardState;
+  profile?: SharedProfile;
+  repositories?: DashboardRepository[];
+  feedItems?: DashboardFeedItem[];
+};
+
 type GitHubUserProfileProps = {
-  state?: "overview";
+  state?: ProfileState;
   selectedTab?: ProfileTab;
   repositoryCount?: number;
-  profile: {
-    name: string;
-    username: string;
-    avatarUrl: string;
-    followers: number;
-    following: number;
-    organization: string;
-  };
+  profile?: SharedProfile;
   popularRepositories?: PopularRepository[];
   contributionCount?: number;
   contributionYear?: string;
   achievements?: { label: string; emoji: string; count?: number }[];
   contributionMonths?: string[];
   contributionGrid?: ContributionDay[][];
+};
+
+const sharedProfile: SharedProfile = {
+  name: "Onder Francisco Campos Garcia",
+  username: "OnderCampos",
+  avatarUrl: "/Frida.png",
+  followers: 2,
+  following: 1,
+  organization: "Softtek",
+  bio: "Building practical software with Python, TypeScript, and AI workflows.",
+  location: "Monterrey, Mexico",
+  website: "onder.dev",
 };
 
 const profileTabs: { value: ProfileTab; label: string; count?: number; icon: typeof BookOpen }[] = [
@@ -107,6 +153,55 @@ const defaultRepositories: PopularRepository[] = [
   },
 ];
 
+const dashboardRepositories: DashboardRepository[] = [
+  {
+    name: "open-interpreter",
+    visibility: "Public",
+    language: { name: "Python", color: "#58A6FF" },
+    updatedAt: "Updated 2 hours ago",
+  },
+  {
+    name: "SAP-Cleaning-Frontend",
+    visibility: "Private",
+    language: { name: "TypeScript", color: "#2F81F7" },
+    updatedAt: "Updated yesterday",
+  },
+  {
+    name: "count_colors",
+    visibility: "Public",
+    language: { name: "Python", color: "#58A6FF" },
+    updatedAt: "Updated last week",
+  },
+];
+
+const dashboardFeedItems: DashboardFeedItem[] = [
+  {
+    id: "1",
+    actor: "microsoft",
+    action: "starred",
+    repo: "openinterpreter/open-interpreter",
+    time: "3h",
+    summary: "Trending in AI tooling this week",
+  },
+  {
+    id: "2",
+    actor: "OnderCampos",
+    action: "pushed to",
+    repo: "SAP-Cleaning-Frontend",
+    branch: "main",
+    time: "8h",
+    summary: "3 commits pushed to main",
+  },
+  {
+    id: "3",
+    actor: "vercel",
+    action: "released",
+    repo: "next.js",
+    time: "1d",
+    summary: "Next.js 16 release notes available",
+  },
+];
+
 const contributionMonths = ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"];
 
 const contributionRows: ContributionDay[][] = [
@@ -143,18 +238,192 @@ function getContributionColor(level: ContributionDay["level"]) {
   }
 }
 
+function GitHubChrome({
+  username,
+  searchValue,
+  onSearchChange,
+}: {
+  username: string;
+  searchValue: string;
+  onSearchChange: (value: string) => void;
+}) {
+  return (
+    <header className="border-b border-border bg-background">
+      <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between gap-4 px-4">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon-sm" className="border border-border bg-transparent text-foreground hover:bg-card">
+            <Menu className="size-4" />
+          </Button>
+          <Github className="size-8" />
+          <span className="text-base font-semibold">{username}</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <div className="relative hidden w-[270px] lg:block">
+            <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={searchValue}
+              onChange={(e) => onSearchChange(e.target.value)}
+              placeholder="Type / to search"
+              className="h-8 border-border bg-transparent pl-9 text-sm"
+            />
+          </div>
+          <Button variant="ghost" size="icon-sm" className="border border-border bg-transparent text-foreground hover:bg-card">
+            <Plus className="size-4" />
+          </Button>
+          <Button variant="ghost" size="icon-sm" className="border border-border bg-transparent text-foreground hover:bg-card">
+            <Bell className="size-4" />
+          </Button>
+          <Button variant="ghost" size="icon-sm" className="border border-border bg-transparent text-foreground hover:bg-card">
+            <Settings2 className="size-4" />
+          </Button>
+          <Avatar className="size-8 border border-border">
+            <AvatarImage src={sharedProfile.avatarUrl} alt={username} />
+            <AvatarFallback>OC</AvatarFallback>
+          </Avatar>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function GitHubHomeDashboard({
+  state = "default",
+  profile = sharedProfile,
+  repositories = dashboardRepositories,
+  feedItems = dashboardFeedItems,
+}: GitHubDashboardProps) {
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedFeed, setSelectedFeed] = useState(feedItems[0]?.id ?? "");
+  const [selectedRepository, setSelectedRepository] = useState(repositories[0]?.name ?? "");
+
+  const filteredRepositories = useMemo(() => {
+    return repositories.filter((repository) =>
+      repository.name.toLowerCase().includes(searchValue.toLowerCase())
+    );
+  }, [repositories, searchValue]);
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <GitHubChrome username={profile.username} searchValue={searchValue} onSearchChange={setSearchValue} />
+
+      <main className="mx-auto max-w-[1280px] px-4 py-8">
+        {state === "default" ? (
+          <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
+            <aside className="space-y-6">
+              <Card className="border-border bg-card py-0 shadow-none">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-4">
+                    <Avatar className="size-16 border border-border">
+                      <AvatarImage src={profile.avatarUrl} alt={profile.name} />
+                      <AvatarFallback>OC</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h1 className="text-xl font-semibold">Home</h1>
+                      <p className="text-sm text-muted-foreground">{profile.name}</p>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-sm leading-6 text-muted-foreground">{profile.bio}</p>
+                  <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground">
+                    <span className="inline-flex items-center gap-2"><MapPin className="size-4" />{profile.location}</span>
+                    <span className="inline-flex items-center gap-2"><Link2 className="size-4" />{profile.website}</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-border bg-card py-0 shadow-none">
+                <CardContent className="p-5">
+                  <div className="mb-4 flex items-center justify-between">
+                    <h2 className="text-sm font-semibold">Top repositories</h2>
+                    <Button variant="outline" size="sm" className="h-7 border-border bg-transparent text-xs">New</Button>
+                  </div>
+                  <div className="space-y-3">
+                    {filteredRepositories.map((repository) => (
+                      <button
+                        key={repository.name}
+                        type="button"
+                        onClick={() => setSelectedRepository(repository.name)}
+                        className={cn(
+                          "w-full rounded-lg border border-border p-3 text-left transition-colors hover:bg-background",
+                          selectedRepository === repository.name && "bg-background"
+                        )}
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="font-medium text-[#2f81f7]">{repository.name}</span>
+                          <span className="rounded-full border border-border px-2 py-0.5 text-[11px] text-muted-foreground">{repository.visibility}</span>
+                        </div>
+                        <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+                          <span className="size-2.5 rounded-full" style={{ backgroundColor: repository.language.color }} />
+                          <span>{repository.language.name}</span>
+                          <span>•</span>
+                          <span>{repository.updatedAt}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </aside>
+
+            <section className="space-y-6">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-semibold">Latest changes</h2>
+                  <p className="text-sm text-muted-foreground">Stay up to date with stars, pushes, and releases.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" className="border-border bg-transparent">Filter</Button>
+                  <Button variant="outline" size="sm" className="border-border bg-transparent">Customize</Button>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {feedItems.map((item) => (
+                  <Card key={item.id} className="border-border bg-card py-0 shadow-none">
+                    <CardContent className="p-5">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedFeed(item.id)}
+                        className="w-full text-left"
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-start gap-3">
+                            <div className={cn(
+                              "mt-1 flex size-9 items-center justify-center rounded-full border border-border",
+                              selectedFeed === item.id ? "bg-[#1f6feb] text-white" : "bg-background text-muted-foreground"
+                            )}>
+                              {item.action === "starred" ? <Star className="size-4" /> : null}
+                              {item.action === "pushed to" ? <Home className="size-4" /> : null}
+                              {item.action === "released" ? <Package className="size-4" /> : null}
+                            </div>
+                            <div>
+                              <p className="text-sm leading-6">
+                                <span className="font-semibold">{item.actor}</span> {item.action} <span className="font-semibold text-[#2f81f7]">{item.repo}</span>
+                                {item.branch ? <span className="text-muted-foreground"> on {item.branch}</span> : null}
+                              </p>
+                              {item.summary ? <p className="mt-1 text-sm text-muted-foreground">{item.summary}</p> : null}
+                            </div>
+                          </div>
+                          <span className="text-xs text-muted-foreground">{item.time}</span>
+                        </div>
+                      </button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          </div>
+        ) : null}
+      </main>
+    </div>
+  );
+}
+
 function GitHubUserProfile({
   state = "overview",
   selectedTab = "overview",
   repositoryCount = 16,
-  profile = {
-    name: "Onder Francisco Campos Garcia",
-    username: "OnderCampos",
-    avatarUrl: "/Frida.png",
-    followers: 2,
-    following: 1,
-    organization: "Softtek",
-  },
+  profile = sharedProfile,
   popularRepositories = defaultRepositories,
   contributionCount = 471,
   contributionYear = "2026",
@@ -177,72 +446,30 @@ function GitHubUserProfile({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border bg-background">
-        <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between gap-4 px-4">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon-sm" className="border border-border bg-transparent text-foreground hover:bg-card">
-              <Menu className="size-4" />
-            </Button>
-            <Github className="size-8" />
-            <span className="text-base font-semibold">{profile.username}</span>
-          </div>
+      <GitHubChrome username={profile.username} searchValue={searchValue} onSearchChange={setSearchValue} />
 
-          <div className="flex items-center gap-2">
-            <div className="relative hidden w-[270px] lg:block">
-              <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                placeholder="Type / to search"
-                className="h-8 border-border bg-transparent pl-9 text-sm"
-              />
-            </div>
-            {Array.from({ length: 7 }).map((_, index) => (
-              <Button
-                key={`header-action-${index}`}
-                variant="ghost"
-                size="icon-sm"
-                className="border border-border bg-transparent text-foreground hover:bg-card"
-              >
-                {index === 0 ? <Grid3X3 className="size-4" /> : null}
-                {index === 1 ? <ChevronDown className="size-4" /> : null}
-                {index === 2 ? <span className="text-base leading-none">+</span> : null}
-                {index === 3 ? <Bell className="size-4" /> : null}
-                {index === 4 ? <Settings2 className="size-4" /> : null}
-                {index === 5 ? <BookOpen className="size-4" /> : null}
-                {index === 6 ? <Package className="size-4" /> : null}
-              </Button>
-            ))}
-            <Avatar className="size-8 border border-border">
-              <AvatarImage src={profile.avatarUrl} alt={profile.username} />
-              <AvatarFallback>OC</AvatarFallback>
-            </Avatar>
-          </div>
-        </div>
-
-        <div className="mx-auto max-w-[1600px] px-4">
-          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as ProfileTab)} className="gap-0">
-            <TabsList className="h-auto w-full justify-start gap-1 rounded-none bg-transparent p-0">
-              {tabsWithCount.map((tab) => {
-                const Icon = tab.icon;
-                return (
-                  <TabsTrigger
-                    key={tab.value}
-                    value={tab.value}
-                    className="relative h-12 flex-none rounded-none border-0 border-b-2 border-transparent px-3 text-sm font-normal text-muted-foreground data-[state=active]:border-[#f78166] data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
-                  >
-                    <Icon className="size-4" />
-                    {tab.label}
-                    {typeof tab.count === "number" ? (
-                      <span className="rounded-full bg-secondary px-1.5 py-0.5 text-xs text-foreground">{tab.count}</span>
-                    ) : null}
-                  </TabsTrigger>
-                );
-              })}
-            </TabsList>
-          </Tabs>
-        </div>
-      </header>
+      <div className="mx-auto max-w-[1600px] px-4">
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as ProfileTab)} className="gap-0 border-b border-border">
+          <TabsList className="h-auto w-full justify-start gap-1 rounded-none bg-transparent p-0">
+            {tabsWithCount.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <TabsTrigger
+                  key={tab.value}
+                  value={tab.value}
+                  className="relative h-12 flex-none rounded-none border-0 border-b-2 border-transparent px-3 text-sm font-normal text-muted-foreground data-[state=active]:border-[#f78166] data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                >
+                  <Icon className="size-4" />
+                  {tab.label}
+                  {typeof tab.count === "number" ? (
+                    <span className="rounded-full bg-secondary px-1.5 py-0.5 text-xs text-foreground">{tab.count}</span>
+                  ) : null}
+                </TabsTrigger>
+              );
+            })}
+          </TabsList>
+        </Tabs>
+      </div>
 
       <main className="mx-auto grid max-w-[1200px] grid-cols-1 gap-8 px-4 py-8 lg:grid-cols-[296px_minmax(0,1fr)]">
         <aside>
@@ -422,7 +649,7 @@ function GitHubUserProfile({
                       </div>
 
                       <div className="space-y-2">
-                        {['2026', '2025', '2024', '2023'].map((year) => (
+                        {["2026", "2025", "2024", "2023"].map((year) => (
                           <button
                             key={year}
                             type="button"
@@ -459,6 +686,41 @@ function GitHubUserProfile({
   );
 }
 
+const viewOptions: { value: ViewName; label: string }[] = [
+  { value: "github-home-dashboard", label: "GitHub Home Dashboard" },
+  { value: "github-user-profile", label: "GitHub User Profile" },
+];
+
 export default function HomePage() {
-  return <GitHubUserProfile state="overview" />;
+  const [view, setView] = useState<ViewName>("github-home-dashboard");
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="border-b border-border bg-card/40">
+        <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-4 px-4 py-3">
+          <div>
+            <p className="text-sm font-semibold">UI audit preview</p>
+            <p className="text-xs text-muted-foreground">One route keeps both generated views available.</p>
+          </div>
+          <div className="flex items-center gap-2">
+            {viewOptions.map((option) => (
+              <Button
+                key={option.value}
+                type="button"
+                variant={view === option.value ? "default" : "outline"}
+                size="sm"
+                className={cn(view !== option.value && "border-border bg-transparent")}
+                onClick={() => setView(option.value)}
+              >
+                {option.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {view === "github-home-dashboard" ? <GitHubHomeDashboard state="default" /> : null}
+      {view === "github-user-profile" ? <GitHubUserProfile state="overview" /> : null}
+    </div>
+  );
 }

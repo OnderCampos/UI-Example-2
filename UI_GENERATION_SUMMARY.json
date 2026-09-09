@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "GitHub user profile view with overview state.",
-    "fullDescription": "Presents the github-user-profile view in its overview state with a GitHub-style dark profile layout, top navigation, tabbed profile sections, pinned popular repositories, and a yearly contribution activity heatmap. Supports configurable profile data, selected tab, repository list, achievement badges, contribution totals, and contribution grid data while keeping tabs, search, year selection, and settings controls interactive through view props and local presentational state.",
+    "shortDescription": "Route-level preview that supports the GitHub home dashboard and GitHub user profile views.",
+    "fullDescription": "Presents a single preview route that keeps both the github-home-dashboard default state and the github-user-profile overview state available through local view selection. The route renders GitHub-style chrome, switches between the dashboard activity feed and repository sidebar or the profile overview with tabs, pinned repositories, and contribution heatmap, and preserves interactive search, tab, year, and selection controls through presentational state and fixture-driven props.",
     "isView": true
   }
 ]
