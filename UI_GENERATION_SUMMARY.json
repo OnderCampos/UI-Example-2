@@ -1,0 +1,8 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Dashboard home view with a three-column GitHub-style workspace.",
+    "fullDescription": "Renders the dashboard-home view in its default state with a fixed top navigation bar, repository sidebar, central Home feed, AI prompt composer, feed cards, and a right rail containing an event promotion and changelog timeline. The view exposes a state prop for dashboard presentation states and keeps all visible inputs, menus, selectors, and action controls interactive through local presentational state.",
+    "isView": true
+  }
+]
