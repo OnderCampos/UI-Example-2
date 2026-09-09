@@ -1,8 +1,0 @@
-[
-  {
-    "relativePath": "src/app/page.tsx",
-    "shortDescription": "GitHub-style dashboard and profile views.",
-    "fullDescription": "Main GitHub-inspired application view that supports the github-home-dashboard default state and the github-user-profile overview state from one shared route implementation. It switches between a home dashboard with interactive feed filters, searchable repository suggestions, and recent activity, and a profile overview with interactive profile tabs, repository filtering, and contribution year selection, while reusing a shared top navigation bar and repository card presentation.",
-    "isView": true
-  }
-]
