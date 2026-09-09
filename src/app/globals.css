@@ -49,6 +49,11 @@
   --color-warning: var(--warning);
   --color-python: var(--python);
   --color-typescript: var(--typescript);
+  --color-border-muted: var(--border-muted);
+  --contribution-low: var(--contribution-low);
+  --contribution-medium: var(--contribution-medium);
+  --contribution-high: var(--contribution-high);
+  --contribution-highest: var(--contribution-highest);
 }
 
 :root,
@@ -72,6 +77,7 @@
   --accent-foreground: #f0f6fc;
   --destructive: #f85149;
   --border: #30363d;
+  --border-muted: #21262d;
   --input: #30363d;
   --ring: #58a6ff;
   --chart-1: #58a6ff;
@@ -96,6 +102,10 @@
   --warning: #d29922;
   --python: #3572a5;
   --typescript: #3178c6;
+  --contribution-low: #0e4429;
+  --contribution-medium: #006d32;
+  --contribution-high: #26a641;
+  --contribution-highest: #39d353;
 }
 
 @layer base {

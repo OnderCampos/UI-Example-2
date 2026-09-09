@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Dashboard home view with a three-column GitHub-style dark layout.",
-    "fullDescription": "Implements the dashboard-home view in its default state as a full-width desktop layout with a top navigation bar, repository sidebar, central home feed, AI prompt composer, action pills, repository recommendation cards, and a right rail with a promotional event card and changelog timeline. The view exposes a state prop for supported screen states and keeps visible inputs, selects, menus, and buttons interactive with local presentational state.",
+    "shortDescription": "User profile overview view with a GitHub-style dark desktop layout.",
+    "fullDescription": "Implements the user-profile-overview view in its default state as a full-width desktop profile page with a global dark header, icon-and-text profile navigation tabs, a left identity column, a two-column grid of popular repository cards, a contribution graph with selectable year buttons and contribution settings, and a contribution activity heading. The view exposes a state prop for supported screen states and keeps visible controls such as search, tabs, dropdowns, year selectors, links, and buttons interactive with local presentational state.",
     "isView": true
   }
 ]
