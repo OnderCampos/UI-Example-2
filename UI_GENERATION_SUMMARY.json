@@ -1,14 +1,20 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Dashboard home view route.",
-    "fullDescription": "Renders the dashboard-home view in its default state as the main application route, showing the three-column developer dashboard layout with the connected top navigation, repository sidebar, feed, and right-side information cards.",
+    "shortDescription": "User profile overview route.",
+    "fullDescription": "Renders the user-profile-overview view in its default state as the main application route, showing the connected dark profile header, profile navigation tabs, left identity column, repository grid, contribution graph, and contribution activity heading.",
     "isView": true
   },
   {
     "relativePath": "src/components/dashboard-home.tsx",
     "shortDescription": "Reusable dashboard home screen composition.",
     "fullDescription": "Provides the dashboard-home screen with a state prop supporting the default layout, interactive top and sidebar search fields, a multiline AI prompt composer, selectable prompt controls, feed cards for repository recommendations, and a right rail with promotional and changelog cards. The component is reusable as a presentational dashboard view with configurable initial prompt content and serializable state.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/user-profile-overview.tsx",
+    "shortDescription": "Reusable GitHub-style user profile overview screen.",
+    "fullDescription": "Provides the user-profile-overview screen with a state prop supporting the default layout, an interactive dark top header with search and action buttons, selectable profile tabs, a profile sidebar with avatar, social metadata, and achievements, repository cards, a contribution settings select, a selectable year rail, and a contribution activity section. The component accepts configurable profile data, selected year, search placeholder, and contribution settings text for reuse across profile views and states.",
     "isView": false
   }
 ]
