@@ -3,455 +3,462 @@
 import { useMemo, useState } from "react";
 import {
   Bell,
-  BookText,
-  CheckCircle2,
+  BookOpen,
+  Building2,
   ChevronDown,
-  CircleDot,
-  Filter,
-  FolderGit2,
-  GitBranch,
   Github,
+  Grid3X3,
+  Link2,
+  MapPin,
   Menu,
-  MessageSquare,
-  Plus,
+  Package,
   Search,
-  Sparkles,
+  Settings2,
   Star,
-  Triangle,
   Users,
 } from "lucide-react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
-type RepositoryItem = {
+type ProfileTab = "overview" | "repositories" | "projects" | "packages" | "stars";
+
+type RepositoryLanguage = {
+  name: string;
+  color: string;
+};
+
+type PopularRepository = {
   name: string;
   description?: string;
-  language: string;
-  stars: string;
-  ownerAvatar?: string;
-  accent?: string;
+  source?: string;
+  visibility: "Public";
+  language: RepositoryLanguage;
 };
 
-type DashboardSection = {
-  title: string;
-  icon: React.ComponentType<{ className?: string }>;
-  items: RepositoryItem[];
+type ContributionDay = {
+  level: 0 | 1 | 2 | 3 | 4;
 };
 
-type GithubHomeDashboardProps = {
-  state?: "default";
-  userName?: string;
-  leftRepositories?: string[];
-  sections?: DashboardSection[];
+type GitHubUserProfileProps = {
+  state?: "overview";
+  selectedTab?: ProfileTab;
+  repositoryCount?: number;
+  profile: {
+    name: string;
+    username: string;
+    avatarUrl: string;
+    followers: number;
+    following: number;
+    organization: string;
+  };
+  popularRepositories?: PopularRepository[];
+  contributionCount?: number;
+  contributionYear?: string;
+  achievements?: { label: string; emoji: string; count?: number }[];
+  contributionMonths?: string[];
+  contributionGrid?: ContributionDay[][];
 };
 
-const defaultSections: DashboardSection[] = [
+const profileTabs: { value: ProfileTab; label: string; count?: number; icon: typeof BookOpen }[] = [
+  { value: "overview", label: "Overview", icon: BookOpen },
+  { value: "repositories", label: "Repositories", count: 16, icon: BookOpen },
+  { value: "projects", label: "Projects", icon: Grid3X3 },
+  { value: "packages", label: "Packages", icon: Package },
+  { value: "stars", label: "Stars", icon: Star },
+];
+
+const defaultRepositories: PopularRepository[] = [
   {
-    title: "Trending repositories",
-    icon: Triangle,
-    items: [
-      {
-        name: "ayghri/i-have-adhd",
-        description:
-          "A skill to stop your coding agent from burying the answer. ADHD-friendly output.",
-        language: "Python",
-        stars: "33.6k",
-        ownerAvatar: "/Frida.png",
-      },
-      {
-        name: "spotify/portal-ai-plugins",
-        language: "TypeScript",
-        stars: "716",
-        accent: "spotify",
-      },
-    ],
+    name: "open-interpreter",
+    source: "Forked from openinterpreter/openinterpreter",
+    description: "A natural language interface for computers",
+    visibility: "Public",
+    language: { name: "Python", color: "#58A6FF" },
   },
   {
-    title: "Recommended for you",
-    icon: Star,
-    items: [
-      {
-        name: "jasonkylelol/graphrag-chinese",
-        description: "支持中文CNCCN 的 microsoft/graphrag",
-        language: "Python",
-        stars: "51",
-        ownerAvatar: "/Frida.png",
-      },
-    ],
+    name: "CountBoxingSofttek",
+    visibility: "Public",
+    language: { name: "Python", color: "#58A6FF" },
+  },
+  {
+    name: "count_colors",
+    visibility: "Public",
+    language: { name: "Python", color: "#58A6FF" },
+  },
+  {
+    name: "pushtest",
+    visibility: "Public",
+    language: { name: "Python", color: "#58A6FF" },
+  },
+  {
+    name: "SAP-Cleaning-Frontend",
+    visibility: "Public",
+    language: { name: "TypeScript", color: "#2F81F7" },
+  },
+  {
+    name: "FridaProductPlannerWebBackend",
+    visibility: "Public",
+    language: { name: "Python", color: "#58A6FF" },
   },
 ];
 
-const topRepositories = [
-  "OnderCampos/CountBoxingSofttek",
-  "Fridaplatform/cp-cloudagents",
-  "OnderCampos/UI-Agent-Example",
-  "Fridaplatform/ReqGen-Backend",
-  "Fridaplatform/ProductPlanner",
-  "Fridaplatform/reqgen_frontend",
-  "OnderCampos/FridaProductPlannerWebBackend",
+const contributionMonths = ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"];
+
+const contributionRows: ContributionDay[][] = [
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,2,3],
+  [0,0,0,2,1,0,0,0,0,0,0,0,0,0,2,0,0,0,1,0,0,0,2,0,0,0,1,2,0,0,0,1,0,1,0,1,0,0,2,2,0,0,0,0,0,0,0,2,0,0,4,2],
+  [0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,2,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,1],
+  [0,2,0,0,1,0,0,0,0,2,0,0,1,2,0,0,0,0,0,0,0,1,0,1,0,0,2,0,0,0,2,0,0,1,0,0,0,0,2,1,0,0,0,0,0,1,0,0,0,0,4,2],
+  [0,2,0,0,0,0,2,0,0,0,0,1,0,0,0,0,2,0,0,0,0,0,0,0,0,2,0,2,0,0,0,2,0,0,0,2,0,0,0,0,2,0,0,0,2,0,0,0,0,2,4,1],
+  [2,0,1,2,0,0,2,0,0,0,1,0,0,0,0,0,1,0,0,2,0,0,0,0,0,0,2,1,0,0,0,0,2,0,0,2,0,0,0,0,0,2,0,0,2,0,0,0,0,0,3,0],
+  [1,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0],
+].map((row) => row.map((level) => ({ level: level as ContributionDay["level"] })));
+
+const achievements = [
+  { label: "Pull Shark", emoji: "🦈" },
+  { label: "Quickdraw", emoji: "🤠" },
+  { label: "Arctic Code Vault", emoji: "🥶", count: 2 },
+  { label: "Pair Extraordinaire", emoji: "🫛" },
 ];
 
-const changelogItems = [
-  {
-    time: "3 hours ago",
-    title: "Remediate Code Quality findings with agentic autofix",
-  },
-  {
-    time: "13 hours ago",
-    title: "Enterprise-managed sandbox in Copilot for JetBrains",
-  },
-  {
-    time: "18 hours ago",
-    title: "GitHub Enterprise Server 3.22 is now generally available",
-  },
-  {
-    time: "Yesterday",
-    title: "New customer portal help.github.com",
-  },
-];
+function getContributionColor(level: ContributionDay["level"]) {
+  switch (level) {
+    case 0:
+      return "#2a313c";
+    case 1:
+      return "#0e4429";
+    case 2:
+      return "#006d32";
+    case 3:
+      return "#26a641";
+    case 4:
+      return "#39d353";
+    default:
+      return "#2a313c";
+  }
+}
 
-const askScopes = ["All repositories", "My repositories", "Starred repositories"];
-const actionLabels = ["Debug", "Agent", "Create issue", "Write code", "Git", "Pull requests"];
+function GitHubUserProfile({
+  state = "overview",
+  selectedTab = "overview",
+  repositoryCount = 16,
+  profile = {
+    name: "Onder Francisco Campos Garcia",
+    username: "OnderCampos",
+    avatarUrl: "/Frida.png",
+    followers: 2,
+    following: 1,
+    organization: "Softtek",
+  },
+  popularRepositories = defaultRepositories,
+  contributionCount = 471,
+  contributionYear = "2026",
+  achievements: userAchievements = achievements,
+  contributionMonths: months = contributionMonths,
+  contributionGrid = contributionRows,
+}: GitHubUserProfileProps) {
+  const [searchValue, setSearchValue] = useState("");
+  const [activeTab, setActiveTab] = useState<ProfileTab>(selectedTab);
+  const [selectedYear, setSelectedYear] = useState(contributionYear);
+  const [settingsLabel, setSettingsLabel] = useState("Contribution settings");
 
-function GithubHomeDashboard({
-  state = "default",
-  userName = "OnderCampos",
-  leftRepositories = topRepositories,
-  sections = defaultSections,
-}: GithubHomeDashboardProps) {
-  const [headerSearch, setHeaderSearch] = useState("");
-  const [repoSearch, setRepoSearch] = useState("");
-  const [askText, setAskText] = useState("");
-  const [askScope, setAskScope] = useState(askScopes[0]);
-  const [autoMode, setAutoMode] = useState("Auto");
-  const [starredRepos, setStarredRepos] = useState<Record<string, boolean>>({});
+  const filteredRepositories = useMemo(() => {
+    return popularRepositories.filter((repo) => repo.name.toLowerCase().includes(searchValue.toLowerCase()));
+  }, [popularRepositories, searchValue]);
 
-  const filteredRepositories = useMemo(
-    () =>
-      leftRepositories.filter((repo) =>
-        repo.toLowerCase().includes(repoSearch.toLowerCase())
-      ),
-    [leftRepositories, repoSearch]
+  const tabsWithCount = profileTabs.map((tab) =>
+    tab.value === "repositories" ? { ...tab, count: repositoryCount } : tab
   );
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
-        <div className="flex h-14 items-center justify-between gap-4 px-3 md:px-4">
-          <div className="flex items-center gap-3">
+      <header className="border-b border-border bg-background">
+        <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between gap-4 px-4">
+          <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon-sm" className="border border-border bg-transparent text-foreground hover:bg-card">
               <Menu className="size-4" />
             </Button>
             <Github className="size-8" />
-            <button type="button" className="text-sm font-semibold">
-              Dashboard
-            </button>
+            <span className="text-base font-semibold">{profile.username}</span>
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="relative hidden w-[340px] md:block">
-              <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+            <div className="relative hidden w-[270px] lg:block">
+              <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                value={headerSearch}
-                onChange={(e) => setHeaderSearch(e.target.value)}
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
                 placeholder="Type / to search"
-                className="h-8 rounded-md border-border bg-transparent pl-9 pr-3 text-sm"
+                className="h-8 border-border bg-transparent pl-9 text-sm"
               />
             </div>
-            <Button variant="ghost" size="icon-sm" className="border border-border hover:bg-card"><Sparkles className="size-4" /></Button>
-            <Separator orientation="vertical" className="hidden h-5 md:block" />
-            <Button variant="ghost" size="icon-sm" className="border border-border hover:bg-card"><Plus className="size-4" /></Button>
-            <Button variant="ghost" size="icon-sm" className="border border-border hover:bg-card"><CircleDot className="size-4" /></Button>
-            <Button variant="ghost" size="icon-sm" className="border border-border hover:bg-card"><GitBranch className="size-4" /></Button>
-            <Button variant="ghost" size="icon-sm" className="border border-border hover:bg-card"><Bell className="size-4" /></Button>
+            {Array.from({ length: 7 }).map((_, index) => (
+              <Button
+                key={`header-action-${index}`}
+                variant="ghost"
+                size="icon-sm"
+                className="border border-border bg-transparent text-foreground hover:bg-card"
+              >
+                {index === 0 ? <Grid3X3 className="size-4" /> : null}
+                {index === 1 ? <ChevronDown className="size-4" /> : null}
+                {index === 2 ? <span className="text-base leading-none">+</span> : null}
+                {index === 3 ? <Bell className="size-4" /> : null}
+                {index === 4 ? <Settings2 className="size-4" /> : null}
+                {index === 5 ? <BookOpen className="size-4" /> : null}
+                {index === 6 ? <Package className="size-4" /> : null}
+              </Button>
+            ))}
             <Avatar className="size-8 border border-border">
-              <AvatarImage src="/Frida.png" alt={userName} />
+              <AvatarImage src={profile.avatarUrl} alt={profile.username} />
               <AvatarFallback>OC</AvatarFallback>
             </Avatar>
           </div>
         </div>
+
+        <div className="mx-auto max-w-[1600px] px-4">
+          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as ProfileTab)} className="gap-0">
+            <TabsList className="h-auto w-full justify-start gap-1 rounded-none bg-transparent p-0">
+              {tabsWithCount.map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <TabsTrigger
+                    key={tab.value}
+                    value={tab.value}
+                    className="relative h-12 flex-none rounded-none border-0 border-b-2 border-transparent px-3 text-sm font-normal text-muted-foreground data-[state=active]:border-[#f78166] data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                  >
+                    <Icon className="size-4" />
+                    {tab.label}
+                    {typeof tab.count === "number" ? (
+                      <span className="rounded-full bg-secondary px-1.5 py-0.5 text-xs text-foreground">{tab.count}</span>
+                    ) : null}
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+          </Tabs>
+        </div>
       </header>
 
-      <div className="grid min-h-[calc(100vh-56px)] grid-cols-1 xl:grid-cols-[300px_minmax(0,1fr)_320px]">
-        <aside className="border-r border-border bg-card/50 xl:block">
-          <div className="flex h-full flex-col p-4">
-            <div className="mb-6 flex items-center gap-3">
-              <Avatar className="size-7 border border-border">
-                <AvatarImage src="/Frida.png" alt={userName} />
-                <AvatarFallback>OC</AvatarFallback>
+      <main className="mx-auto grid max-w-[1200px] grid-cols-1 gap-8 px-4 py-8 lg:grid-cols-[296px_minmax(0,1fr)]">
+        <aside>
+          <div className="sticky top-8">
+            <div className="relative mb-5 w-fit">
+              <Avatar className="size-[296px] border border-border">
+                <AvatarImage src={profile.avatarUrl} alt={profile.name} className="object-cover" />
+                <AvatarFallback className="text-5xl">OC</AvatarFallback>
               </Avatar>
-              <button type="button" className="flex items-center gap-1 text-sm font-semibold">
-                {userName}
-                <ChevronDown className="size-3 text-muted-foreground" />
+              <button
+                type="button"
+                className="absolute right-2 bottom-8 flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-[var(--shadow-card)] hover:text-foreground"
+              >
+                <span className="text-lg">☺</span>
               </button>
             </div>
 
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-sm font-semibold">Top repositories</h2>
-              <Button className="h-8 rounded-md bg-[var(--color-github-primary)] px-3 text-[13px] font-medium text-[var(--color-github-primary-foreground)] hover:bg-[var(--color-github-primary-hover)]">
-                <BookText className="size-4" />
-                New
+            <div className="space-y-4 border-b border-border pb-6">
+              <div>
+                <h1 className="font-[Arial,Helvetica,sans-serif] text-[40px] leading-10 font-semibold tracking-[-0.02em]">{profile.name}</h1>
+                <p className="mt-1 text-[20px] text-muted-foreground">{profile.username}</p>
+              </div>
+
+              <Button variant="outline" className="h-8 w-full border-border bg-secondary text-sm hover:bg-[#343d46]">
+                Edit profile
               </Button>
+
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <Users className="size-4" />
+                <button type="button" className="text-foreground hover:text-[var(--color-github-accent)]">
+                  {profile.followers} followers
+                </button>
+                <span>·</span>
+                <button type="button" className="text-foreground hover:text-[var(--color-github-accent)]">
+                  {profile.following} following
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2 text-sm text-foreground">
+                <Building2 className="size-4 text-muted-foreground" />
+                <span>{profile.organization}</span>
+              </div>
             </div>
 
-            <Input
-              value={repoSearch}
-              onChange={(e) => setRepoSearch(e.target.value)}
-              placeholder="Find a repository..."
-              className="mb-4 h-8 bg-background text-sm"
-            />
-
-            <ScrollArea className="flex-1 pr-2">
-              <div className="space-y-3">
-                {filteredRepositories.map((repo) => (
-                  <button
-                    key={repo}
-                    type="button"
-                    className="flex w-full items-start gap-2 text-left text-sm text-foreground hover:text-[var(--color-github-primary)]"
+            <div className="border-b border-border py-5">
+              <h2 className="mb-4 font-[Arial,Helvetica,sans-serif] text-[22px] font-semibold">Achievements</h2>
+              <div className="flex flex-wrap gap-2">
+                {userAchievements.map((achievement) => (
+                  <div
+                    key={achievement.label}
+                    className="relative flex size-12 items-center justify-center rounded-full border border-white/20 bg-[radial-gradient(circle_at_30%_30%,#ffffff_0%,#f9c6d0_30%,#7c3aed_70%,#334155_100%)] text-2xl shadow-[var(--shadow-card)]"
+                    title={achievement.label}
                   >
-                    <span className="mt-1 inline-flex size-4 items-center justify-center rounded-sm bg-[#f778ba]/20 text-[10px] font-bold text-[#f778ba]">
-                      F
-                    </span>
-                    <span className="leading-5 break-all">{repo}</span>
-                  </button>
+                    <span>{achievement.emoji}</span>
+                    {achievement.count ? (
+                      <span className="absolute -right-1 -bottom-1 rounded-full bg-[#d29922] px-1.5 text-[10px] font-semibold text-background">
+                        x{achievement.count}
+                      </span>
+                    ) : null}
+                  </div>
                 ))}
               </div>
-            </ScrollArea>
+            </div>
 
-            <button type="button" className="mt-4 text-left text-sm text-muted-foreground hover:text-foreground">
-              Show more
-            </button>
+            <div className="pt-5">
+              <h2 className="mb-4 font-[Arial,Helvetica,sans-serif] text-[22px] font-semibold">Organizations</h2>
+              <div className="flex items-center gap-2 text-sm">
+                <div className="flex size-8 items-center justify-center rounded-md border border-border bg-card">S</div>
+                <span>{profile.organization}</span>
+              </div>
+            </div>
           </div>
         </aside>
 
-        <main className="px-4 py-8 md:px-8">
-          <div className="mx-auto max-w-4xl">
-            <h1 className="mb-4 text-[40px] leading-none font-semibold tracking-tight">Home</h1>
+        <section>
+          {state === "overview" ? (
+            <>
+              <div className="mb-6 flex items-center justify-between gap-4">
+                <h2 className="font-[Arial,Helvetica,sans-serif] text-2xl font-semibold">Popular repositories</h2>
+                <button type="button" className="text-sm text-[#2f81f7] hover:underline">
+                  Customize your pins
+                </button>
+              </div>
 
-            <Card className="gap-0 rounded-2xl border-border bg-card py-0 shadow-[var(--shadow-card)]">
-              <CardContent className="p-4">
-                <Input
-                  value={askText}
-                  onChange={(e) => setAskText(e.target.value)}
-                  placeholder="Ask anything or type @ to add context"
-                  className="mb-6 h-8 border-0 bg-transparent px-0 text-lg shadow-none focus-visible:ring-0"
-                />
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Button variant="outline" size="sm" className="h-8 rounded-md border-border bg-transparent hover:bg-secondary">
-                      <MessageSquare className="size-4" />
-                      Ask
-                    </Button>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="h-8 rounded-md border-border bg-transparent hover:bg-secondary">
-                          <FolderGit2 className="size-4" />
-                          {askScope}
-                          <ChevronDown className="size-3" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start">
-                        {askScopes.map((scope) => (
-                          <DropdownMenuItem key={scope} onSelect={() => setAskScope(scope)}>
-                            {scope}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    <Button variant="outline" size="icon-sm" className="h-8 w-8 rounded-md border-border bg-transparent hover:bg-secondary">
-                      <Plus className="size-4" />
-                    </Button>
-                  </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                {filteredRepositories.map((repo) => (
+                  <Card key={repo.name} className="gap-0 rounded-lg border-border bg-card py-0 shadow-none">
+                    <CardContent className="p-4">
+                      <div className="mb-4 flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                          <button type="button" className="truncate text-left text-base font-semibold text-[#2f81f7] hover:underline">
+                            {repo.name}
+                          </button>
+                          {repo.source ? <p className="mt-1 text-xs text-muted-foreground">{repo.source}</p> : null}
+                        </div>
+                        <span className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
+                          {repo.visibility}
+                        </span>
+                      </div>
+                      {repo.description ? (
+                        <p className="mb-5 min-h-10 text-sm leading-5 text-muted-foreground">{repo.description}</p>
+                      ) : (
+                        <div className="mb-5 h-10" />
+                      )}
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span className="size-3 rounded-full" style={{ backgroundColor: repo.language.color }} />
+                        <span>{repo.language.name}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
 
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 rounded-md px-2 text-muted-foreground hover:bg-transparent hover:text-foreground">
-                          <Users className="size-4" />
-                          {autoMode}
-                          <ChevronDown className="size-3" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        {['Auto', 'Copilot', 'Manual'].map((option) => (
-                          <DropdownMenuItem key={option} onSelect={() => setAutoMode(option)}>
-                            {option}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    <Button variant="ghost" size="icon-sm" className="h-8 w-8 rounded-md hover:bg-secondary">
-                      <CheckCircle2 className="size-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon-sm" className="h-8 w-8 rounded-md hover:bg-secondary">
-                      <ChevronDown className="size-4 rotate-[-90deg]" />
-                    </Button>
+              <div className="mt-10">
+                <div className="mb-4 flex items-center justify-between gap-4">
+                  <h2 className="font-[Arial,Helvetica,sans-serif] text-[32px] leading-tight font-semibold">
+                    {contributionCount} contributions in the last year
+                  </h2>
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                    <button
+                      type="button"
+                      onClick={() => setSettingsLabel(settingsLabel === "Contribution settings" ? "Private contributions" : "Contribution settings")}
+                      className="flex items-center gap-1 hover:text-foreground"
+                    >
+                      {settingsLabel}
+                      <ChevronDown className="size-4" />
+                    </button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
 
-            <div className="mt-4 flex flex-wrap gap-3">
-              {actionLabels.map((label) => (
-                <Button key={label} variant="outline" className="h-10 rounded-full border-border bg-background px-5 text-sm font-medium hover:bg-card">
-                  {label === 'Debug' && <CircleDot className="size-4" />}
-                  {label === 'Agent' && <Sparkles className="size-4" />}
-                  {label === 'Create issue' && <CircleDot className="size-4" />}
-                  {label === 'Write code' && <BookText className="size-4" />}
-                  {label === 'Git' && <GitBranch className="size-4" />}
-                  {label === 'Pull requests' && <GitBranch className="size-4" />}
-                  {label}
-                  {(label === 'Write code' || label === 'Git' || label === 'Pull requests') && <ChevronDown className="size-3" />}
-                </Button>
-              ))}
-            </div>
+                <Card className="gap-0 rounded-lg border-border bg-background py-0 shadow-none">
+                  <CardContent className="p-4">
+                    <div className="grid grid-cols-[32px_minmax(0,1fr)_84px] gap-4">
+                      <div className="pt-12 text-xs text-muted-foreground">
+                        <div className="mb-4">Mon</div>
+                        <div className="mb-4">Wed</div>
+                        <div>Fri</div>
+                      </div>
 
-            <div className="mt-5 flex items-center justify-between">
-              <h2 className="text-sm font-semibold">Feed</h2>
-              <Button variant="outline" size="sm" className="h-8 rounded-md border-border bg-card px-3 hover:bg-secondary">
-                <Filter className="size-4" />
-                Filter
-              </Button>
-            </div>
-
-            <div className="mt-3 space-y-4">
-              {sections.map((section) => (
-                <Card key={section.title} className="gap-0 rounded-lg border-border bg-card py-0 shadow-[var(--shadow-card)]">
-                  <CardContent className="p-0">
-                    <div className="flex items-center gap-2 border-b border-border px-4 py-4 text-sm text-muted-foreground">
-                      <section.icon className="size-4" />
-                      <span>{section.title}</span>
-                      {section.title === 'Trending repositories' && (
-                        <button type="button" className="text-[var(--color-github-accent)] underline-offset-2 hover:underline">
-                          See more
-                        </button>
-                      )}
-                    </div>
-
-                    {section.items.map((item, index) => {
-                      const starred = starredRepos[item.name] ?? true;
-
-                      return (
-                        <div
-                          key={item.name}
-                          className={cn(
-                            "flex items-start justify-between gap-4 px-4 py-4",
-                            index !== section.items.length - 1 && "border-b border-border"
-                          )}
-                        >
-                          <div className="min-w-0">
-                            <div className="mb-2 flex items-center gap-2">
-                              {item.ownerAvatar ? (
-                                <Avatar className="size-5 border border-border">
-                                  <AvatarImage src={item.ownerAvatar} alt={item.name} />
-                                  <AvatarFallback>R</AvatarFallback>
-                                </Avatar>
-                              ) : (
-                                <span className="inline-flex size-5 items-center justify-center rounded-full bg-[#1f6feb] text-[10px] font-bold text-white">
-                                  S
-                                </span>
-                              )}
-                              <p className="text-sm font-semibold text-foreground">{item.name}</p>
-                            </div>
-                            {item.description && (
-                              <p className="mb-3 max-w-2xl text-[15px] leading-6 text-foreground">{item.description}</p>
-                            )}
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                              <span className="flex items-center gap-1.5">
-                                <span className={cn("size-3 rounded-full bg-[#58a6ff]", item.accent === 'spotify' && 'bg-[#1ed760]')} />
-                                {item.language}
-                              </span>
-                              <span className="flex items-center gap-1.5">
-                                <Star className="size-3.5" />
-                                {item.stars}
-                              </span>
-                            </div>
-                          </div>
-
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="outline" size="sm" className="h-8 rounded-md border-border bg-secondary px-3 hover:bg-[#2e353e]">
-                                <Star className={cn("size-4", starred && 'fill-current')} />
-                                Star
-                                <ChevronDown className="size-3" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem onSelect={() => setStarredRepos((prev) => ({ ...prev, [item.name]: !starred }))}>
-                                {starred ? 'Unstar repository' : 'Star repository'}
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>Fork</DropdownMenuItem>
-                              <DropdownMenuItem>Add to list</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                      <div>
+                        <div className="mb-3 grid grid-cols-12 gap-[3px] text-xs text-muted-foreground">
+                          {months.map((month) => (
+                            <span key={month}>{month}</span>
+                          ))}
                         </div>
-                      );
-                    })}
+                        <div className="grid grid-flow-col gap-[3px] overflow-hidden">
+                          {contributionGrid[0]?.map((_, weekIndex) => (
+                            <div key={`week-${weekIndex}`} className="grid gap-[3px]">
+                              {contributionGrid.map((row, rowIndex) => (
+                                <div
+                                  key={`cell-${weekIndex}-${rowIndex}`}
+                                  className="size-[11px] rounded-[2px] border border-black/10"
+                                  style={{ backgroundColor: getContributionColor(row[weekIndex]?.level ?? 0) }}
+                                />
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+                        <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
+                          <button type="button" className="hover:text-foreground">
+                            Learn how we count contributions
+                          </button>
+                          <div className="flex items-center gap-2">
+                            <span>Less</span>
+                            <div className="flex gap-[3px]">
+                              {[0, 1, 2, 3, 4].map((level) => (
+                                <span
+                                  key={level}
+                                  className="size-[10px] rounded-[2px]"
+                                  style={{ backgroundColor: getContributionColor(level as ContributionDay["level"]) }}
+                                />
+                              ))}
+                            </div>
+                            <span>More</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        {['2026', '2025', '2024', '2023'].map((year) => (
+                          <button
+                            key={year}
+                            type="button"
+                            onClick={() => setSelectedYear(year)}
+                            className={cn(
+                              "w-full rounded-md px-3 py-2 text-left text-sm transition-colors",
+                              selectedYear === year
+                                ? "bg-[#1f6feb] text-white"
+                                : "text-muted-foreground hover:bg-card hover:text-foreground"
+                            )}
+                          >
+                            {year}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
-          </div>
-        </main>
 
-        <aside className="border-l border-border px-4 py-8 md:px-6">
-          <div className="space-y-6">
-            <Card className="gap-0 overflow-hidden rounded-lg border-border bg-card py-0 shadow-[var(--shadow-card)]">
-              <div className="h-[72px] bg-[linear-gradient(115deg,#b3f6c8_0%,#53d77a_20%,#ecfdf3_45%,#92e5b1_62%,#7c3aed_85%,#53d77a_100%)]" />
-              <CardContent className="p-4">
-                <p className="mb-2 text-xs tracking-wide text-muted-foreground uppercase">September 10 · 8:00 AM PT</p>
-                <h3 className="mb-3 text-[28px] leading-8 font-semibold">GitHub Copilot Day</h3>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex gap-2"><span className="mt-2 size-1.5 rounded-full bg-[var(--color-github-primary)]" />See how HydraFusion combines AI models to match the right model to the task</li>
-                  <li className="flex gap-2"><span className="mt-2 size-1.5 rounded-full bg-[var(--color-github-primary)]" />Learn to automate work, run parallel agents, and use your own models</li>
-                  <li className="flex gap-2"><span className="mt-2 size-1.5 rounded-full bg-[var(--color-github-primary)]" />Turn your best coding approaches into reusable Agent Skills</li>
-                </ul>
-                <Button className="mt-4 h-8 w-full rounded-md bg-secondary text-foreground hover:bg-[#d0d7de] hover:text-background">
-                  Set your reminder
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="gap-0 rounded-xl border-border bg-card py-0 shadow-[var(--shadow-card)]">
-              <CardContent className="p-4">
-                <h3 className="mb-4 text-xl leading-6 font-semibold">Latest from our changelog</h3>
-                <div className="space-y-4">
-                  {changelogItems.map((item) => (
-                    <div key={item.title} className="flex gap-3">
-                      <div className="flex flex-col items-center pt-1">
-                        <span className="size-2 rounded-full bg-border" />
-                        <span className="mt-1 h-full w-px bg-border" />
-                      </div>
-                      <div>
-                        <p className="mb-1 text-xs text-muted-foreground">{item.time}</p>
-                        <p className="text-sm leading-6 text-foreground">{item.title}</p>
-                      </div>
+                <div className="mt-6">
+                  <h3 className="font-[Arial,Helvetica,sans-serif] text-[32px] leading-tight font-semibold">Contribution activity</h3>
+                  <div className="mt-4 border-t border-border pt-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2 font-medium text-foreground">
+                      <span>September {selectedYear}</span>
                     </div>
-                  ))}
+                  </div>
                 </div>
-                <button type="button" className="mt-4 text-sm text-muted-foreground hover:text-foreground">
-                  View changelog →
-                </button>
-              </CardContent>
-            </Card>
-          </div>
-        </aside>
-      </div>
+              </div>
+            </>
+          ) : null}
+        </section>
+      </main>
     </div>
   );
 }
 
 export default function HomePage() {
-  return <GithubHomeDashboard state="default" />;
+  return <GitHubUserProfile state="overview" />;
 }

@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "GitHub-style home dashboard view in its default state.",
-    "fullDescription": "Presents the github-home-dashboard view with a dark three-column layout including the global top bar, repository sidebar, central feed composer, trending and recommended repository cards, and a right rail with Copilot Day and changelog panels. Supports the default state through props for userName, leftRepositories, sections, and state, while keeping search fields, menus, and repository star actions interactive with local presentational state.",
+    "shortDescription": "GitHub user profile view with overview state.",
+    "fullDescription": "Presents the github-user-profile view in its overview state with a GitHub-style dark profile layout, top navigation, tabbed profile sections, pinned popular repositories, and a yearly contribution activity heatmap. Supports configurable profile data, selected tab, repository list, achievement badges, contribution totals, and contribution grid data while keeping tabs, search, year selection, and settings controls interactive through view props and local presentational state.",
     "isView": true
   }
 ]
