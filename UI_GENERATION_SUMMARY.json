@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "User profile overview route.",
-    "fullDescription": "Renders the user-profile-overview view in its default state as the main application route, showing the connected dark profile header, profile navigation tabs, left identity column, repository grid, contribution graph, and contribution activity heading.",
+    "shortDescription": "Reference view switcher route for generated screens.",
+    "fullDescription": "Renders the generated home views from one route by selecting the dashboard-home or user-profile-overview composition through serializable search params. Supports the default state for each generated screen while preserving a single implementation entry point for view audits and previews.",
     "isView": true
   },
   {
