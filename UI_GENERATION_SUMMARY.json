@@ -1,0 +1,14 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Dashboard home view route.",
+    "fullDescription": "Renders the dashboard-home view in its default state as the main application route, showing the three-column developer dashboard layout with the connected top navigation, repository sidebar, feed, and right-side information cards.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/components/dashboard-home.tsx",
+    "shortDescription": "Reusable dashboard home screen composition.",
+    "fullDescription": "Provides the dashboard-home screen with a state prop supporting the default layout, interactive top and sidebar search fields, a multiline AI prompt composer, selectable prompt controls, feed cards for repository recommendations, and a right rail with promotional and changelog cards. The component is reusable as a presentational dashboard view with configurable initial prompt content and serializable state.",
+    "isView": false
+  }
+]
