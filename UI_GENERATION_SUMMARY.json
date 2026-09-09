@@ -1,8 +1,0 @@
-[
-  {
-    "relativePath": "src/app/page.tsx",
-    "shortDescription": "Route-level preview that supports the GitHub home dashboard and GitHub user profile views.",
-    "fullDescription": "Presents a single preview route that keeps both the github-home-dashboard default state and the github-user-profile overview state available through local view selection. The route renders GitHub-style chrome, switches between the dashboard activity feed and repository sidebar or the profile overview with tabs, pinned repositories, and contribution heatmap, and preserves interactive search, tab, year, and selection controls through presentational state and fixture-driven props.",
-    "isView": true
-  }
-]
