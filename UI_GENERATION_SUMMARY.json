@@ -1,8 +1,26 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "User profile overview view with GitHub-style dark desktop layout.",
-    "fullDescription": "Renders the user-profile-overview view in its default state with a gradient top header, profile navigation tabs, left identity sidebar, popular repositories grid, contribution heatmap, year selector, and contribution activity section. The view exposes a state prop, keeps profile tabs selectable, preserves search input text locally, and wires the contribution settings select and year buttons for immediate presentational interaction.",
+    "shortDescription": "Dashboard home view route in its default state.",
+    "fullDescription": "Renders the dashboard-home view in its default state on the root route, composing the reusable dashboard layout with a top toolbar, quick action sidebar, summary metric cards, a performance snapshot section, and a team highlights panel.",
     "isView": true
+  },
+  {
+    "relativePath": "src/app/user-profile-overview/page.tsx",
+    "shortDescription": "User profile overview view route in its default state.",
+    "fullDescription": "Renders the user-profile-overview view in its default state with a GitHub-style profile header, interactive profile tabs, identity sidebar, popular repositories grid, contribution heatmap, contribution settings select, and selectable year list.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/components/dashboard-home-view.tsx",
+    "shortDescription": "Reusable dashboard home screen composition component.",
+    "fullDescription": "Provides the dashboard-home presentational view with a serializable state prop, locally interactive search field and quick action selection, summary metrics, and reusable card-based dashboard sections that can be rendered by any route needing the same home dashboard layout.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/user-profile-overview-view.tsx",
+    "shortDescription": "Reusable user profile overview screen composition component.",
+    "fullDescription": "Provides the user-profile-overview presentational view with a serializable state prop, selectable profile tabs, editable search field, contribution settings select, year selection controls, and reusable profile content sections for routes that need the same GitHub-style overview layout.",
+    "isView": false
   }
 ]
