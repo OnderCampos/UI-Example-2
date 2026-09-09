@@ -3,6 +3,7 @@ import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 
 import { QueryProvider } from '@/lib/queryClient';
+import Script from "next/script";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -37,6 +38,45 @@ export default function RootLayout({
         >
           <QueryProvider>{children}</QueryProvider>
           <Toaster />
+          <Script id="hide-nextjs-devtools-badge" strategy="afterInteractive">
+            {`
+              (() => {
+                const hideBadge = () => {
+                  const selectors = [
+                    '[data-next-badge-root]',
+                    '[data-nextjs-toast]',
+                    '[data-next-mark]',
+                    '[aria-label="Next.js Dev Tools Items"]',
+                    '[aria-label="Open Next.js Dev Tools"]'
+                  ];
+
+                  selectors.forEach((selector) => {
+                    document.querySelectorAll(selector).forEach((element) => {
+                      element.style.display = 'none';
+                    });
+                  });
+
+                  document.querySelectorAll('button, div').forEach((element) => {
+                    const text = element.textContent?.trim();
+                    const style = window.getComputedStyle(element);
+
+                    if (
+                      (text === 'N' || text === '1 Issue') &&
+                      style.position === 'fixed' &&
+                      parseInt(style.left || '0', 10) <= 24 &&
+                      parseInt(style.bottom || '0', 10) <= 24
+                    ) {
+                      element.style.display = 'none';
+                    }
+                  });
+                };
+
+                hideBadge();
+                const observer = new MutationObserver(hideBadge);
+                observer.observe(document.body, { childList: true, subtree: true });
+              })();
+            `}
+          </Script>
         </ThemeProvider>
       </body>
     </html>
