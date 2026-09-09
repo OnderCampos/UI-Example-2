@@ -5,7 +5,6 @@ import {
   Bell,
   BookOpen,
   Building2,
-  ChevronDown,
   Eye,
   GitBranch,
   Github,
@@ -18,16 +17,26 @@ import {
   Users,
 } from "lucide-react"
 
-import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import {
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
+import { cn } from "@/lib/utils"
 
 type UserProfileOverviewState = "default"
 
@@ -91,7 +100,12 @@ const headerActions: HeaderAction[] = [
 const achievements: Achievement[] = [
   { id: "pair", emoji: "🧬", gradient: "from-pink-300 via-orange-200 to-purple-300" },
   { id: "yolo", emoji: "🤠", gradient: "from-yellow-300 via-orange-300 to-yellow-500" },
-  { id: "pull", emoji: "🥶", gradient: "from-sky-300 via-blue-300 to-indigo-400", countLabel: "x2" },
+  {
+    id: "pull",
+    emoji: "🥶",
+    gradient: "from-sky-300 via-blue-300 to-indigo-400",
+    countLabel: "x2",
+  },
   { id: "arctic", emoji: "🫛", gradient: "from-lime-200 via-green-200 to-lime-400" },
 ]
 
@@ -110,7 +124,21 @@ const repositories: RepositoryCardItem[] = [
   { name: "FridaProductPlannerWebBackend", visibility: "Public", language: "Python" },
 ]
 
-const monthLabels = ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"]
+const monthLabels = [
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+]
+
 const contributionLegend: { level: ContributionLevel; label: string }[] = [
   { level: 0, label: "Less" },
   { level: 1, label: "" },
@@ -120,13 +148,13 @@ const contributionLegend: { level: ContributionLevel; label: string }[] = [
 ]
 
 const contributionData: ContributionLevel[][] = [
-  [0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1,0,0,1,0,1,2,0,0,1,0,2,0,0,1,2,0,0,0,0,1,2,0,0,0,0,0,0,0,2,1,3],
-  [0,0,0,1,2,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,1,2,3,0,1,0,1,1,2,0,0,1,2,0,0,0,1,2,0,0,1,0,0,0,0,1,3,4],
-  [0,0,0,0,1,0,0,0,1,0,2,0,0,1,0,0,0,0,1,0,0,2,1,0,1,0,0,2,1,0,0,0,1,0,0,0,1,1,0,0,1,0,0,0,0,2,3,2],
-  [1,0,1,0,0,0,0,1,0,1,0,0,1,0,0,1,0,1,0,1,1,1,0,1,0,1,0,1,0,0,1,0,0,0,1,1,0,0,0,1,0,0,1,0,1,0,4,1],
-  [2,1,1,0,0,0,1,0,0,2,0,1,0,0,0,2,0,0,0,2,0,0,1,0,0,2,0,0,1,0,0,2,0,0,0,2,0,0,0,1,0,0,2,0,0,0,3,0],
-  [1,2,0,1,0,0,1,0,0,1,0,2,0,0,1,1,0,0,2,1,0,1,0,0,1,0,0,2,0,0,0,1,2,0,0,1,0,0,0,2,0,1,1,0,0,0,4,3],
-  [0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,2,0,1,0,0,1,0,1,0,0,0,1,2,0,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,0,2,4],
+  [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 2, 0, 0, 1, 0, 2, 0, 0, 1, 2, 0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 2, 1, 3],
+  [0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 2, 3, 0, 1, 0, 1, 1, 2, 0, 0, 1, 2, 0, 0, 0, 1, 2, 0, 0, 1, 0, 0, 0, 0, 1, 3, 4],
+  [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 2, 1, 0, 1, 0, 0, 2, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 2, 3, 2],
+  [1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 4, 1],
+  [2, 1, 1, 0, 0, 0, 1, 0, 0, 2, 0, 1, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 1, 0, 0, 2, 0, 0, 1, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 3, 0],
+  [1, 2, 0, 1, 0, 0, 1, 0, 0, 1, 0, 2, 0, 0, 1, 1, 0, 0, 2, 1, 0, 1, 0, 0, 1, 0, 0, 2, 0, 0, 0, 1, 2, 0, 0, 1, 0, 0, 0, 2, 0, 1, 1, 0, 0, 0, 4, 3],
+  [0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 2, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 2, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2, 4],
 ]
 
 const languageDotClass: Record<RepositoryCardItem["language"], string> = {
@@ -161,13 +189,20 @@ function HeaderButton({ icon: Icon }: { icon: React.ComponentType<{ className?: 
   )
 }
 
-function ProfileNav({ activeTab, onTabChange }: { activeTab: string; onTabChange: (value: string) => void }) {
+function ProfileNav({
+  activeTab,
+  onTabChange,
+}: {
+  activeTab: string
+  onTabChange: (value: string) => void
+}) {
   return (
     <nav className="border-b border-border bg-background-deep px-6">
       <div className="mx-auto flex h-12 max-w-[1280px] items-end gap-1">
         {profileTabs.map((tab) => {
           const Icon = tab.icon
           const isActive = activeTab === tab.key
+
           return (
             <button
               key={tab.key}
@@ -198,10 +233,16 @@ function RepositoryCard({ repository }: { repository: RepositoryCardItem }) {
   return (
     <Card className="gap-4 rounded-md border-border bg-card p-4 shadow-none">
       <div className="flex items-start justify-between gap-3">
-        <button type="button" className="text-left text-base font-semibold text-primary hover:text-[var(--primary-hover)] hover:underline">
+        <button
+          type="button"
+          className="text-left text-base font-semibold text-primary hover:text-[var(--primary-hover)] hover:underline"
+        >
           {repository.name}
         </button>
-        <Badge variant="outline" className="rounded-full border-border bg-transparent px-2 py-0 text-xs font-medium text-muted-foreground">
+        <Badge
+          variant="outline"
+          className="rounded-full border-border bg-transparent px-2 py-0 text-xs font-medium text-muted-foreground"
+        >
           {repository.visibility}
         </Badge>
       </div>
@@ -220,7 +261,12 @@ function RepositoryCard({ repository }: { repository: RepositoryCardItem }) {
 function AchievementBadge({ item }: { item: Achievement }) {
   return (
     <div className="relative">
-      <div className={cn("flex size-13 items-center justify-center rounded-full border border-white/60 bg-gradient-to-br text-2xl shadow-sm", item.gradient)}>
+      <div
+        className={cn(
+          "flex size-13 items-center justify-center rounded-full border border-white/60 bg-gradient-to-br text-2xl shadow-sm",
+          item.gradient
+        )}
+      >
         <span aria-hidden="true">{item.emoji}</span>
       </div>
       {item.countLabel ? (
@@ -232,7 +278,13 @@ function AchievementBadge({ item }: { item: Achievement }) {
   )
 }
 
-function ContributionGraph({ selectedYear, onYearChange }: { selectedYear: YearOption; onYearChange: (year: YearOption) => void }) {
+function ContributionGraph({
+  selectedYear,
+  onYearChange,
+}: {
+  selectedYear: YearOption
+  onYearChange: (year: YearOption) => void
+}) {
   const [settings, setSettings] = useState("private")
 
   return (
@@ -241,7 +293,10 @@ function ContributionGraph({ selectedYear, onYearChange }: { selectedYear: YearO
         <div className="mb-3 flex items-center justify-between gap-3">
           <h2 className="text-[28px] font-semibold text-foreground">471 contributions in the last year</h2>
           <Select value={settings} onValueChange={setSettings}>
-            <SelectTrigger size="sm" className="h-8 border-0 bg-transparent px-0 text-sm text-muted-foreground shadow-none hover:text-foreground focus-visible:ring-0">
+            <SelectTrigger
+              size="sm"
+              className="h-8 border-0 bg-transparent px-0 text-sm text-muted-foreground shadow-none hover:text-foreground focus-visible:ring-0"
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="border-border bg-card text-foreground">
@@ -271,7 +326,10 @@ function ContributionGraph({ selectedYear, onYearChange }: { selectedYear: YearO
                   {contributionData.map((row, rowIndex) => (
                     <span
                       key={`cell-${rowIndex}-${columnIndex}`}
-                      className={cn("block size-[10px] rounded-[2px] border border-black/0", contributionCellClass[row[columnIndex]])}
+                      className={cn(
+                        "block size-[10px] rounded-[2px] border border-black/0",
+                        contributionCellClass[row[columnIndex]]
+                      )}
                     />
                   ))}
                 </div>
@@ -297,6 +355,7 @@ function ContributionGraph({ selectedYear, onYearChange }: { selectedYear: YearO
       <div className="flex w-[92px] flex-col gap-3 pt-11">
         {(["2026", "2025", "2024", "2023"] as YearOption[]).map((year) => {
           const isSelected = year === selectedYear
+
           return (
             <button
               key={year}
@@ -316,7 +375,7 @@ function ContributionGraph({ selectedYear, onYearChange }: { selectedYear: YearO
   )
 }
 
-function UserProfileOverviewView({ state = "default" }: UserProfileOverviewProps) {
+export function UserProfileOverviewView({ state = "default" }: UserProfileOverviewProps) {
   const [search, setSearch] = useState("")
   const [activeTab, setActiveTab] = useState("overview")
   const [selectedYear, setSelectedYear] = useState<YearOption>("2026")
@@ -328,7 +387,11 @@ function UserProfileOverviewView({ state = "default" }: UserProfileOverviewProps
       <header className="border-b border-border bg-background-deep px-4">
         <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon-sm" className="h-10 w-10 rounded-lg border border-border bg-transparent text-muted-foreground hover:bg-surface-hover hover:text-foreground">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="h-10 w-10 rounded-lg border border-border bg-transparent text-muted-foreground hover:bg-surface-hover hover:text-foreground"
+            >
               <Menu className="size-5" />
             </Button>
             <Github className="size-8 text-foreground" />
@@ -352,8 +415,14 @@ function UserProfileOverviewView({ state = "default" }: UserProfileOverviewProps
 
                 if (action.kind === "avatar") {
                   return (
-                    <button key={action.id} type="button" className="relative rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60">
-                      {action.hasDot ? <span className="absolute -right-0.5 top-0 size-2 rounded-full bg-primary" /> : null}
+                    <button
+                      key={action.id}
+                      type="button"
+                      className="relative rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+                    >
+                      {action.hasDot ? (
+                        <span className="absolute -right-0.5 top-0 size-2 rounded-full bg-primary" />
+                      ) : null}
                       <Avatar className="size-8 border border-border">
                         <AvatarImage src="/Frida.png" alt="OnderCampos" />
                         <AvatarFallback>OC</AvatarFallback>
@@ -377,7 +446,11 @@ function UserProfileOverviewView({ state = "default" }: UserProfileOverviewProps
           <aside>
             <div className="relative mx-auto w-fit">
               <Avatar className="size-[264px] border border-border">
-                <AvatarImage src="/Frida.png" alt="Onder Francisco Campos Garcia" className="object-cover" />
+                <AvatarImage
+                  src="/Frida.png"
+                  alt="Onder Francisco Campos Garcia"
+                  className="object-cover"
+                />
                 <AvatarFallback>OC</AvatarFallback>
               </Avatar>
               <Button
@@ -397,20 +470,29 @@ function UserProfileOverviewView({ state = "default" }: UserProfileOverviewProps
                 <p className="mt-1 text-[22px] font-light text-muted-foreground">OnderCampos</p>
               </div>
 
-              <Button variant="outline" className="h-8 w-full rounded-md border-border bg-secondary text-sm font-medium text-foreground shadow-none hover:bg-surface-hover">
+              <Button
+                variant="outline"
+                className="h-8 w-full rounded-md border-border bg-secondary text-sm font-medium text-foreground shadow-none hover:bg-surface-hover"
+              >
                 Edit profile
               </Button>
 
               <div className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
                 <Users className="size-4" />
-                <button type="button" className="font-medium text-text-secondary hover:text-foreground">2 followers</button>
+                <button type="button" className="font-medium text-text-secondary hover:text-foreground">
+                  2 followers
+                </button>
                 <span>·</span>
-                <button type="button" className="font-medium text-text-secondary hover:text-foreground">1 following</button>
+                <button type="button" className="font-medium text-text-secondary hover:text-foreground">
+                  1 following
+                </button>
               </div>
 
               <div className="flex items-center gap-2 text-sm text-text-secondary">
                 <Building2 className="size-4 text-muted-foreground" />
-                <button type="button" className="hover:text-foreground">Softtek</button>
+                <button type="button" className="hover:text-foreground">
+                  Softtek
+                </button>
               </div>
             </div>
 
@@ -435,7 +517,10 @@ function UserProfileOverviewView({ state = "default" }: UserProfileOverviewProps
           <section className="min-w-0">
             <div className="mb-4 flex items-center justify-between gap-4">
               <h2 className="text-xl font-semibold text-foreground">Popular repositories</h2>
-              <button type="button" className="text-sm text-primary hover:text-[var(--primary-hover)] hover:underline">
+              <button
+                type="button"
+                className="text-sm text-primary hover:text-[var(--primary-hover)] hover:underline"
+              >
                 Customize your pins
               </button>
             </div>
