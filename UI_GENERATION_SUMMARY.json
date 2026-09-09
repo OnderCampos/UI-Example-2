@@ -1,8 +1,0 @@
-[
-  {
-    "relativePath": "src/app/page.tsx",
-    "shortDescription": "User profile overview view with a GitHub-style dark desktop layout.",
-    "fullDescription": "Implements the user-profile-overview view in its default state as a full-width desktop profile page with a global dark header, icon-and-text profile navigation tabs, a left identity column, a two-column grid of popular repository cards, a contribution graph with selectable year buttons and contribution settings, and a contribution activity heading. The route renders through the exported UserProfileOverviewView component, which accepts a serializable state prop and keeps visible controls such as search, tabs, dropdowns, year selectors, links, and buttons interactive with local presentational state.",
-    "isView": true
-  }
-]
