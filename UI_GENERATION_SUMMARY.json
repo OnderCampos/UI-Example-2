@@ -1,8 +1,26 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "GitHub-style user profile overview view with repository highlights and activity.",
-    "fullDescription": "Main user profile overview view for the default state. It renders a dark GitHub-style profile page with a top product header, profile sidebar, tab navigation, a popular repositories grid, yearly contribution heatmap, and contribution activity heading. The view supports configurable profile data, repository cards, selected tab, selected year, and contribution fixtures while keeping visible tabs, year filters, buttons, and search input interactive through local or controlled state.",
+    "shortDescription": "Dashboard home feed view with an activity stream and discovery sidebar.",
+    "fullDescription": "Main dashboard home feed view for the default state. It renders a GitHub-style home screen with the shared product header, a segmented activity filter, feed cards for recent repository activity, and a right sidebar with project creation, trending repositories, and discovery panels. The route uses DashboardHomeFeedView and keeps the search field, feed filter buttons, and visible action buttons interactive through local presentational state.",
     "isView": true
+  },
+  {
+    "relativePath": "src/app/user-profile-overview/page.tsx",
+    "shortDescription": "GitHub-style user profile overview view with repository highlights and activity.",
+    "fullDescription": "User profile overview view for the default state. It renders a GitHub-style profile page with a shared top product header, profile sidebar, tab navigation, a popular repositories grid, yearly contribution heatmap, and contribution activity heading. The route uses UserProfileOverviewView and supports configurable profile data, repository cards, selected tab, selected year, and contribution fixtures while keeping visible tabs, year filters, buttons, and search input interactive through local or controlled state.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/components/dashboard-home-feed-view.tsx",
+    "shortDescription": "Reusable dashboard home feed screen component with configurable activity and sidebar content.",
+    "fullDescription": "Presentational DashboardHomeFeedView component that renders the shared GitHub-style dashboard feed layout, including the top header, activity cards, and discovery sidebar. It accepts a state prop, customizable search placeholder and signed-in label, plus fixture-driven feedItems and trendingRepositories collections so future routes or states can reuse the same implementation without duplicating layout markup. The search field and feed filter toggle remain immediately interactive through local state.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/user-profile-overview-view.tsx",
+    "shortDescription": "Reusable user profile overview screen component with configurable profile and contribution data.",
+    "fullDescription": "Presentational UserProfileOverviewView component that renders the shared GitHub-style profile overview layout, including the top header, profile summary sidebar, repository cards, achievements, and contribution heatmap. It accepts a state prop, selectedTab, selectedYear, onSelectedYearChange, searchPlaceholder, profile, repositories, achievements, and years so one implementation can support route-level configuration and future visual states without duplicating the screen. Tabs, year selection, buttons, and the search field remain immediately interactive through controlled or local UI state.",
+    "isView": false
   }
 ]
