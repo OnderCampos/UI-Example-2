@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Dashboard home feed view with GitHub-style three-column layout.",
-    "fullDescription": "Main dashboard home feed view for the default state. It renders a dark GitHub-style workspace with a top header, left repository sidebar, central ask composer and feed cards, and a right rail for event promotion and changelog updates. The view supports configurable username, placeholders, and feed sections while keeping visible controls interactive through local UI state.",
+    "shortDescription": "GitHub-style user profile overview view with repository highlights and activity.",
+    "fullDescription": "Main user profile overview view for the default state. It renders a dark GitHub-style profile page with a top product header, profile sidebar, tab navigation, a popular repositories grid, yearly contribution heatmap, and contribution activity heading. The view supports configurable profile data, repository cards, selected tab, selected year, and contribution fixtures while keeping visible tabs, year filters, buttons, and search input interactive through local or controlled state.",
     "isView": true
   }
 ]
