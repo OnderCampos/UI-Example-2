@@ -31,9 +31,10 @@ export default function RootLayout({
       <body className={`${inter.variable} ${robotoMono.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="dark"
+          enableSystem={false}
           disableTransitionOnChange
+          forcedTheme="dark"
         >
           <QueryProvider>{children}</QueryProvider>
           <Toaster />
