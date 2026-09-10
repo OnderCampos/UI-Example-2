@@ -1,0 +1,8 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Dashboard home view for the signed-in developer feed.",
+    "fullDescription": "Renders the dashboard-home view in its default state with a GitHub-style header, left repository sidebar, central copilot prompt composer, feed cards for trending and recommended repositories, and a right rail for event and changelog panels. The view exposes a state prop for supported visual states and keeps all visible search fields, menus, and action buttons interactive through local presentational state.",
+    "isView": true
+  }
+]
