@@ -1,8 +1,0 @@
-[
-  {
-    "relativePath": "src/app/page.tsx",
-    "shortDescription": "Home route that supports the dashboard home feed and user profile overview views.",
-    "fullDescription": "Implements one reusable home-route view switcher contract that supports the dashboard-home-feed and user-profile-overview screens in their default states through view, state, activeTab, and selectedYear arguments. The dashboard view renders a dark developer home feed with a shared header, search, activity rail, repository feed cards, and side panels, while the profile view renders a GitHub-style header, profile navigation tabs, repository cards, and a contribution heatmap with interactive year selection.",
-    "isView": true
-  }
-]
