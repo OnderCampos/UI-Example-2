@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "GitHub-style user profile overview view for a developer portfolio.",
-    "fullDescription": "Renders the user-profile-overview view in its default state with a dark GitHub-style top header, profile sidebar, interactive repository navigation tabs, a popular repositories grid, and a yearly contribution activity section with selectable years and clickable heatmap cells. The view exposes state, activeTab, and selectedYear arguments so the profile overview can preserve supported visual states while keeping visible controls immediately interactive through local presentational state.",
+    "shortDescription": "Hosts the dashboard home and user profile overview views with local view-state switching.",
+    "fullDescription": "Renders two independent presentational views from one route using local state: a dashboard-home default state with interactive date filters, metric cards, a summary chart, and recent activity; and a user-profile-overview default state with a GitHub-style profile header, interactive repository tabs, searchable pinned repositories, and a contribution heatmap with selectable years. The route preserves both views in the active implementation instead of replacing earlier delivered UI with the newest screen.",
     "isView": true
   }
 ]
