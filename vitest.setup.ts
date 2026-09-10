@@ -1,9 +1,15 @@
-import '@testing-library/jest-dom'
 import { afterEach } from 'vitest'
-import { cleanup } from '@testing-library/react'
 
-// Cleanup after each test case
+let cleanup: undefined | (() => void)
+
+try {
+  await import('@testing-library/jest-dom')
+  const reactTestingLibrary = await import('@testing-library/react')
+  cleanup = reactTestingLibrary.cleanup
+} catch {
+  cleanup = undefined
+}
+
 afterEach(() => {
-  cleanup()
+  cleanup?.()
 })
-
