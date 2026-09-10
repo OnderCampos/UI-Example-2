@@ -2,506 +2,357 @@
 
 import { useMemo, useState } from "react";
 import {
-  Bell,
+  BadgeCheck,
   BookOpen,
+  Boxes,
+  Building2,
   ChevronDown,
-  ChevronRight,
-  CircleDot,
-  Filter,
-  FlaskConical,
-  FolderGit2,
-  GitBranch,
-  GitFork,
+  Eye,
   Github,
-  Home,
-  LayoutGrid,
   Menu,
-  MonitorPlay,
-  Plus,
+  Package,
   Search,
-  Sparkles,
-  SquareTerminal,
   Star,
   Users,
-  Zap,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
-type RepoItem = {
-  owner: string;
+type UserProfileOverviewState = "default";
+
+type RepositoryItem = {
   name: string;
-  description: string;
-  language: string;
-  stars: string;
-  avatar?: string;
-  accent?: string;
+  description?: string;
+  language: "Python" | "TypeScript";
+  forkedFrom?: string;
+  isPublic?: boolean;
 };
 
-type FeedSection = {
-  title: string;
-  items: RepoItem[];
-  showMore?: boolean;
+type UserProfileOverviewViewProps = {
+  state?: UserProfileOverviewState;
+  activeTab?: "overview" | "repositories" | "projects" | "packages" | "stars";
+  selectedYear?: "2026" | "2025" | "2024" | "2023";
 };
 
-type DashboardHomeViewProps = {
-  state?: "default";
-};
-
-const topRepositories = [
-  "OnderCampos/CountBoxingSofttek",
-  "Fridaplatform/cp-cloudagents",
-  "OnderCampos/UI-Agent-Example",
-  "Fridaplatform/ReqGen-Backend",
-  "Fridaplatform/ProductPlanner",
-  "Fridaplatform/reqgen_frontend",
-  "OnderCampos/FridaProductPlannerWebBackend",
+const repositories: RepositoryItem[] = [
+  {
+    name: "open-interpreter",
+    description: "A natural language interface for computers",
+    language: "Python",
+    forkedFrom: "openinterpreter/openinterpreter",
+    isPublic: true,
+  },
+  { name: "CountBoxingSofttek", language: "Python", isPublic: true },
+  { name: "count_colors", language: "Python", isPublic: true },
+  { name: "pushtest", language: "Python", isPublic: true },
+  { name: "SAP-Cleaning-Frontend", language: "TypeScript", isPublic: true },
+  { name: "FridaProductPlannerWebBackend", language: "Python", isPublic: true },
 ];
 
-const feedSections: FeedSection[] = [
-  {
-    title: "Trending repositories",
-    showMore: true,
-    items: [
-      {
-        owner: "ayghri",
-        name: "i-have-adhd",
-        description:
-          "A skill to stop your coding agent from burying the answer. ADHD-friendly output.",
-        language: "Python",
-        stars: "33.6k",
-        avatar: "/next.svg",
-      },
-      {
-        owner: "spotify",
-        name: "portal-ai-plugins",
-        description: "",
-        language: "TypeScript",
-        stars: "716",
-        accent: "#1DB954",
-      },
-    ],
-  },
-  {
-    title: "Recommended for you",
-    items: [
-      {
-        owner: "jasonkylelol",
-        name: "graphrag-chinese",
-        description: "支持中文CNCCN 的 microsoft/graphrag",
-        language: "Python",
-        stars: "51",
-        avatar: "/Frida.png",
-      },
-    ],
-  },
+const contributionMonths = ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"];
+const contributionRows = ["Mon", "Wed", "Fri"];
+const contributionData = [
+  [0,0,0,0,1,2,0,0,0,0,0,0,0,0,2,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,3,4,2],
+  [0,0,1,0,0,1,0,0,0,2,0,0,0,1,0,0,0,0,3,0,0,1,4,0,0,0,0,3,0,1,0,0,0,0,0,0,0,2,0,0,0,4,2,1],
+  [2,1,0,0,0,0,0,1,0,0,0,2,0,0,0,0,1,0,0,0,2,0,1,0,0,3,0,1,0,0,0,0,4,0,0,0,0,1,0,2,0,0,4,3],
+  [0,2,0,0,0,1,0,0,1,0,1,0,0,0,0,0,0,2,0,3,0,0,0,1,0,2,0,0,3,0,0,0,0,0,0,2,0,0,0,0,1,4,0,0],
+  [1,0,0,0,1,0,0,0,2,0,0,0,0,0,0,1,0,4,0,0,1,0,0,2,0,0,4,1,0,0,0,0,0,0,0,0,0,0,3,0,0,2,4,0],
+  [0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,2,0,1,0,0,0,0,0,1,0,0,3,0,0,0,0,0,1,0,0,0,0,0,0,0,3,2,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 ];
 
-const changelogItems = [
-  {
-    time: "3 hours ago",
-    text: "Remediate Code Quality findings with agentic autofix",
-  },
-  {
-    time: "13 hours ago",
-    text: "Enterprise-managed sandbox in Copilot for JetBrains",
-  },
-  {
-    time: "18 hours ago",
-    text: "GitHub Enterprise Server 3.22 is now generally available",
-  },
-  {
-    time: "Yesterday",
-    text: "New customer portal help.github.com",
-  },
-];
+function contributionColor(level: number) {
+  if (level >= 4) return "bg-[#7adc97]";
+  if (level === 3) return "bg-[#4caf50]";
+  if (level === 2) return "bg-[#2e7d32]";
+  if (level === 1) return "bg-[#1f4d2f]";
+  return "bg-[#2d333b]";
+}
 
-const headerIcons = [LayoutGrid, Plus, Bell, GitBranch, MonitorPlay, Home];
-const actionChips = [
-  { label: "Debug", icon: FlaskConical },
-  { label: "Agent", icon: Sparkles },
-  { label: "Create issue", icon: CircleDot },
-  { label: "Write code", icon: BookOpen, withChevron: true },
-  { label: "Git", icon: GitBranch, withChevron: true },
-  { label: "Pull requests", icon: GitFork, withChevron: true },
-];
-
-function RepoAvatar({ label, accent, src }: { label: string; accent?: string; src?: string }) {
+function ProfileRepositoryCard({ repository }: { repository: RepositoryItem }) {
   return (
-    <div
-      className="flex size-6 items-center justify-center overflow-hidden rounded-full border border-border bg-background text-[10px] font-semibold text-foreground"
-      style={accent ? { backgroundColor: accent, borderColor: accent, color: "#ffffff" } : undefined}
-    >
-      {src ? (
-        <Avatar className="size-6 rounded-full">
-          <AvatarImage src={src} alt={label} />
-          <AvatarFallback>{label.slice(0, 1)}</AvatarFallback>
-        </Avatar>
-      ) : (
-        label.slice(0, 1).toUpperCase()
-      )}
-    </div>
+    <Card className="gap-0 rounded-lg border-border bg-background py-0 shadow-none">
+      <CardContent className="flex h-full min-h-[88px] flex-col justify-between p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <button className="truncate text-left text-[15px] font-semibold text-[#4493f8] hover:underline">
+              {repository.name}
+            </button>
+            {repository.forkedFrom ? (
+              <p className="mt-1 text-xs text-muted-foreground">
+                Forked from <span className="border-b border-muted-foreground/50">{repository.forkedFrom}</span>
+              </p>
+            ) : null}
+            {repository.description ? (
+              <p className="mt-4 text-sm text-foreground/90">{repository.description}</p>
+            ) : null}
+          </div>
+          {repository.isPublic ? (
+            <Badge variant="outline" className="rounded-full border-border bg-transparent px-2 py-0 text-[11px] text-muted-foreground">
+              Public
+            </Badge>
+          ) : null}
+        </div>
+        <div className="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span className={cn("size-3 rounded-full", repository.language === "TypeScript" ? "bg-[#3178c6]" : "bg-[#58a6ff]")} />
+          <span>{repository.language}</span>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
-function RepoRow({ item, compact = false }: { item: RepoItem; compact?: boolean }) {
-  const [starred, setStarred] = useState(false);
-  const [menuValue, setMenuValue] = useState("Star");
+function UserProfileOverviewView({
+  state = "default",
+  activeTab = "overview",
+  selectedYear = "2026",
+}: UserProfileOverviewViewProps) {
+  const [searchValue, setSearchValue] = useState("");
+  const [tabValue, setTabValue] = useState(activeTab);
+  const [yearValue, setYearValue] = useState(selectedYear);
+  const [settingsLabel, setSettingsLabel] = useState("Contribution settings");
 
-  return (
-    <div className={cn("flex items-start justify-between gap-4 py-4", compact && "py-3")}>
-      <div className="min-w-0 flex-1">
-        <div className="mb-2 flex items-center gap-2">
-          <RepoAvatar label={item.owner} accent={item.accent} src={item.avatar} />
-          <button className="truncate text-left text-[15px] font-semibold text-foreground hover:text-primary">
-            {item.owner}/{item.name}
-          </button>
-        </div>
-        {item.description ? (
-          <p className="mb-2 text-[15px] leading-6 text-foreground">{item.description}</p>
-        ) : null}
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <span className="flex items-center gap-1.5">
-            <span className="size-2.5 rounded-full bg-[var(--language-blue)]" />
-            {item.language}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Star className="size-3.5" />
-            {item.stars}
-          </span>
-        </div>
-      </div>
-      <div className="flex shrink-0 items-center overflow-hidden rounded-md border border-border bg-[var(--color-surface)]">
-        <Button
-          variant="ghost"
-          className={cn(
-            "h-8 rounded-none border-0 px-4 text-xs font-semibold text-foreground hover:bg-[var(--color-hover-surface)] hover:text-foreground",
-            starred && "text-primary"
-          )}
-          onClick={() => setStarred((value) => !value)}
-        >
-          <Star className={cn("size-3.5", starred && "fill-current")} />
-          {starred ? "Starred" : menuValue}
-        </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="rounded-none border-l border-border text-muted-foreground hover:bg-[var(--color-hover-surface)] hover:text-foreground"
-            >
-              <ChevronDown className="size-3.5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-36 border-border bg-card text-card-foreground">
-            {[
-              "Star",
-              "Watch",
-              "Save",
-            ].map((option) => (
-              <DropdownMenuItem key={option} onClick={() => setMenuValue(option)}>
-                {option}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </div>
-  );
-}
-
-function DashboardHomeView({ state = "default" }: DashboardHomeViewProps) {
-  const [sidebarQuery, setSidebarQuery] = useState("");
-  const [headerQuery, setHeaderQuery] = useState("");
-  const [prompt, setPrompt] = useState("");
-  const [contextScope, setContextScope] = useState("All repositories");
-  const [answerMode, setAnswerMode] = useState("Auto");
-
-  const filteredRepos = useMemo(
-    () =>
-      topRepositories.filter((repo) =>
-        repo.toLowerCase().includes(sidebarQuery.toLowerCase())
-      ),
-    [sidebarQuery]
-  );
+  const filteredRepositories = useMemo(() => {
+    if (!searchValue.trim()) return repositories;
+    return repositories.filter((repo) => repo.name.toLowerCase().includes(searchValue.toLowerCase()));
+  }, [searchValue]);
 
   return (
     <main data-state={state} className="min-h-screen bg-background text-foreground">
-      <div className="flex min-h-screen flex-col">
-        <header className="sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur">
-          <div className="flex h-14 items-center justify-between gap-4 px-3">
+      <header className="border-b border-border bg-[#0d1117] px-4">
+        <div className="mx-auto flex h-[88px] max-w-[1280px] flex-col justify-center gap-3">
+          <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" className="size-8 border border-border text-muted-foreground hover:bg-[var(--color-hover-surface)] hover:text-foreground">
+              <Button variant="ghost" size="icon-sm" className="border border-border text-muted-foreground hover:bg-[var(--color-hover-surface)] hover:text-foreground">
                 <Menu className="size-4" />
               </Button>
               <Github className="size-8" />
-              <span className="text-sm font-semibold">Dashboard</span>
+              <span className="text-sm font-semibold">OnderCampos</span>
             </div>
-            <div className="flex flex-1 items-center justify-end gap-3">
-              <div className="relative hidden w-full max-w-[420px] lg:block">
+            <div className="flex items-center gap-3">
+              <div className="relative hidden w-[340px] md:block">
                 <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
-                  value={headerQuery}
-                  onChange={(event) => setHeaderQuery(event.target.value)}
+                  value={searchValue}
+                  onChange={(event) => setSearchValue(event.target.value)}
                   placeholder="Type / to search"
-                  className="h-8 rounded-md border-border bg-background pl-9 text-sm"
+                  className="h-8 border-border bg-transparent pl-9 text-sm"
                 />
               </div>
-              <div className="flex items-center gap-1 text-muted-foreground">
-                {headerIcons.map((Icon, index) => (
-                  <Button
-                    key={`${Icon.displayName}-${index}`}
-                    variant="ghost"
-                    size="icon"
-                    className="size-8 border border-transparent hover:border-border hover:bg-[var(--color-hover-surface)] hover:text-foreground"
-                  >
-                    <Icon className="size-4" />
+              <div className="flex items-center gap-2">
+                {[
+                  <BookOpen key="book" className="size-4" />,
+                  <Package key="package" className="size-4" />,
+                  <PlusIcon key="plus" />,
+                  <Eye key="eye" className="size-4" />,
+                ].map((icon, index) => (
+                  <Button key={index} variant="ghost" size="icon-sm" className="border border-border text-muted-foreground hover:bg-[var(--color-hover-surface)] hover:text-foreground">
+                    {icon}
                   </Button>
                 ))}
+                <Avatar className="size-8 border border-border">
+                  <AvatarImage src="/Frida.png" alt="OnderCampos" />
+                  <AvatarFallback>OC</AvatarFallback>
+                </Avatar>
               </div>
-              <Avatar className="size-8 border border-border">
-                <AvatarImage src="/Frida.png" alt="OnderCampos" />
-                <AvatarFallback>OC</AvatarFallback>
-              </Avatar>
             </div>
           </div>
-        </header>
 
-        <div className="grid flex-1 grid-cols-1 xl:grid-cols-[300px_minmax(0,1fr)_318px]">
-          <aside className="border-r border-border px-4 py-6 xl:block">
-            <div className="mb-8 flex items-center gap-3">
-              <Avatar className="size-6 border border-border">
-                <AvatarImage src="/Frida.png" alt="OnderCampos" />
-                <AvatarFallback>OC</AvatarFallback>
-              </Avatar>
-              <button className="flex items-center gap-1 text-sm font-semibold hover:text-primary">
-                OnderCampos
-                <ChevronDown className="size-3.5 text-muted-foreground" />
+          <Tabs value={tabValue} onValueChange={(value) => setTabValue(value as UserProfileOverviewViewProps["activeTab"])} className="gap-0">
+            <TabsList className="h-auto w-full justify-start gap-5 rounded-none bg-transparent p-0 text-sm">
+              {[
+                { value: "overview", label: "Overview", icon: BookOpen },
+                { value: "repositories", label: "Repositories", icon: Package, count: 16 },
+                { value: "projects", label: "Projects", icon: Boxes },
+                { value: "packages", label: "Packages", icon: Package },
+                { value: "stars", label: "Stars", icon: Star },
+              ].map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <TabsTrigger
+                    key={tab.value}
+                    value={tab.value}
+                    className="h-11 rounded-none border-0 border-b-2 border-transparent bg-transparent px-0 pb-3 text-sm text-muted-foreground shadow-none data-[state=active]:border-[#f78166] data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                  >
+                    <Icon className="size-4" />
+                    {tab.label}
+                    {tab.count ? (
+                      <span className="ml-1 rounded-full bg-card px-1.5 py-0 text-[11px] leading-5 text-foreground">{tab.count}</span>
+                    ) : null}
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+          </Tabs>
+        </div>
+      </header>
+
+      <div className="mx-auto grid max-w-[1120px] grid-cols-1 gap-8 px-6 py-8 lg:grid-cols-[296px_minmax(0,1fr)]">
+        <aside>
+          <div className="relative mx-auto w-fit lg:mx-0">
+            <Avatar className="size-[260px] border border-border lg:size-[264px]">
+              <AvatarImage src="/Frida.png" alt="OnderCampos" className="object-cover" />
+              <AvatarFallback>OC</AvatarFallback>
+            </Avatar>
+            <button className="absolute right-2 bottom-8 flex size-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:bg-[var(--color-hover-surface)] hover:text-foreground">
+              <BadgeCheck className="size-4" />
+            </button>
+          </div>
+
+          <div className="mt-5">
+            <h1 className="text-[2rem] leading-9 font-semibold">Onder Francisco Campos Garcia</h1>
+            <p className="mt-1 text-[26px] leading-8 text-muted-foreground">OnderCampos</p>
+          </div>
+
+          <Button variant="outline" className="mt-5 h-8 w-full border-border bg-[#21262d] text-sm font-semibold text-foreground hover:bg-[var(--color-hover-surface)] hover:text-foreground">
+            Edit profile
+          </Button>
+
+          <div className="mt-4 flex items-center gap-1 text-sm text-muted-foreground">
+            <Users className="size-4" />
+            <button className="hover:text-foreground">2 followers</button>
+            <span>·</span>
+            <button className="hover:text-foreground">1 following</button>
+          </div>
+
+          <div className="mt-4 flex items-center gap-2 text-sm text-foreground/90">
+            <Building2 className="size-4 text-muted-foreground" />
+            <span>Softtek</span>
+          </div>
+
+          <div className="mt-6 border-t border-border pt-4">
+            <h2 className="text-xl font-semibold">Achievements</h2>
+            <div className="mt-4 flex items-center gap-2">
+              {[
+                { label: "YOLO", color: "from-pink-300 to-orange-300" },
+                { label: "Ninja", color: "from-yellow-300 to-orange-400" },
+                { label: "Arctic", color: "from-sky-300 to-blue-400" },
+                { label: "Pair", color: "from-lime-300 to-emerald-400" },
+              ].map((item, index) => (
+                <div key={item.label} className="relative">
+                  <div className={cn("flex size-12 items-center justify-center rounded-full border border-white/50 bg-gradient-to-br text-[11px] font-bold text-background", item.color)}>
+                    {item.label}
+                  </div>
+                  {index === 2 ? (
+                    <span className="absolute -right-1 -bottom-1 rounded-full border border-background bg-[#f2cc60] px-1.5 text-[10px] font-semibold text-background">x2</span>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-6 border-t border-border pt-4">
+            <h2 className="text-xl font-semibold">Organizations</h2>
+          </div>
+        </aside>
+
+        <section>
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="text-2xl font-medium">Popular repositories</h2>
+            <button className="text-sm text-[#4493f8] hover:underline">Customize your pins</button>
+          </div>
+
+          <div className="mt-3 grid gap-4 md:grid-cols-2">
+            {filteredRepositories.map((repository) => (
+              <ProfileRepositoryCard key={repository.name} repository={repository} />
+            ))}
+          </div>
+
+          <div className="mt-8 flex items-end justify-between gap-4">
+            <h2 className="text-[28px] leading-8 font-normal">471 contributions in the last year</h2>
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <button
+                className="flex items-center gap-1 hover:text-foreground"
+                onClick={() => setSettingsLabel(settingsLabel === "Contribution settings" ? "Contribution visibility" : "Contribution settings")}
+              >
+                {settingsLabel}
+                <ChevronDown className="size-4" />
               </button>
             </div>
+          </div>
 
-            <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-sm font-semibold">Top repositories</h2>
-              <Button className="h-8 rounded-md bg-primary px-3 text-xs font-semibold text-primary-foreground hover:bg-[var(--color-primary-hover)]">
-                <Plus className="size-3.5" />
-                New
-              </Button>
-            </div>
-
-            <Input
-              value={sidebarQuery}
-              onChange={(event) => setSidebarQuery(event.target.value)}
-              placeholder="Find a repository..."
-              className="mb-4 h-8 rounded-md border-border bg-background text-sm"
-            />
-
-            <div className="space-y-2 text-sm">
-              {filteredRepos.map((repo, index) => (
-                <button
-                  key={repo}
-                  className="flex w-full items-start gap-2 rounded-md px-1 py-1 text-left text-foreground hover:bg-[var(--color-hover-surface)]"
-                >
-                  <span className="mt-0.5 flex size-4 items-center justify-center rounded-sm bg-[#30363d] text-[9px] font-bold text-[#f778ba]">
-                    {index < 2 ? "◼" : "F"}
-                  </span>
-                  <span className="line-clamp-2">{repo}</span>
-                </button>
-              ))}
-            </div>
-
-            <button className="mt-4 text-sm text-muted-foreground hover:text-foreground">
-              Show more
-            </button>
-          </aside>
-
-          <section className="px-6 py-10 xl:px-14">
-            <h1 className="mb-4 text-[2rem] font-semibold tracking-[-0.02em]">Home</h1>
-
-            <Card className="gap-0 rounded-2xl border-border bg-card py-0 shadow-[var(--shadow-card)]">
+          <div className="mt-3 grid grid-cols-[minmax(0,1fr)_76px] gap-4">
+            <Card className="gap-0 rounded-lg border-border bg-background py-0 shadow-none">
               <CardContent className="p-4">
-                <textarea
-                  value={prompt}
-                  onChange={(event) => setPrompt(event.target.value)}
-                  placeholder="Ask anything or type @ to add context"
-                  className="min-h-24 w-full resize-none border-0 bg-transparent text-lg text-foreground outline-none placeholder:text-muted-foreground"
-                />
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Button variant="outline" className="h-8 border-border bg-transparent text-sm text-foreground hover:bg-[var(--color-hover-surface)] hover:text-foreground">
-                      <SquareTerminal className="size-4" />
-                      Ask
-                      <ChevronDown className="size-3.5" />
-                    </Button>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="h-8 border-border bg-transparent text-sm text-foreground hover:bg-[var(--color-hover-surface)] hover:text-foreground">
-                          <FolderGit2 className="size-4" />
-                          {contextScope}
-                          <ChevronDown className="size-3.5" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="border-border bg-card text-card-foreground">
-                        {[
-                          "All repositories",
-                          "My repositories",
-                          "Starred repositories",
-                        ].map((option) => (
-                          <DropdownMenuItem key={option} onClick={() => setContextScope(option)}>
-                            {option}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    <Button variant="outline" size="icon-sm" className="border-border bg-transparent text-foreground hover:bg-[var(--color-hover-surface)] hover:text-foreground">
-                      <Plus className="size-4" />
-                    </Button>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 px-2 text-sm text-muted-foreground hover:bg-[var(--color-hover-surface)] hover:text-foreground">
-                          <Users className="size-4" />
-                          {answerMode}
-                          <ChevronDown className="size-3.5" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="border-border bg-card text-card-foreground">
-                        {["Auto", "Solo", "Team"].map((option) => (
-                          <DropdownMenuItem key={option} onClick={() => setAnswerMode(option)}>
-                            {option}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    <Button variant="ghost" size="icon-sm" className="text-muted-foreground hover:bg-[var(--color-hover-surface)] hover:text-foreground">
-                      <Zap className="size-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon-sm" className="text-muted-foreground hover:bg-[var(--color-hover-surface)] hover:text-foreground">
-                      <ChevronRight className="size-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="mt-6 flex flex-wrap gap-3">
-              {actionChips.map(({ label, icon: Icon, withChevron }) => (
-                <Button
-                  key={label}
-                  variant="outline"
-                  className="h-9 rounded-full border-border bg-background px-4 text-sm text-foreground hover:bg-[var(--color-hover-surface)] hover:text-foreground"
-                >
-                  <Icon className="size-4" />
-                  {label}
-                  {withChevron ? <ChevronDown className="size-3.5" /> : null}
-                </Button>
-              ))}
-            </div>
-
-            <div className="mt-5 flex items-center justify-between">
-              <h2 className="text-sm font-semibold">Feed</h2>
-              <Button variant="outline" className="h-8 border-border bg-[var(--color-surface)] px-3 text-sm text-foreground hover:bg-[var(--color-hover-surface)] hover:text-foreground">
-                <Filter className="size-4" />
-                Filter
-              </Button>
-            </div>
-
-            <div className="mt-3 space-y-4">
-              {feedSections.map((section) => (
-                <Card key={section.title} className="gap-0 rounded-lg border-border bg-card py-0 shadow-[var(--shadow-card)]">
-                  <CardContent className="p-0">
-                    <div className="flex items-center gap-2 px-4 pt-4 text-sm text-muted-foreground">
-                      <Star className="size-4" />
-                      <span>{section.title}</span>
-                      {section.showMore ? (
-                        <button className="text-primary hover:underline">See more</button>
-                      ) : null}
-                    </div>
-                    <div className="px-4 pb-2">
-                      {section.items.map((item, index) => (
-                        <div key={`${item.owner}/${item.name}`}>
-                          <RepoRow item={item} compact={section.items.length > 1} />
-                          {index !== section.items.length - 1 ? <Separator className="bg-border" /> : null}
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </section>
-
-          <aside className="border-l border-border px-6 py-9">
-            <Card className="gap-0 overflow-hidden rounded-xl border-border bg-card py-0 shadow-[var(--shadow-card)]">
-              <div className="h-18 bg-[linear-gradient(135deg,#b3f0cb_0%,#54c878_35%,#d7f7e2_60%,#7adc97_100%)]" />
-              <CardContent className="p-0">
-                <div className="border-b border-border px-4 py-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                  September 10 · 8:00 AM PT
-                </div>
-                <div className="space-y-4 p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h3 className="text-2xl font-semibold">GitHub Copilot Day</h3>
-                    </div>
-                    <button className="text-muted-foreground hover:text-foreground">×</button>
-                  </div>
-                  <ul className="space-y-2 text-sm leading-6 text-muted-foreground">
-                    {[
-                      "See how HydraFusion combines AI models to match the right model to the task",
-                      "Learn to automate work, run parallel agents, and use your own models",
-                      "Turn your best coding approaches into reusable Agent Skills",
-                    ].map((item) => (
-                      <li key={item} className="flex gap-2">
-                        <span className="mt-2 size-1.5 rounded-full bg-primary" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button className="h-10 w-full rounded-md bg-[#e6edf3] text-sm font-semibold text-background hover:bg-white/90">
-                    Set your reminder
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="mt-5 gap-0 rounded-xl border-border bg-card py-0 shadow-[var(--shadow-card)]">
-              <CardContent className="p-4">
-                <h3 className="mb-4 text-2xl font-semibold">Latest from our changelog</h3>
-                <div className="space-y-5">
-                  {changelogItems.map((item, index) => (
-                    <div key={item.text} className="relative pl-6">
-                      {index !== changelogItems.length - 1 ? (
-                        <span className="absolute top-4 left-[7px] h-[calc(100%+16px)] w-px bg-border" />
-                      ) : null}
-                      <span className="absolute top-1 left-0 size-3 rounded-full border border-border bg-background" />
-                      <p className="text-xs text-muted-foreground">{item.time}</p>
-                      <p className="mt-1 text-sm leading-6 text-foreground">{item.text}</p>
-                    </div>
+                <div className="ml-8 grid grid-cols-12 gap-x-6 text-xs text-muted-foreground">
+                  {contributionMonths.map((month) => (
+                    <span key={month}>{month}</span>
                   ))}
                 </div>
-                <button className="mt-5 text-sm text-muted-foreground hover:text-foreground">
-                  View changelog →
-                </button>
+                <div className="mt-2 flex gap-3">
+                  <div className="flex w-7 flex-col gap-[14px] pt-2 text-xs text-muted-foreground">
+                    {contributionRows.map((day) => (
+                      <span key={day}>{day}</span>
+                    ))}
+                  </div>
+                  <div className="grid flex-1 grid-rows-7 gap-1 overflow-hidden">
+                    {contributionData.map((row, rowIndex) => (
+                      <div key={rowIndex} className="grid grid-cols-44 gap-1">
+                        {row.map((value, columnIndex) => (
+                          <button
+                            key={`${rowIndex}-${columnIndex}`}
+                            aria-label={`Week ${columnIndex + 1}, day ${rowIndex + 1}, level ${value}`}
+                            className={cn("h-[11px] w-[11px] rounded-[2px] transition-transform hover:scale-110", contributionColor(value))}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
+                  <button className="hover:text-foreground">Learn how we count contributions</button>
+                  <div className="flex items-center gap-2">
+                    <span>Less</span>
+                    <div className="flex items-center gap-1">
+                      {[0, 1, 2, 3, 4].map((value) => (
+                        <span key={value} className={cn("h-[10px] w-[10px] rounded-[2px]", contributionColor(value))} />
+                      ))}
+                    </div>
+                    <span>More</span>
+                  </div>
+                </div>
               </CardContent>
             </Card>
-          </aside>
-        </div>
+
+            <div className="flex flex-col gap-2 pt-1 text-sm text-muted-foreground">
+              {(["2026", "2025", "2024", "2023"] as const).map((year) => (
+                <button
+                  key={year}
+                  onClick={() => setYearValue(year)}
+                  className={cn(
+                    "rounded-md px-3 py-2 text-left transition-colors hover:bg-[var(--color-hover-surface)] hover:text-foreground",
+                    yearValue === year && "bg-[#1f6feb] text-white hover:bg-[#1f6feb]"
+                  )}
+                >
+                  {year}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <h2 className="text-[32px] font-normal">Contribution activity</h2>
+            <div className="mt-4 flex items-center gap-3 text-sm text-[#4493f8]">
+              <span>September 2026</span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   );
 }
 
+function PlusIcon() {
+  return <span className="text-base leading-none">＋</span>;
+}
+
 export default function HomePage() {
-  return <DashboardHomeView state="default" />;
+  return <UserProfileOverviewView state="default" />;
 }

@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Dashboard home view for the signed-in developer feed.",
-    "fullDescription": "Renders the dashboard-home view in its default state with a GitHub-style header, left repository sidebar, central copilot prompt composer, feed cards for trending and recommended repositories, and a right rail for event and changelog panels. The view exposes a state prop for supported visual states and keeps all visible search fields, menus, and action buttons interactive through local presentational state.",
+    "shortDescription": "GitHub-style user profile overview view for a developer portfolio.",
+    "fullDescription": "Renders the user-profile-overview view in its default state with a dark GitHub-style top header, profile sidebar, interactive repository navigation tabs, a popular repositories grid, and a yearly contribution activity section with selectable years and clickable heatmap cells. The view exposes state, activeTab, and selectedYear arguments so the profile overview can preserve supported visual states while keeping visible controls immediately interactive through local presentational state.",
     "isView": true
   }
 ]
