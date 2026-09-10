@@ -1,8 +1,14 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "GitHub-style user profile overview view with repositories and contribution activity.",
-    "fullDescription": "Renders the user-profile-overview view in its default state with a dark profile header, tab navigation, left profile column, popular repositories grid, yearly contribution heatmap, and contribution activity section. The view accepts controlled or uncontrolled props for selectedTab, selectedYear, searchValue, user data, repositories, achievements, contribution months, and contribution grid so visible controls remain interactive while preserving the planned state contract.",
+    "shortDescription": "Dashboard home view rendered in its default state.",
+    "fullDescription": "Renders the dashboard-home view in its default state and keeps the route implementation on src/app/page.tsx. The view currently presents a GitHub-style dashboard layout with a dark header, profile sidebar, repository cards, contribution heatmap, and contribution activity areas while exposing a state prop for future supported states.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/app/reference/page.tsx",
+    "shortDescription": "Protected reference workspace with authenticated template examples.",
+    "fullDescription": "Renders a protected reference workspace that demonstrates the application's authenticated shell, data fetching examples, storage upload controls, theme toggle, and reusable UI primitives. It remains separate from generated product views and serves as a working catalog of template capabilities.",
     "isView": true
   }
 ]

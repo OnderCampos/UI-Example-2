@@ -6,7 +6,6 @@ import {
   Box,
   Building2,
   Camera,
-  CircleDot,
   Github,
   Link as LinkIcon,
   Menu,
@@ -22,6 +21,10 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+
+type DashboardHomeViewProps = {
+  state?: "default";
+};
 
 type ProfileTab = "overview" | "repositories" | "projects" | "packages";
 
@@ -332,7 +335,11 @@ function ContributionHeatmap({ months, grid }: { months: ContributionMonth[]; gr
   );
 }
 
-export default function UserProfileOverviewView({
+function DashboardHomeView({ state = "default" }: DashboardHomeViewProps) {
+  return <UserProfileOverviewView state={state} />;
+}
+
+function UserProfileOverviewView({
   state = "default",
   selectedTab,
   onSelectedTabChange,
@@ -558,4 +565,8 @@ export default function UserProfileOverviewView({
       </main>
     </div>
   );
+}
+
+export default function Page() {
+  return <DashboardHomeView />;
 }
