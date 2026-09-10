@@ -1,534 +1,561 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
-  Bell,
   BookOpen,
-  ChevronDown,
-  ChevronRight,
-  Circle,
-  Cpu,
-  FileCode2,
-  Filter,
-  GitBranch,
+  Box,
+  Building2,
+  Camera,
+  CircleDot,
   Github,
-  Home,
-  LayoutGrid,
+  Link as LinkIcon,
   Menu,
-  MessageSquare,
-  MonitorPlay,
-  Play,
-  Plus,
+  Package,
   Search,
-  Sparkles,
   Star,
-  Triangle,
   Users,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
-type RepositoryItem = {
-  owner: string;
+type ProfileTab = "overview" | "repositories" | "projects" | "packages";
+
+type Repository = {
   name: string;
   description?: string;
   language: string;
-  stars: string;
-  avatar?: string;
-  languageColor?: string;
-  source?: "github" | "spotify" | "custom";
+  languageColor: string;
+  visibility: "Public" | "Private";
+  forkedFrom?: string;
 };
 
-type FeedSection = {
-  id: string;
-  title: string;
-  actionLabel?: string;
-  items: RepositoryItem[];
+type ContributionLevel = 0 | 1 | 2 | 3 | 4;
+
+type ContributionMonth = {
+  label: string;
+  width: number;
 };
 
-type DashboardHomeViewProps = {
+type ContributionDay = {
+  level: ContributionLevel;
+};
+
+type Achievement = {
+  label: string;
+  emoji: string;
+  count?: string;
+  tint: string;
+};
+
+type UserProfileOverviewViewProps = {
   state?: "default";
-  userName?: string;
-  userAvatar?: string;
-  topRepositories?: string[];
-  searchPlaceholder?: string;
-  sections?: FeedSection[];
+  selectedTab?: ProfileTab;
+  onSelectedTabChange?: (tab: ProfileTab) => void;
+  selectedYear?: string;
+  onSelectedYearChange?: (year: string) => void;
+  searchValue?: string;
+  onSearchValueChange?: (value: string) => void;
+  user?: {
+    displayName: string;
+    handle: string;
+    avatarSrc?: string;
+    following: number;
+    followers: number;
+    organization: string;
+  };
+  repositories?: Repository[];
+  pinnedActionLabel?: string;
+  contributionTotal?: number;
+  months?: ContributionMonth[];
+  contributionGrid?: ContributionDay[][];
+  years?: string[];
+  achievements?: Achievement[];
 };
 
-const defaultSections: FeedSection[] = [
-  {
-    id: "trending",
-    title: "Trending repositories",
-    actionLabel: "See more",
-    items: [
-      {
-        owner: "ayghri",
-        name: "i-have-adhd",
-        description:
-          "A skill to stop your coding agent from burying the answer. ADHD-friendly output.",
-        language: "Python",
-        stars: "33.6k",
-        languageColor: "#58A6FF",
-        source: "custom",
-      },
-      {
-        owner: "spotify",
-        name: "portal-ai-plugins",
-        language: "TypeScript",
-        stars: "716",
-        languageColor: "#58A6FF",
-        source: "spotify",
-      },
-    ],
-  },
-  {
-    id: "recommended",
-    title: "Recommended for you",
-    items: [
-      {
-        owner: "jasonkylelol",
-        name: "graphrag-chinese",
-        description: "支持中文CNCCN 的 microsoft/graphrag",
-        language: "Python",
-        stars: "51",
-        languageColor: "#58A6FF",
-        source: "github",
-      },
-    ],
-  },
-];
+const defaultUserProfile = {
+  displayName: "Onder Francisco Campos Garcia",
+  handle: "OnderCampos",
+  avatarSrc: "/Frida.png",
+  following: 1,
+  followers: 2,
+  organization: "Softtek",
+};
 
-const defaultTopRepositories = [
-  "OnderCampos/CountBoxingSofttek",
-  "Fridaplatform/cp-cloudagents",
-  "OnderCampos/UI-Agent-Example",
-  "Fridaplatform/ReqGen-Backend",
-  "Fridaplatform/ProductPlanner",
-  "Fridaplatform/reggen_frontend",
-  "OnderCampos/FridaProductPlannerWebBackend",
-];
-
-const changelogItems = [
+const defaultRepositories: Repository[] = [
   {
-    time: "3 hours ago",
-    text: "Remediate Code Quality findings with agentic autofix",
+    name: "open-interpreter",
+    description: "A natural language interface for computers",
+    language: "Python",
+    languageColor: "#58A6FF",
+    visibility: "Public",
+    forkedFrom: "Forked from openinterpreter/openinterpreter",
   },
   {
-    time: "13 hours ago",
-    text: "Enterprise-managed sandbox in Copilot for JetBrains",
+    name: "CountBoxingSofttek",
+    language: "Python",
+    languageColor: "#58A6FF",
+    visibility: "Public",
   },
   {
-    time: "18 hours ago",
-    text: "GitHub Enterprise Server 3.22 is now generally available",
+    name: "count_colors",
+    language: "Python",
+    languageColor: "#58A6FF",
+    visibility: "Public",
   },
   {
-    time: "Yesterday",
-    text: "New customer portal help.github.com",
+    name: "pushtest",
+    language: "Python",
+    languageColor: "#58A6FF",
+    visibility: "Public",
+  },
+  {
+    name: "SAP-Cleaning-Frontend",
+    language: "TypeScript",
+    languageColor: "#58A6FF",
+    visibility: "Public",
+  },
+  {
+    name: "FridaProductPlannerWebBackend",
+    language: "Python",
+    languageColor: "#58A6FF",
+    visibility: "Public",
   },
 ];
 
-const modelOptions = ["Auto", "GPT-4.1", "Claude 3.7 Sonnet", "Gemini 2.5 Pro"];
-const askScopes = ["Ask", "Explain", "Summarize"];
-const repoScopes = ["All repositories", "My repositories", "Top repositories"];
-const starActions = ["Star", "Ignore", "Save for later"];
+const defaultMonths: ContributionMonth[] = [
+  { label: "Sep", width: 4 },
+  { label: "Oct", width: 4 },
+  { label: "Nov", width: 4 },
+  { label: "Dec", width: 5 },
+  { label: "Jan", width: 4 },
+  { label: "Feb", width: 4 },
+  { label: "Mar", width: 5 },
+  { label: "Apr", width: 4 },
+  { label: "May", width: 4 },
+  { label: "Jun", width: 4 },
+  { label: "Jul", width: 4 },
+  { label: "Aug", width: 4 },
+];
 
-function RepoIcon({ source = "github" }: { source?: RepositoryItem["source"] }) {
-  if (source === "spotify") {
-    return (
-      <div className="flex size-5 items-center justify-center rounded-full bg-[#1ED760] text-[#151B23]">
-        <Circle className="size-2.5 fill-current stroke-0" />
-      </div>
-    );
-  }
+const defaultAchievements: Achievement[] = [
+  { label: "Pull Shark", emoji: "🪼", tint: "from-pink-300 to-rose-400" },
+  { label: "YOLO", emoji: "🤠", tint: "from-amber-200 to-yellow-500" },
+  { label: "Arctic Code Vault", emoji: "🥶", count: "x2", tint: "from-sky-200 to-blue-500" },
+  { label: "Pair Extraordinaire", emoji: "🫛", tint: "from-lime-200 to-green-400" },
+];
 
-  if (source === "custom") {
-    return (
-      <div className="flex size-5 items-center justify-center rounded-full bg-[color:var(--accent)] text-[color:var(--warning)]">
-        <Sparkles className="size-3.5" />
-      </div>
-    );
-  }
+const contributionPalette = ["#2D333B", "#0E4429", "#006D32", "#26A641", "#39D353"];
+const profileTabs: Array<{ value: ProfileTab; label: string; icon: React.ComponentType<{ className?: string }>; count?: string }> = [
+  { value: "overview", label: "Overview", icon: BookOpen },
+  { value: "repositories", label: "Repositories", icon: Box, count: "16" },
+  { value: "projects", label: "Projects", icon: Building2 },
+  { value: "packages", label: "Packages", icon: Package },
+];
 
-  return (
-    <div className="flex size-5 items-center justify-center rounded-full bg-[color:var(--muted)] text-[color:var(--foreground)]">
-      <Github className="size-3.5" />
-    </div>
-  );
+function createContributionGrid(): ContributionDay[][] {
+  const pattern = [
+    [0, 0, 0, 1, 0, 0, 1],
+    [0, 1, 0, 0, 0, 2, 0],
+    [1, 0, 0, 0, 1, 0, 0],
+    [0, 2, 0, 3, 0, 0, 0],
+    [0, 0, 0, 1, 0, 2, 0],
+    [1, 0, 2, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 1, 0],
+    [0, 0, 0, 2, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0, 0],
+    [0, 0, 2, 0, 0, 0, 1],
+    [0, 0, 0, 0, 1, 0, 0],
+    [1, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 1],
+    [0, 0, 0, 2, 0, 0, 0],
+    [0, 0, 1, 0, 0, 1, 0],
+    [0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 3, 0, 0, 0],
+    [0, 0, 1, 0, 2, 0, 0],
+    [0, 0, 0, 2, 0, 1, 0],
+    [1, 0, 0, 0, 0, 0, 0],
+    [0, 2, 0, 0, 1, 0, 0],
+    [0, 0, 0, 1, 0, 2, 0],
+    [0, 0, 0, 0, 0, 0, 1],
+    [0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 2, 0, 0, 1, 0],
+    [0, 0, 0, 0, 2, 0, 0],
+    [0, 1, 0, 0, 0, 0, 3],
+    [0, 0, 0, 1, 0, 0, 0],
+    [0, 2, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0],
+    [1, 0, 0, 1, 0, 0, 0],
+    [0, 0, 2, 0, 0, 0, 0],
+    [0, 1, 0, 0, 2, 0, 0],
+    [0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 2, 0],
+    [0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0],
+    [0, 1, 0, 2, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 2],
+    [0, 0, 1, 0, 0, 1, 0],
+    [0, 2, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 2],
+    [0, 0, 0, 0, 2, 0, 0],
+    [1, 0, 0, 0, 0, 1, 0],
+    [0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0],
+    [0, 1, 0, 2, 0, 1, 0],
+    [3, 4, 2, 4, 3, 4, 2],
+  ];
+
+  return pattern.map((column) => column.map((level) => ({ level: level as ContributionLevel })));
 }
 
-function HeaderIconButton({ children }: { children: React.ReactNode }) {
+function HeaderIconButton({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <button
       type="button"
-      className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-transparent text-muted-foreground transition hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+      className={cn(
+        "flex h-8 w-8 items-center justify-center rounded-md border border-border bg-transparent text-muted-foreground transition hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
+        className,
+      )}
     >
       {children}
     </button>
   );
 }
 
-function RepositoryRow({ item }: { item: RepositoryItem }) {
-  const [selectedAction, setSelectedAction] = useState(starActions[0]);
-
+function VisibilityBadge({ visibility }: { visibility: Repository["visibility"] }) {
   return (
-    <div className="flex items-start justify-between gap-4 border-t border-border px-4 py-4 first:border-t-0">
-      <div className="min-w-0">
-        <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
-          <RepoIcon source={item.source} />
-          <span className="truncate">{item.owner}/{item.name}</span>
-        </div>
-        {item.description ? (
-          <p className="mb-2 text-[15px] leading-6 text-foreground">{item.description}</p>
-        ) : null}
-        <div className="flex items-center gap-4 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1.5">
-            <span
-              className="inline-block h-3 w-3 rounded-full"
-              style={{ backgroundColor: item.languageColor ?? "#58A6FF" }}
-            />
-            {item.language}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Star className="size-3.5" />
-            {item.stars}
-          </span>
-        </div>
-      </div>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-8 rounded-md border-border bg-accent px-3 text-foreground hover:bg-[#3a434d]"
-          >
-            <Star className="size-3.5" />
-            {selectedAction}
-            <ChevronDown className="size-3.5" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40 border-border bg-card text-foreground">
-          {starActions.map((action) => (
-            <DropdownMenuItem key={action} onSelect={() => setSelectedAction(action)}>
-              {action}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <span className="inline-flex h-6 items-center rounded-full border border-border px-2 text-xs font-medium text-muted-foreground">
+      {visibility}
+    </span>
   );
 }
 
-function FeedCard({ section }: { section: FeedSection }) {
+function RepositoryCard({ repository }: { repository: Repository }) {
   return (
-    <Card className="gap-0 overflow-hidden rounded-lg border-border bg-card py-0 shadow-[0_1px_3px_rgba(0,0,0,0.3)]">
-      <div className="flex items-center gap-2 px-4 py-4 text-sm text-muted-foreground">
-        <Triangle className="size-3.5 fill-current stroke-0" />
-        <span>{section.title}</span>
-        {section.actionLabel ? (
-          <button type="button" className="text-[#58A6FF] hover:underline">
-            {section.actionLabel}
-          </button>
-        ) : null}
+    <Card className="gap-0 rounded-lg border-border bg-card px-4 py-4 shadow-[var(--shadow-card)]">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h3 className="truncate text-[20px] font-semibold leading-6 text-[#2F81F7]">{repository.name}</h3>
+          {repository.forkedFrom ? (
+            <p className="mt-1 text-xs text-muted-foreground underline decoration-muted-foreground/60 underline-offset-2">
+              {repository.forkedFrom}
+            </p>
+          ) : null}
+        </div>
+        <VisibilityBadge visibility={repository.visibility} />
       </div>
-      {section.items.map((item) => (
-        <RepositoryRow key={`${item.owner}-${item.name}`} item={item} />
-      ))}
+      {repository.description ? (
+        <p className="mt-5 min-h-10 pr-4 text-sm leading-6 text-foreground/90">{repository.description}</p>
+      ) : (
+        <div className="mt-5 min-h-10" />
+      )}
+      <div className="mt-5 flex items-center gap-2 text-sm text-muted-foreground">
+        <span className="h-3 w-3 rounded-full" style={{ backgroundColor: repository.languageColor }} />
+        <span>{repository.language}</span>
+      </div>
     </Card>
   );
 }
 
-export default function DashboardHomeView({
-  state = "default",
-  userName = "OnderCampos",
-  userAvatar = "/Frida.png",
-  topRepositories = defaultTopRepositories,
-  searchPlaceholder = "Find a repository…",
-  sections = defaultSections,
-}: DashboardHomeViewProps) {
-  const [globalSearch, setGlobalSearch] = useState("");
-  const [repoSearch, setRepoSearch] = useState("");
-  const [askScope, setAskScope] = useState(askScopes[0]);
-  const [repoScope, setRepoScope] = useState(repoScopes[0]);
-  const [model, setModel] = useState(modelOptions[0]);
-  const [composerText, setComposerText] = useState("Ask anything or type @ to add context");
-  const [copilotDismissed, setCopilotDismissed] = useState(false);
+function AchievementBadge({ achievement }: { achievement: Achievement }) {
+  return (
+    <div className="relative flex h-12 w-12 items-center justify-center rounded-full border border-white/40 bg-[color:var(--surface)] shadow-[0_0_0_2px_var(--background)]">
+      <div className={cn("flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br text-lg", achievement.tint)}>
+        {achievement.emoji}
+      </div>
+      {achievement.count ? (
+        <span className="absolute -bottom-1 -right-1 rounded-full bg-[#24292F] px-1.5 py-0.5 text-[10px] font-semibold text-[#F0F6FC] shadow">
+          {achievement.count}
+        </span>
+      ) : null}
+    </div>
+  );
+}
 
-  const filteredTopRepositories = topRepositories.filter((repository) =>
-    repository.toLowerCase().includes(repoSearch.toLowerCase())
+function ContributionHeatmap({ months, grid }: { months: ContributionMonth[]; grid: ContributionDay[][] }) {
+  return (
+    <div className="rounded-lg border border-border bg-background px-4 py-4">
+      <div className="ml-8 flex gap-1.5 text-xs text-muted-foreground">
+        {months.map((month) => (
+          <div key={month.label} style={{ width: `${month.width * 12}px` }}>
+            {month.label}
+          </div>
+        ))}
+      </div>
+      <div className="mt-2 flex gap-3">
+        <div className="grid grid-rows-7 gap-1 pt-1 text-xs text-muted-foreground">
+          <span className="h-3">Mon</span>
+          <span className="h-3 opacity-0">Tue</span>
+          <span className="h-3">Wed</span>
+          <span className="h-3 opacity-0">Thu</span>
+          <span className="h-3">Fri</span>
+        </div>
+        <div className="grid grid-flow-col grid-rows-7 gap-1">
+          {grid.map((column, columnIndex) => (
+            <div key={`column-${columnIndex}`} className="grid grid-rows-7 gap-1">
+              {column.map((day, rowIndex) => (
+                <button
+                  key={`day-${columnIndex}-${rowIndex}`}
+                  type="button"
+                  className="h-3 w-3 rounded-[2px] transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  style={{ backgroundColor: contributionPalette[day.level] }}
+                  aria-label={`Contribution level ${day.level}`}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
+        <button type="button" className="hover:text-foreground">
+          Learn how we count contributions
+        </button>
+        <div className="flex items-center gap-2">
+          <span>Less</span>
+          <div className="flex gap-1">
+            {contributionPalette.map((color) => (
+              <span key={color} className="h-2.5 w-2.5 rounded-[2px]" style={{ backgroundColor: color }} />
+            ))}
+          </div>
+          <span>More</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function UserProfileOverviewView({
+  state = "default",
+  selectedTab,
+  onSelectedTabChange,
+  selectedYear,
+  onSelectedYearChange,
+  searchValue,
+  onSearchValueChange,
+  user = defaultUserProfile,
+  repositories = defaultRepositories,
+  pinnedActionLabel = "Customize your pins",
+  contributionTotal = 471,
+  months = defaultMonths,
+  contributionGrid = createContributionGrid(),
+  years = ["2026", "2025", "2024", "2023"],
+  achievements = defaultAchievements,
+}: UserProfileOverviewViewProps) {
+  const [internalTab, setInternalTab] = useState<ProfileTab>(selectedTab ?? "overview");
+  const [internalYear, setInternalYear] = useState(selectedYear ?? years[0]);
+  const [internalSearch, setInternalSearch] = useState(searchValue ?? "");
+
+  const activeTab = selectedTab ?? internalTab;
+  const activeYear = selectedYear ?? internalYear;
+  const activeSearch = searchValue ?? internalSearch;
+
+  const filteredRepositories = useMemo(
+    () => repositories.filter((repository) => repository.name.toLowerCase().includes(activeSearch.toLowerCase())),
+    [repositories, activeSearch],
   );
 
+  const handleTabChange = (tab: string) => {
+    const nextTab = tab as ProfileTab;
+    setInternalTab(nextTab);
+    onSelectedTabChange?.(nextTab);
+  };
+
+  const handleYearChange = (year: string) => {
+    setInternalYear(year);
+    onSelectedYearChange?.(year);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setInternalSearch(value);
+    onSearchValueChange?.(value);
+  };
+
   return (
-    <div data-state={state} className="min-h-screen bg-[color:var(--panel)] text-foreground">
-      <header className="border-b border-border bg-[color:var(--panel)] px-3 py-2">
-        <div className="flex items-center justify-between gap-4">
+    <div data-state={state} className="min-h-screen bg-background text-foreground">
+      <header className="border-b border-border bg-[linear-gradient(90deg,#0D1420_0%,#151B23_45%,#111923_100%)]">
+        <div className="flex h-14 items-center justify-between gap-4 px-4">
           <div className="flex items-center gap-3">
             <HeaderIconButton>
               <Menu className="size-4" />
             </HeaderIconButton>
             <Github className="size-8 text-foreground" />
-            <div className="flex items-center gap-2 font-semibold text-foreground">
-              <span>Dashboard</span>
-            </div>
+            <span className="text-sm font-semibold text-foreground">{user.handle}</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="relative hidden md:block">
+            <div className="relative hidden lg:block">
               <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                value={globalSearch}
-                onChange={(e) => setGlobalSearch(e.target.value)}
+                value={activeSearch}
+                onChange={(event) => handleSearchChange(event.target.value)}
                 placeholder="Type / to search"
-                className="h-8 w-[270px] rounded-md border-border bg-transparent pl-9 text-sm"
+                className="h-8 w-[260px] border-border bg-transparent pl-9 text-sm"
               />
             </div>
             <HeaderIconButton>
-              <LayoutGrid className="size-4" />
+              <Box className="size-4" />
             </HeaderIconButton>
             <HeaderIconButton>
-              <Plus className="size-4" />
+              <Star className="size-4" />
             </HeaderIconButton>
             <HeaderIconButton>
-              <Circle className="size-4 fill-current stroke-0" />
-            </HeaderIconButton>
-            <HeaderIconButton>
-              <GitBranch className="size-4" />
-            </HeaderIconButton>
-            <HeaderIconButton>
-              <MonitorPlay className="size-4" />
-            </HeaderIconButton>
-            <HeaderIconButton>
-              <Bell className="size-4" />
+              <Users className="size-4" />
             </HeaderIconButton>
             <Avatar className="size-8 border border-border">
-              <AvatarImage src={userAvatar} alt={userName} />
-              <AvatarFallback>{userName.slice(0, 2)}</AvatarFallback>
+              <AvatarImage src={user.avatarSrc} alt={user.handle} />
+              <AvatarFallback>{user.handle.slice(0, 2)}</AvatarFallback>
             </Avatar>
           </div>
         </div>
-      </header>
 
-      <div className="grid min-h-[calc(100vh-49px)] grid-cols-1 xl:grid-cols-[300px_minmax(0,1fr)_312px]">
-        <aside className="border-r border-border bg-sidebar px-5 py-8">
-          <div className="mb-10 flex items-center gap-3">
-            <Avatar className="size-6 border border-border">
-              <AvatarImage src={userAvatar} alt={userName} />
-              <AvatarFallback>{userName.slice(0, 2)}</AvatarFallback>
-            </Avatar>
-            <button type="button" className="flex items-center gap-1 text-sm font-semibold text-foreground">
-              {userName}
-              <ChevronDown className="size-4 text-muted-foreground" />
-            </button>
-          </div>
-
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-foreground">Top repositories</h2>
-            <Button className="h-8 rounded-md bg-primary px-3 text-sm font-semibold text-primary-foreground hover:bg-[#36A653]">
-              <BookOpen className="size-4" />
-              New
-            </Button>
-          </div>
-
-          <Input
-            value={repoSearch}
-            onChange={(e) => setRepoSearch(e.target.value)}
-            placeholder={searchPlaceholder}
-            className="mb-4 h-8 rounded-md border-border bg-transparent text-sm"
-          />
-
-          <div className="space-y-2 text-sm text-muted-foreground">
-            {filteredTopRepositories.map((repository) => (
-              <button
-                key={repository}
-                type="button"
-                className="flex w-full items-start gap-2 text-left hover:text-foreground"
-              >
-                <span className="mt-1 h-3 w-3 rounded-sm bg-[#f778ba]/20 text-xs text-[#f778ba]" />
-                <span className="break-all leading-5">{repository}</span>
-              </button>
-            ))}
-          </div>
-
-          <button type="button" className="mt-4 text-sm text-muted-foreground hover:text-foreground">
-            Show more
-          </button>
-        </aside>
-
-        <main className="px-6 py-10 xl:px-14">
-          <div className="max-w-[805px]">
-            <h1 className="mb-6 text-[36px] font-semibold tracking-[-0.02em] text-foreground">Home</h1>
-
-            <div className="mb-4 rounded-2xl border border-border bg-card p-4 shadow-[0_1px_3px_rgba(0,0,0,0.3)]">
-              <textarea
-                value={composerText}
-                onChange={(e) => setComposerText(e.target.value)}
-                className="min-h-[70px] w-full resize-none bg-transparent text-[17px] text-muted-foreground outline-none placeholder:text-muted-foreground"
-              />
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="h-8 rounded-md border-border bg-transparent text-foreground hover:bg-accent">
-                        <MessageSquare className="size-4" />
-                        {askScope}
-                        <ChevronDown className="size-3.5" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="border-border bg-card text-foreground">
-                      {askScopes.map((option) => (
-                        <DropdownMenuItem key={option} onSelect={() => setAskScope(option)}>
-                          {option}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="h-8 rounded-md border-border bg-transparent text-foreground hover:bg-accent">
-                        <Home className="size-4" />
-                        {repoScope}
-                        <ChevronDown className="size-3.5" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="border-border bg-card text-foreground">
-                      {repoScopes.map((option) => (
-                        <DropdownMenuItem key={option} onSelect={() => setRepoScope(option)}>
-                          {option}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-
-                  <Button variant="outline" size="icon-sm" className="border-border bg-transparent text-muted-foreground hover:bg-accent hover:text-foreground">
-                    <Plus className="size-4" />
-                  </Button>
-                </div>
-
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button type="button" className="flex items-center gap-1 hover:text-foreground">
-                        <Users className="size-4" />
-                        {model}
-                        <ChevronDown className="size-4" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="border-border bg-card text-foreground">
-                      {modelOptions.map((option) => (
-                        <DropdownMenuItem key={option} onSelect={() => setModel(option)}>
-                          {option}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <button type="button" className="rounded-md p-1 hover:bg-accent hover:text-foreground">
-                    <Cpu className="size-4" />
-                  </button>
-                  <button type="button" className="rounded-md p-1 hover:bg-accent hover:text-foreground">
-                    <Play className="size-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-3 flex flex-wrap items-center gap-3">
-              {[
-                { icon: Sparkles, label: "Debug" },
-                { icon: Cpu, label: "Agent" },
-                { icon: Circle, label: "Create issue" },
-                { icon: FileCode2, label: "Write code" },
-                { icon: GitBranch, label: "Git" },
-                { icon: ChevronRight, label: "Pull requests" },
-              ].map(({ icon: Icon, label }) => (
-                <Button
-                  key={label}
-                  variant="outline"
-                  className="h-10 rounded-full border-border bg-[color:var(--panel)] px-5 text-sm text-foreground hover:bg-accent"
+        <div className="border-t border-white/5 px-4">
+          <Tabs value={activeTab} onValueChange={handleTabChange} className="gap-0">
+            <TabsList className="h-auto w-auto rounded-none bg-transparent p-0">
+              {profileTabs.map(({ value, label, icon: Icon, count }) => (
+                <TabsTrigger
+                  key={value}
+                  value={value}
+                  className="relative h-12 rounded-none border-0 px-4 text-sm font-medium text-muted-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
                 >
                   <Icon className="size-4" />
                   {label}
-                </Button>
+                  {count ? <span className="rounded-full bg-accent px-1.5 py-0.5 text-xs text-foreground">{count}</span> : null}
+                  <span
+                    className={cn(
+                      "absolute inset-x-4 bottom-0 h-0.5 rounded-full bg-transparent",
+                      activeTab === value && "bg-[#F78166]",
+                    )}
+                  />
+                </TabsTrigger>
               ))}
+            </TabsList>
+          </Tabs>
+        </div>
+      </header>
+
+      <main className="mx-auto w-full max-w-[1160px] px-6 py-8">
+        <div className="grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)]">
+          <aside>
+            <div className="relative mx-auto w-full max-w-[266px]">
+              <Avatar className="h-[266px] w-[266px] border border-border shadow-[var(--shadow-card)]">
+                <AvatarImage src={user.avatarSrc} alt={user.displayName} className="object-cover" />
+                <AvatarFallback>{user.displayName.slice(0, 2)}</AvatarFallback>
+              </Avatar>
+              <button
+                type="button"
+                className="absolute bottom-8 right-2 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-[var(--shadow-card)] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                aria-label="Change profile photo"
+              >
+                <Camera className="size-4" />
+              </button>
             </div>
 
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-base font-semibold text-foreground">Feed</h2>
-              <Button variant="outline" size="sm" className="h-8 rounded-md border-border bg-accent px-3 text-foreground hover:bg-[#3a434d]">
-                <Filter className="size-4" />
-                Filter
+            <div className="mt-5 max-w-[266px]">
+              <h1 className="text-[24px] font-semibold leading-8 text-foreground">{user.displayName}</h1>
+              <p className="text-[32px] font-light leading-9 text-muted-foreground">{user.handle}</p>
+
+              <Button variant="outline" className="mt-4 h-8 w-full border-border bg-accent/25 text-sm font-semibold text-foreground hover:bg-accent">
+                Edit profile
               </Button>
+
+              <div className="mt-4 flex items-center gap-1 text-sm text-muted-foreground">
+                <Users className="size-4" />
+                <span className="text-foreground">{user.followers}</span>
+                <span>followers</span>
+                <span>·</span>
+                <span className="text-foreground">{user.following}</span>
+                <span>following</span>
+              </div>
+
+              <div className="mt-5 flex items-center gap-2 text-sm text-foreground">
+                <Building2 className="size-4 text-muted-foreground" />
+                <span>{user.organization}</span>
+              </div>
+
+              <div className="mt-5 border-t border-border pt-5">
+                <h2 className="text-base font-semibold text-foreground">Achievements</h2>
+                <div className="mt-3 flex items-center gap-2">
+                  {achievements.map((achievement) => (
+                    <AchievementBadge key={achievement.label} achievement={achievement} />
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-5 border-t border-border pt-5">
+                <h2 className="text-base font-semibold text-foreground">Organizations</h2>
+                <div className="mt-3 flex items-center gap-2 text-sm text-foreground">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-sm bg-[#0F6CBD] text-xs font-bold text-white">S</div>
+                  <span>{user.organization}</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <section>
+            <div className="mb-3 flex items-center justify-between gap-4">
+              <h2 className="text-2xl font-medium text-foreground">Popular repositories</h2>
+              <button type="button" className="text-sm text-[#2F81F7] hover:underline">
+                {pinnedActionLabel}
+              </button>
             </div>
 
-            <div className="space-y-4">
-              {sections.map((section) => (
-                <FeedCard key={section.id} section={section} />
+            <div className="grid gap-4 md:grid-cols-2">
+              {filteredRepositories.map((repository) => (
+                <RepositoryCard key={repository.name} repository={repository} />
               ))}
             </div>
-          </div>
-        </main>
 
-        <aside className="px-5 py-9">
-          <div className="space-y-6">
-            {!copilotDismissed ? (
-              <Card className="gap-0 overflow-hidden rounded-lg border-border bg-card py-0 shadow-[0_1px_3px_rgba(0,0,0,0.3)]">
-                <div className="relative h-[72px] bg-[linear-gradient(135deg,#7adc97_0%,#dff7e5_30%,#5ee66f_55%,#7adc97_100%)]">
-                  <button
-                    type="button"
-                    onClick={() => setCopilotDismissed(true)}
-                    className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground hover:bg-white/20 hover:text-foreground"
-                    aria-label="Dismiss event card"
-                  >
-                    ×
+            <section className="mt-8">
+              <div className="mb-3 flex items-center justify-between gap-4">
+                <h2 className="text-[28px] font-normal leading-8 text-foreground">{contributionTotal} contributions in the last year</h2>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <button type="button" className="flex items-center gap-1 hover:text-foreground">
+                    Contribution settings
+                    <span className="text-xs">▼</span>
                   </button>
                 </div>
-                <div className="border-t border-border px-4 py-3 text-xs font-medium uppercase tracking-wide text-[#58A6FF]">
-                  September 10 · 8:00 AM PT
-                </div>
-                <div className="px-4 pb-4">
-                  <h3 className="mb-3 text-[28px] font-semibold leading-8 text-foreground">GitHub Copilot Day</h3>
-                  <ul className="mb-4 space-y-2 text-sm leading-5 text-muted-foreground">
-                    <li className="flex gap-2"><span className="mt-1 h-2 w-2 rounded-full bg-success" />See how HydraFusion combines AI models to match the right model to the task</li>
-                    <li className="flex gap-2"><span className="mt-1 h-2 w-2 rounded-full bg-success" />Learn to automate work, run parallel agents, and use your own models</li>
-                    <li className="flex gap-2"><span className="mt-1 h-2 w-2 rounded-full bg-success" />Turn your best coding approaches into reusable Agent skills</li>
-                  </ul>
-                  <Button className="h-9 w-full rounded-md bg-[#f6f8fa] text-[#24292f] hover:bg-white">Set your reminder</Button>
-                </div>
-              </Card>
-            ) : null}
-
-            <Card className="rounded-lg border-border bg-card px-4 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.3)]">
-              <h3 className="mb-4 text-[22px] font-semibold text-foreground">Latest from our changelog</h3>
-              <div className="space-y-4">
-                {changelogItems.map((item) => (
-                  <div key={item.text} className="flex gap-3">
-                    <div className="flex flex-col items-center">
-                      <span className="mt-1 inline-block h-2.5 w-2.5 rounded-full bg-border" />
-                    </div>
-                    <div>
-                      <div className="mb-1 text-xs text-muted-foreground">{item.time}</div>
-                      <button type="button" className="text-left text-[15px] leading-6 text-foreground hover:text-[#58A6FF]">
-                        {item.text}
-                      </button>
-                    </div>
-                  </div>
-                ))}
               </div>
-              <button type="button" className="mt-4 text-sm text-[#58A6FF] hover:underline">
-                View changelog →
-              </button>
-            </Card>
-          </div>
-        </aside>
-      </div>
+
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_116px]">
+                <ContributionHeatmap months={months} grid={contributionGrid} />
+                <div className="space-y-2">
+                  {years.map((year) => {
+                    const active = activeYear === year;
+                    return (
+                      <button
+                        key={year}
+                        type="button"
+                        onClick={() => handleYearChange(year)}
+                        className={cn(
+                          "flex h-8 w-full items-center rounded-md px-3 text-left text-sm transition",
+                          active ? "bg-[#1F6FEB] text-white" : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                        )}
+                      >
+                        {year}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
+
+            <section className="mt-6 border-t border-border pt-6">
+              <h2 className="text-[28px] font-normal leading-8 text-foreground">Contribution activity</h2>
+              <div className="mt-6 flex items-center gap-3 text-sm font-medium text-[#58A6FF]">
+                <span>September 2026</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
+            </section>
+          </section>
+        </div>
+      </main>
     </div>
   );
 }

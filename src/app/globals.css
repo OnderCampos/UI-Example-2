@@ -42,9 +42,13 @@
   --color-panel: var(--panel);
   --color-panel-foreground: var(--panel-foreground);
   --color-panel-muted: var(--panel-muted);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
+  --shadow-card: var(--shadow-card);
+  --shadow-elevated: var(--shadow-elevated);
 }
 
 :root,
@@ -58,7 +62,7 @@
   --popover: #212830;
   --popover-foreground: #e6edf3;
   --primary: #7adc97;
-  --primary-foreground: #151b23;
+  --primary-foreground: #ffffff;
   --secondary: #212830;
   --secondary-foreground: #e6edf3;
   --muted: #1b2430;
@@ -85,9 +89,13 @@
   --panel: #0d1117;
   --panel-foreground: #e6edf3;
   --panel-muted: #0f1722;
+  --surface: #212830;
+  --surface-foreground: #e6edf3;
   --success: #36a653;
   --warning: #d29922;
   --danger: #da3633;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
 @layer base {
