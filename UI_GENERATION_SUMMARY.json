@@ -1,0 +1,8 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Dashboard home feed view for repository discovery.",
+    "fullDescription": "Implements the dashboard-home-feed view in its default state with a dark three-column layout, top application header, repository search and ask composer, feed cards for trending and recommended repositories, star controls, and right-side Copilot Day and changelog panels. The view exposes a state prop for supported screen states and keeps visible controls interactive through local state for search, filters, selections, and starring.",
+    "isView": true
+  }
+]
