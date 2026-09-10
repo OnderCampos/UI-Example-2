@@ -1,8 +1,0 @@
-[
-  {
-    "relativePath": "src/app/page.tsx",
-    "shortDescription": "Hosts the dashboard home and user profile overview views with local view-state switching.",
-    "fullDescription": "Renders two independent presentational views from one route using local state: a dashboard-home default state with interactive date filters, metric cards, a summary chart, and recent activity; and a user-profile-overview default state with a GitHub-style profile header, interactive repository tabs, searchable pinned repositories, and a contribution heatmap with selectable years. The route preserves both views in the active implementation instead of replacing earlier delivered UI with the newest screen.",
-    "isView": true
-  }
-]
