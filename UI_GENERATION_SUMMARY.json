@@ -1,0 +1,8 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Dashboard home view with GitHub-style three-column feed layout.",
+    "fullDescription": "Renders the dashboard-home view in its default state with a dark GitHub-inspired shell, top utility header, left repository sidebar, central composer and repository feed, and right-side event and changelog panels. The view accepts state, user, repository, and feed-section props and keeps visible controls interactive through local state for search fields, composer text, filters, and menu selections.",
+    "isView": true
+  }
+]
