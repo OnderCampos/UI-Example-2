@@ -3,14 +3,17 @@
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import {
+  Bell,
   BookOpen,
   Building2,
   ChevronDown,
   GitBranch,
   Github,
+  Home,
   Menu,
   Monitor,
   Package,
+  Plus,
   Search,
   Star,
   Users,
@@ -21,12 +24,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
+type GithubDashboardHomeState = "default";
 type GithubUserProfileOverviewState = "default";
-
+type AppView = "github-dashboard-home" | "github-user-profile-overview";
 type ProfileTab = "Overview" | "Repositories" | "Projects" | "Packages" | "Stars";
+type FeedTab = "For you" | "Following";
 
 type Repository = {
   id: string;
@@ -42,6 +47,21 @@ type ContributionMonth = {
   count: number;
 };
 
+type DashboardUpdate = {
+  id: string;
+  actor: string;
+  repository: string;
+  action: string;
+  branch?: string;
+  time: string;
+};
+
+type DashboardHomeProps = {
+  state?: GithubDashboardHomeState;
+  initialTab?: FeedTab;
+  initialSearch?: string;
+};
+
 type GithubUserProfileOverviewProps = {
   state?: GithubUserProfileOverviewState;
   initialTab?: ProfileTab;
@@ -50,6 +70,11 @@ type GithubUserProfileOverviewProps = {
 };
 
 const profileTabs: ProfileTab[] = ["Overview", "Repositories", "Projects", "Packages", "Stars"];
+const feedTabs: FeedTab[] = ["For you", "Following"];
+const availableViews: { value: AppView; label: string }[] = [
+  { value: "github-dashboard-home", label: "GitHub dashboard home" },
+  { value: "github-user-profile-overview", label: "GitHub user profile overview" },
+];
 
 const repositories: Repository[] = [
   {
@@ -92,6 +117,31 @@ const repositories: Repository[] = [
   },
 ];
 
+const dashboardUpdates: DashboardUpdate[] = [
+  {
+    id: "1",
+    actor: "OnderCampos",
+    repository: "open-interpreter",
+    action: "pushed 3 commits to",
+    branch: "main",
+    time: "2 hours ago",
+  },
+  {
+    id: "2",
+    actor: "octocat",
+    repository: "github-dashboard-clone",
+    action: "opened a pull request in",
+    time: "Yesterday",
+  },
+  {
+    id: "3",
+    actor: "reactjs",
+    repository: "react.dev",
+    action: "released a new version in",
+    time: "2 days ago",
+  },
+];
+
 const contributionMonths: ContributionMonth[] = [
   { label: "Sep", count: 24 },
   { label: "Oct", count: 20 },
@@ -110,13 +160,13 @@ const contributionMonths: ContributionMonth[] = [
 const contributionLevels = ["#212830", "#0e4429", "#006d32", "#26a641", "#39d353"];
 
 const contributionGrid = [
-  [0,0,1,0,0,1,1,0,0,1,0,0,0,0,1,0,0,0,2,0,0,1,0,2,1,0,0,2,0,1,0,0,0,1,0,0,0,2,1,0,0,0,0,1,0,0,0,2,3,0,1,0],
-  [0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,1,0,0,2,0,0,0,2,0,0,0,1,0,0,2,0,0,0,0,2,0,0,0,0,2,0,0,1,0,0,0,4,2,0,0],
-  [1,0,0,1,0,0,1,0,2,0,0,1,0,2,0,0,0,0,0,1,0,0,2,0,1,0,0,1,0,0,2,0,0,0,2,0,0,0,1,0,0,0,1,0,0,2,0,0,3,0,1,0],
-  [2,1,0,0,0,0,1,0,0,0,1,0,2,0,0,0,0,0,1,0,2,0,2,1,0,0,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,4,0,0,0],
-  [1,1,0,0,0,0,0,1,0,0,2,1,0,0,1,0,0,1,0,0,0,2,3,0,0,0,1,0,2,0,0,1,0,0,0,0,2,0,0,1,0,2,0,0,0,1,0,0,4,1,0,0],
-  [0,2,0,1,0,0,0,0,0,2,0,0,1,0,0,2,0,0,0,1,0,0,2,0,0,1,0,3,1,0,0,0,2,0,0,0,1,0,0,0,0,1,0,0,2,0,0,0,3,2,1,0],
-  [0,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,0,0,2,1,0,0,1,0,2,0,0,0,0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,2,1,0,0],
+  [0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 1, 0, 2, 1, 0, 0, 2, 0, 1, 0, 0, 0, 1, 0, 0, 0, 2, 1, 0, 0, 0, 0, 1, 0, 0, 0, 2, 3, 0, 1, 0],
+  [0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 1, 0, 0, 0, 4, 2, 0, 0],
+  [1, 0, 0, 1, 0, 0, 1, 0, 2, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 1, 0, 0, 2, 0, 1, 0, 0, 1, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 1, 0],
+  [2, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 1, 0, 2, 0, 2, 1, 0, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 0, 0, 0],
+  [1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 2, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 2, 3, 0, 0, 0, 1, 0, 2, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 1, 0, 2, 0, 0, 0, 1, 0, 0, 4, 1, 0, 0],
+  [0, 2, 0, 1, 0, 0, 0, 0, 0, 2, 0, 0, 1, 0, 0, 2, 0, 0, 0, 1, 0, 0, 2, 0, 0, 1, 0, 3, 1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 3, 2, 1, 0],
+  [0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 1, 0, 0, 1, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 2, 1, 0, 0],
 ];
 
 function HeaderButton({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -130,6 +180,55 @@ function HeaderButton({ children, className }: { children: React.ReactNode; clas
     >
       {children}
     </button>
+  );
+}
+
+function GithubTopBar({ search, onSearchChange }: { search: string; onSearchChange: (value: string) => void }) {
+  return (
+    <div className="flex h-[72px] items-center justify-between gap-4 px-4">
+        <div className="flex items-center gap-4">
+          <HeaderButton className="w-8 px-0">
+            <Menu className="h-4 w-4" />
+          </HeaderButton>
+          <Github className="h-8 w-8" />
+          <span className="text-sm font-semibold">OnderCampos</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="hidden items-center gap-2 rounded-md border border-border bg-transparent px-3 lg:flex lg:w-[320px]">
+            <Search className="h-4 w-4 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(event) => onSearchChange(event.target.value)}
+              placeholder="Type / to search"
+              className="h-8 border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
+            />
+          </div>
+          <HeaderButton>
+            <div className="grid h-4 w-4 grid-cols-2 gap-0.5">
+              <span className="rounded-[1px] bg-muted-foreground" />
+              <span className="rounded-[1px] bg-muted-foreground" />
+              <span className="rounded-[1px] bg-muted-foreground" />
+              <span className="rounded-[1px] bg-muted-foreground" />
+            </div>
+          </HeaderButton>
+          <HeaderButton className="w-8 px-0">
+            <Plus className="h-4 w-4" />
+          </HeaderButton>
+          <HeaderButton className="w-8 px-0">
+            <Bell className="h-4 w-4" />
+          </HeaderButton>
+          <HeaderButton className="w-8 px-0">
+            <GitBranch className="h-4 w-4" />
+          </HeaderButton>
+          <HeaderButton className="w-8 px-0">
+            <Monitor className="h-4 w-4" />
+          </HeaderButton>
+          <Avatar className="h-8 w-8 border border-border">
+            <AvatarImage src="/Frida.png" alt="OnderCampos avatar" />
+            <AvatarFallback>OC</AvatarFallback>
+          </Avatar>
+        </div>
+      </div>
   );
 }
 
@@ -164,7 +263,6 @@ function ProfileNav({ selectedTab, onTabChange }: { selectedTab: ProfileTab; onT
           );
         })}
       </TabsList>
-      <TabsContent value={selectedTab} className="mt-0" />
     </Tabs>
   );
 }
@@ -247,6 +345,146 @@ function ContributionHeatmap() {
   );
 }
 
+function GithubDashboardHome({ state = "default", initialTab = "For you", initialSearch = "" }: DashboardHomeProps) {
+  const [selectedTab, setSelectedTab] = useState<FeedTab>(initialTab);
+  const [search, setSearch] = useState(initialSearch);
+  const [selectedFilter, setSelectedFilter] = useState("Repositories");
+
+  const filteredUpdates = useMemo(
+    () => dashboardUpdates.filter((item) => item.repository.toLowerCase().includes(search.toLowerCase())),
+    [search],
+  );
+
+  return (
+    <div data-state={state} className="min-h-screen bg-background text-foreground [color-scheme:dark]">
+      <GithubTopBar search={search} onSearchChange={setSearch} />
+      <main className="mx-auto max-w-[1280px] px-6 py-8">
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <div>
+            <h1 className="text-[32px] font-semibold tracking-[-0.02em]">Home</h1>
+            <p className="mt-1 text-sm text-muted-foreground">Stay updated on activity from the repositories and people you follow.</p>
+          </div>
+          <Select value={selectedFilter} onValueChange={setSelectedFilter}>
+            <SelectTrigger className="h-9 w-[170px] border-border bg-card text-sm text-foreground">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="border-border bg-card text-foreground">
+              <SelectItem value="Repositories">Repositories</SelectItem>
+              <SelectItem value="Stars">Stars</SelectItem>
+              <SelectItem value="People">People</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Tabs value={selectedTab} onValueChange={(value) => setSelectedTab(value as FeedTab)} className="gap-0">
+          <TabsList className="mb-6 h-auto justify-start rounded-lg bg-card p-1">
+            {feedTabs.map((tab) => (
+              <TabsTrigger key={tab} value={tab} className="rounded-md px-4 py-2 text-sm data-[state=active]:bg-background data-[state=active]:text-foreground">
+                {tab}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+
+        <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)_280px]">
+          <aside className="space-y-6">
+            <Card className="border-border bg-card shadow-none">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-10 w-10 border border-border">
+                    <AvatarImage src="/Frida.png" alt="OnderCampos avatar" />
+                    <AvatarFallback>OC</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-semibold">OnderCampos</p>
+                    <p className="text-xs text-muted-foreground">Developer</p>
+                  </div>
+                </div>
+                <Button variant="outline" className="mt-4 h-8 w-full border-border bg-background font-semibold hover:bg-background/80">
+                  Create repository
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border bg-card shadow-none">
+              <CardContent className="p-4">
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-sm font-semibold">Top repositories</h2>
+                  <button type="button" className="text-xs text-[#2f81f7] hover:underline">View all</button>
+                </div>
+                <div className="space-y-3">
+                  {repositories.slice(0, 4).map((repo) => (
+                    <div key={repo.id} className="rounded-md border border-border bg-background p-3">
+                      <p className="text-sm font-semibold text-[#2f81f7]">{repo.name}</p>
+                      <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+                        <span className={cn("h-3 w-3 rounded-full", repo.language === "TypeScript" ? "bg-[#3178c6]" : "bg-[#3572a5]")} />
+                        {repo.language}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </aside>
+
+          <section className="space-y-4">
+            {filteredUpdates.map((item) => (
+              <Card key={item.id} className="border-border bg-card shadow-none">
+                <CardContent className="p-5">
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background">
+                      <Home className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm leading-6 text-foreground">
+                        <span className="font-semibold">{item.actor}</span> {item.action}{" "}
+                        <span className="font-semibold text-[#2f81f7]">{item.repository}</span>
+                        {item.branch ? (
+                          <>
+                            {" "}on <span className="rounded-full border border-border px-2 py-0.5 text-xs">{item.branch}</span>
+                          </>
+                        ) : null}
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">{item.time}</p>
+                    </div>
+                    <Button variant="ghost" className="h-8 px-3 text-sm text-muted-foreground hover:text-foreground">Star</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </section>
+
+          <aside className="space-y-6">
+            <Card className="border-border bg-card shadow-none">
+              <CardContent className="p-4">
+                <h2 className="text-sm font-semibold">Latest changes</h2>
+                <div className="mt-4 space-y-3 text-sm text-muted-foreground">
+                  <p>Review pull requests faster with code review assignment settings.</p>
+                  <p>Explore the latest repository discussions from your teams.</p>
+                  <p>Security updates and Dependabot alerts appear here.</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="border-border bg-card shadow-none">
+              <CardContent className="p-4">
+                <h2 className="text-sm font-semibold">Explore repositories</h2>
+                <div className="mt-4 space-y-3">
+                  {repositories.slice(2, 5).map((repo) => (
+                    <div key={repo.id} className="rounded-md border border-border bg-background p-3">
+                      <p className="text-sm font-semibold text-[#2f81f7]">{repo.name}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">{repo.description ?? "No description provided."}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </aside>
+        </div>
+      </main>
+    </div>
+  );
+}
+
 function GithubUserProfileOverview({
   state = "default",
   initialTab = "Overview",
@@ -265,38 +503,11 @@ function GithubUserProfileOverview({
   return (
     <div data-state={state} className="min-h-screen bg-background text-foreground [color-scheme:dark]">
       <header className="border-b border-border bg-[linear-gradient(90deg,#0d1624_0%,#151b23_100%)]">
-        <div className="flex h-[72px] items-center justify-between gap-4 px-4">
-          <div className="flex items-center gap-4">
-            <HeaderButton className="w-8 px-0"><Menu className="h-4 w-4" /></HeaderButton>
-            <Github className="h-8 w-8" />
-            <span className="text-sm font-semibold">OnderCampos</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="hidden items-center gap-2 rounded-md border border-border bg-transparent px-3 lg:flex lg:w-[320px]">
-              <Search className="h-4 w-4 text-muted-foreground" />
-              <Input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Type / to search"
-                className="h-8 border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
-              />
-            </div>
-            <HeaderButton><div className="grid h-4 w-4 grid-cols-2 gap-0.5"><span className="rounded-[1px] bg-muted-foreground" /><span className="rounded-[1px] bg-muted-foreground" /><span className="rounded-[1px] bg-muted-foreground" /><span className="rounded-[1px] bg-muted-foreground" /></div></HeaderButton>
-            <HeaderButton className="w-8 px-0"><span className="text-lg leading-none">+</span></HeaderButton>
-            <HeaderButton className="w-8 px-0"><span className="h-4 w-4 rounded-full border border-muted-foreground" /></HeaderButton>
-            <HeaderButton className="w-8 px-0"><GitBranch className="h-4 w-4" /></HeaderButton>
-            <HeaderButton className="w-8 px-0"><Monitor className="h-4 w-4" /></HeaderButton>
-            <Avatar className="h-8 w-8 border border-border">
-              <AvatarImage src="/Frida.png" alt="OnderCampos avatar" />
-              <AvatarFallback>OC</AvatarFallback>
-            </Avatar>
-          </div>
-        </div>
+        <GithubTopBar search={search} onSearchChange={setSearch} />
         <div className="px-4">
           <ProfileNav selectedTab={selectedTab} onTabChange={setSelectedTab} />
         </div>
       </header>
-
       <main className="mx-auto max-w-[1160px] px-6 py-8">
         <div className="grid gap-8 lg:grid-cols-[296px_minmax(0,1fr)_88px]">
           <aside>
@@ -383,11 +594,7 @@ function GithubUserProfileOverview({
               </SelectContent>
             </Select>
             <div className="space-y-4 pl-3 text-sm text-muted-foreground">
-              {[
-                "2025",
-                "2024",
-                "2023",
-              ].map((year) => (
+              {["2025", "2024", "2023"].map((year) => (
                 <button key={year} type="button" onClick={() => setSelectedYear(year)} className="block hover:text-foreground">
                   {year}
                 </button>
@@ -401,5 +608,31 @@ function GithubUserProfileOverview({
 }
 
 export default function HomePage() {
-  return <GithubUserProfileOverview state="default" />;
+  const [view, setView] = useState<AppView>("github-dashboard-home");
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="border-b border-border bg-card/70 px-6 py-3 backdrop-blur">
+        <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Generated views</p>
+            <p className="text-sm text-muted-foreground">Audit switcher for the implemented GitHub screens.</p>
+          </div>
+          <Select value={view} onValueChange={(value) => setView(value as AppView)}>
+            <SelectTrigger className="h-9 w-[290px] border-border bg-background text-sm text-foreground">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="border-border bg-card text-foreground">
+              {availableViews.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      {view === "github-dashboard-home" ? <GithubDashboardHome state="default" /> : <GithubUserProfileOverview state="default" />}
+    </div>
+  );
 }
