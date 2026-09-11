@@ -1,474 +1,405 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import {
-  Bell,
-  Bot,
+  BookOpen,
+  Building2,
   ChevronDown,
-  CircleDot,
-  CopyPlus,
-  FolderGit2,
   GitBranch,
   Github,
-  Home,
   Menu,
-  MessageSquare,
-  MonitorPlay,
-  PanelTop,
-  Play,
-  Plus,
+  Monitor,
+  Package,
   Search,
-  Sparkles,
   Star,
-  BookCopy,
-  Filter,
-  Eye,
-  BookOpen,
-  Settings,
-  Laptop,
+  Users,
 } from "lucide-react";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
-type DashboardState = "default";
+type GithubUserProfileOverviewState = "default";
 
-type RepositoryItem = {
+type ProfileTab = "Overview" | "Repositories" | "Projects" | "Packages" | "Stars";
+
+type Repository = {
   id: string;
-  owner: string;
   name: string;
-  description: string;
+  description?: string;
+  source?: string;
   language: string;
-  stars: string;
-  icon?: string;
-  accent?: "purple" | "green" | "yellow" | "blue";
+  visibility: "Public" | "Private";
 };
 
-type SidebarRepo = {
-  id: string;
-  name: string;
-  accent?: "purple" | "green" | "yellow" | "blue";
+type ContributionMonth = {
+  label: string;
+  count: number;
 };
 
-type ChangelogItem = {
-  id: string;
-  time: string;
-  text: string;
+type GithubUserProfileOverviewProps = {
+  state?: GithubUserProfileOverviewState;
+  initialTab?: ProfileTab;
+  initialYear?: string;
+  initialSearch?: string;
 };
 
-type GithubDashboardHomeProps = {
-  state?: DashboardState;
-  initialPrompt?: string;
-  initialScope?: string;
-  initialVisibility?: string;
-};
+const profileTabs: ProfileTab[] = ["Overview", "Repositories", "Projects", "Packages", "Stars"];
 
-const sidebarRepos: SidebarRepo[] = [
-  { id: "1", name: "OnderCampos/CountBoxingSofttek" },
-  { id: "2", name: "Fridaplatform/cp-cloudagents", accent: "purple" },
-  { id: "3", name: "OnderCampos/UI-Agent-Example" },
-  { id: "4", name: "Fridaplatform/ReqGen-Backend", accent: "purple" },
-  { id: "5", name: "Fridaplatform/ProductPlanner", accent: "purple" },
-  { id: "6", name: "Fridaplatform/reqgen_frontend", accent: "purple" },
-  { id: "7", name: "OnderCampos/FridaProductPlannerWebBackend" },
-];
-
-const trendingRepos: RepositoryItem[] = [
+const repositories: Repository[] = [
   {
     id: "1",
-    owner: "ayghri",
-    name: "i-have-adhd",
-    description: "A skill to stop your coding agent from burying the answer. ADHD-friendly output.",
+    name: "open-interpreter",
+    source: "Forked from openinterpreter/openinterpreter",
+    description: "A natural language interface for computers",
     language: "Python",
-    stars: "33.6k",
-    accent: "blue",
+    visibility: "Public",
   },
   {
     id: "2",
-    owner: "spotify",
-    name: "portal-ai-plugins",
-    description: "",
-    language: "TypeScript",
-    stars: "716",
-    icon: "spotify",
-    accent: "blue",
+    name: "CountBoxingSofttek",
+    language: "Python",
+    visibility: "Public",
   },
-];
-
-const recommendedRepos: RepositoryItem[] = [
   {
     id: "3",
-    owner: "jasonkylelol",
-    name: "graphrag-chinese",
-    description: "支持中文CNCCN 的 microsoft/graphrag",
+    name: "count_colors",
     language: "Python",
-    stars: "51",
-    accent: "blue",
+    visibility: "Public",
+  },
+  {
+    id: "4",
+    name: "pushtest",
+    language: "Python",
+    visibility: "Public",
+  },
+  {
+    id: "5",
+    name: "SAP-Cleaning-Frontend",
+    language: "TypeScript",
+    visibility: "Public",
+  },
+  {
+    id: "6",
+    name: "FridaProductPlannerWebBackend",
+    language: "Python",
+    visibility: "Public",
   },
 ];
 
-const changelogItems: ChangelogItem[] = [
-  { id: "1", time: "3 hours ago", text: "Remediate Code Quality findings with agentic autofix" },
-  { id: "2", time: "13 hours ago", text: "Enterprise-managed sandbox in Copilot for JetBrains" },
-  { id: "3", time: "18 hours ago", text: "GitHub Enterprise Server 3.22 is now generally available" },
-  { id: "4", time: "Yesterday", text: "New customer portal help.github.com" },
+const contributionMonths: ContributionMonth[] = [
+  { label: "Sep", count: 24 },
+  { label: "Oct", count: 20 },
+  { label: "Nov", count: 22 },
+  { label: "Dec", count: 19 },
+  { label: "Jan", count: 18 },
+  { label: "Feb", count: 17 },
+  { label: "Mar", count: 21 },
+  { label: "Apr", count: 19 },
+  { label: "May", count: 18 },
+  { label: "Jun", count: 14 },
+  { label: "Jul", count: 17 },
+  { label: "Aug", count: 16 },
 ];
 
-const accentMap = {
-  purple: "bg-[#ca7cff]",
-  green: "bg-[var(--color-success)]",
-  yellow: "bg-[var(--color-warning)]",
-  blue: "bg-[#4493f8]",
-};
+const contributionLevels = ["#212830", "#0e4429", "#006d32", "#26a641", "#39d353"];
 
-function HeaderIconButton({ icon: Icon, label }: { icon: React.ComponentType<{ className?: string }>; label: string }) {
+const contributionGrid = [
+  [0,0,1,0,0,1,1,0,0,1,0,0,0,0,1,0,0,0,2,0,0,1,0,2,1,0,0,2,0,1,0,0,0,1,0,0,0,2,1,0,0,0,0,1,0,0,0,2,3,0,1,0],
+  [0,0,0,2,0,0,0,0,0,0,0,2,0,0,0,0,0,1,0,0,2,0,0,0,2,0,0,0,1,0,0,2,0,0,0,0,2,0,0,0,0,2,0,0,1,0,0,0,4,2,0,0],
+  [1,0,0,1,0,0,1,0,2,0,0,1,0,2,0,0,0,0,0,1,0,0,2,0,1,0,0,1,0,0,2,0,0,0,2,0,0,0,1,0,0,0,1,0,0,2,0,0,3,0,1,0],
+  [2,1,0,0,0,0,1,0,0,0,1,0,2,0,0,0,0,0,1,0,2,0,2,1,0,0,2,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,4,0,0,0],
+  [1,1,0,0,0,0,0,1,0,0,2,1,0,0,1,0,0,1,0,0,0,2,3,0,0,0,1,0,2,0,0,1,0,0,0,0,2,0,0,1,0,2,0,0,0,1,0,0,4,1,0,0],
+  [0,2,0,1,0,0,0,0,0,2,0,0,1,0,0,2,0,0,0,1,0,0,2,0,0,1,0,3,1,0,0,0,2,0,0,0,1,0,0,0,0,1,0,0,2,0,0,0,3,2,1,0],
+  [0,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,0,0,2,1,0,0,1,0,2,0,0,0,0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,2,1,0,0],
+];
+
+function HeaderButton({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <button
-          type="button"
-          aria-label={label}
-          className="flex h-8 w-8 items-center justify-center rounded-md border border-[var(--color-border)] bg-transparent text-[var(--color-text)] transition hover:bg-[var(--color-surface)]"
-        >
-          <Icon className="h-4 w-4" />
-        </button>
-      </TooltipTrigger>
-      <TooltipContent sideOffset={6}>{label}</TooltipContent>
-    </Tooltip>
+    <button
+      type="button"
+      className={cn(
+        "flex h-8 items-center justify-center rounded-md border border-border bg-transparent px-2.5 text-foreground transition hover:bg-card",
+        className,
+      )}
+    >
+      {children}
+    </button>
   );
 }
 
-function RepoBadge({ accent = "purple" }: { accent?: keyof typeof accentMap }) {
-  return <span className={cn("mt-1 h-3 w-3 rounded-sm", accentMap[accent])} />;
-}
-
-function RepoActionMenu({ label, options }: { label: string; options: string[] }) {
-  const [selected, setSelected] = useState(options[0] ?? "Star");
+function ProfileNav({ selectedTab, onTabChange }: { selectedTab: ProfileTab; onTabChange: (tab: ProfileTab) => void }) {
+  const tabMeta = {
+    Overview: { icon: BookOpen },
+    Repositories: { icon: BookOpen, badge: "16" },
+    Projects: { icon: Monitor },
+    Packages: { icon: Package },
+    Stars: { icon: Star },
+  } as const;
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-8 gap-2 rounded-md border-[var(--color-border)] bg-[#30363d] px-3 text-xs font-semibold text-[var(--color-text)] hover:bg-[#373e47]"
-        >
-          <Star className="h-3.5 w-3.5" />
-          {selected}
-          <ChevronDown className="h-3.5 w-3.5 opacity-70" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]">
-        {options.map((option) => (
-          <DropdownMenuItem key={option} onClick={() => setSelected(option)} className="cursor-pointer">
-            {option}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Tabs value={selectedTab} onValueChange={(value) => onTabChange(value as ProfileTab)} className="gap-0">
+      <TabsList className="h-auto w-full justify-start gap-2 rounded-none bg-transparent p-0 text-sm">
+        {profileTabs.map((tab) => {
+          const Icon = tabMeta[tab].icon;
+          return (
+            <TabsTrigger
+              key={tab}
+              value={tab}
+              className="h-12 rounded-none border-x-0 border-t-0 border-b-2 border-transparent px-3 text-sm font-medium text-muted-foreground data-[state=active]:border-b-[#f78166] data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
+            >
+              <Icon className="h-4 w-4" />
+              {tab}
+              {"badge" in tabMeta[tab] ? (
+                <span className="ml-1 rounded-full bg-card px-1.5 py-0.5 text-[11px] leading-none text-foreground">
+                  {tabMeta[tab].badge}
+                </span>
+              ) : null}
+            </TabsTrigger>
+          );
+        })}
+      </TabsList>
+      <TabsContent value={selectedTab} className="mt-0" />
+    </Tabs>
   );
 }
 
-function FeedCard({ title, actionText, items }: { title: string; actionText?: string; items: RepositoryItem[] }) {
+function PopularRepositoryCard({ repo }: { repo: Repository }) {
   return (
-    <Card className="gap-0 rounded-xl border-[var(--color-border)] bg-[var(--color-surface)] py-0 shadow-[var(--shadow-card)]">
-      <CardContent className="px-0">
-        <div className="flex items-center gap-2 px-4 py-3 text-sm text-[var(--color-text-muted)]">
-          <PanelTop className="h-4 w-4" />
-          <span>{title}</span>
-          {actionText ? <span className="text-[var(--color-text-muted)]">·</span> : null}
-          {actionText ? <button type="button" className="text-[#4493f8] hover:underline">{actionText}</button> : null}
-        </div>
-        <Separator className="bg-[var(--color-border)]" />
-        {items.map((item, index) => (
-          <div key={item.id}>
-            <div className="flex items-start justify-between gap-4 px-4 py-4">
-              <div className="min-w-0 flex-1">
-                <div className="mb-2 flex items-center gap-2">
-                  {item.icon === "spotify" ? (
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#1DB954] text-black">
-                      <span className="text-[10px] font-bold">S</span>
-                    </div>
-                  ) : (
-                    <Avatar className="h-5 w-5">
-                      <AvatarFallback className="bg-[var(--color-border)] text-[10px] text-[var(--color-text)]">
-                        {item.owner.slice(0, 1).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  )}
-                  <span className="truncate text-sm font-semibold text-[var(--color-text)]">{item.owner}/{item.name}</span>
-                </div>
-                {item.description ? <p className="mb-2 text-sm text-[var(--color-text)]">{item.description}</p> : null}
-                <div className="flex items-center gap-4 text-xs text-[var(--color-text-muted)]">
-                  <div className="flex items-center gap-1.5">
-                    <span className={cn("h-3 w-3 rounded-full", accentMap[item.accent ?? "blue"])} />
-                    {item.language}
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Star className="h-3.5 w-3.5" />
-                    {item.stars}
-                  </div>
-                </div>
-              </div>
-              <RepoActionMenu label="Repository action" options={["Star", "Fork", "Watch"]} />
-            </div>
-            {index < items.length - 1 ? <Separator className="bg-[var(--color-border)]" /> : null}
+    <Card className="gap-0 rounded-md border-border bg-background py-0 shadow-none">
+      <CardContent className="flex h-full min-h-[118px] flex-col p-4">
+        <div className="mb-2 flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="truncate text-sm font-semibold text-[#2f81f7]">{repo.name}</h3>
+            {repo.source ? <p className="mt-1 text-xs text-muted-foreground">{repo.source}</p> : null}
           </div>
-        ))}
+          <span className="rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">{repo.visibility}</span>
+        </div>
+        {repo.description ? <p className="mb-4 text-sm text-muted-foreground">{repo.description}</p> : <div className="flex-1" />}
+        <div className="mt-auto flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span className={cn("h-3 w-3 rounded-full", repo.language === "TypeScript" ? "bg-[#3178c6]" : "bg-[#3572a5]")} />
+          {repo.language}
+        </div>
       </CardContent>
     </Card>
   );
 }
 
-function GithubDashboardHome({
-  state = "default",
-  initialPrompt = "",
-  initialScope = "all",
-  initialVisibility = "Auto",
-}: GithubDashboardHomeProps) {
-  const [prompt, setPrompt] = useState(initialPrompt);
-  const [scope, setScope] = useState(initialScope);
-  const [visibility, setVisibility] = useState(initialVisibility);
-  const [search, setSearch] = useState("");
+function ContributionHeatmap() {
+  return (
+    <Card className="gap-0 rounded-md border-border bg-background py-0 shadow-none">
+      <CardContent className="p-4">
+        <div className="mb-3 flex items-center justify-between gap-4 text-xs text-muted-foreground">
+          <div className="flex-1" />
+          <div className="flex items-center gap-1">
+            Contribution settings
+            <ChevronDown className="h-3.5 w-3.5" />
+          </div>
+        </div>
+        <div className="overflow-x-auto">
+          <div className="min-w-[650px]">
+            <div className="mb-1 ml-11 grid grid-cols-12 gap-4 text-xs text-muted-foreground">
+              {contributionMonths.map((month) => (
+                <span key={month.label}>{month.label}</span>
+              ))}
+            </div>
+            <div className="flex gap-3">
+              <div className="grid w-8 grid-rows-7 text-xs text-muted-foreground">
+                <span className="row-start-2">Mon</span>
+                <span className="row-start-4">Wed</span>
+                <span className="row-start-6">Fri</span>
+              </div>
+              <div className="grid grid-rows-7 gap-1">
+                {contributionGrid.map((row, rowIndex) => (
+                  <div key={`row-${rowIndex}`} className="grid grid-cols-52 gap-1">
+                    {row.map((level, columnIndex) => (
+                      <span
+                        key={`${rowIndex}-${columnIndex}`}
+                        className="h-[10px] w-[10px] rounded-[2px] border border-black/10"
+                        style={{ backgroundColor: contributionLevels[level] }}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
+          <button type="button" className="hover:text-foreground">
+            Learn how we count contributions
+          </button>
+          <div className="flex items-center gap-1">
+            <span>Less</span>
+            {contributionLevels.map((color) => (
+              <span key={color} className="h-[10px] w-[10px] rounded-[2px]" style={{ backgroundColor: color }} />
+            ))}
+            <span>More</span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
-  const filteredSidebar = useMemo(
-    () => sidebarRepos.filter((repo) => repo.name.toLowerCase().includes(search.toLowerCase())),
+function GithubUserProfileOverview({
+  state = "default",
+  initialTab = "Overview",
+  initialYear = "2026",
+  initialSearch = "",
+}: GithubUserProfileOverviewProps) {
+  const [selectedTab, setSelectedTab] = useState<ProfileTab>(initialTab);
+  const [selectedYear, setSelectedYear] = useState(initialYear);
+  const [search, setSearch] = useState(initialSearch);
+
+  const filteredRepositories = useMemo(
+    () => repositories.filter((repo) => repo.name.toLowerCase().includes(search.toLowerCase())),
     [search],
   );
 
   return (
-    <div data-state={state} className="min-h-screen bg-[var(--color-background)] text-[var(--color-text)] [color-scheme:dark]">
-      <header className="flex h-14 items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-background)] px-3">
-        <div className="flex items-center gap-3">
-          <HeaderIconButton icon={Menu} label="Open navigation" />
-          <Github className="h-8 w-8" />
-          <div className="text-sm font-semibold">Dashboard</div>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="hidden items-center gap-2 rounded-md border border-[var(--color-border)] bg-transparent px-3 md:flex md:w-[340px]">
-            <Search className="h-4 w-4 text-[var(--color-text-muted)]" />
-            <input
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Type / to search"
-              className="h-8 w-full bg-transparent text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-text-muted)]"
-            />
+    <div data-state={state} className="min-h-screen bg-background text-foreground [color-scheme:dark]">
+      <header className="border-b border-border bg-[linear-gradient(90deg,#0d1624_0%,#151b23_100%)]">
+        <div className="flex h-[72px] items-center justify-between gap-4 px-4">
+          <div className="flex items-center gap-4">
+            <HeaderButton className="w-8 px-0"><Menu className="h-4 w-4" /></HeaderButton>
+            <Github className="h-8 w-8" />
+            <span className="text-sm font-semibold">OnderCampos</span>
           </div>
-          <HeaderIconButton icon={CopyPlus} label="Apps" />
-          <Separator orientation="vertical" className="hidden h-6 bg-[var(--color-border)] md:block" />
-          <HeaderIconButton icon={Plus} label="Create new" />
-          <HeaderIconButton icon={CircleDot} label="Issues" />
-          <HeaderIconButton icon={GitBranch} label="Pull requests" />
-          <HeaderIconButton icon={MonitorPlay} label="Notifications" />
-          <HeaderIconButton icon={Bell} label="Tray" />
-          <Avatar className="h-8 w-8 border border-[var(--color-border)]">
-            <AvatarFallback className="bg-[var(--color-surface)] text-xs text-[var(--color-text)]">OC</AvatarFallback>
-          </Avatar>
+          <div className="flex items-center gap-2">
+            <div className="hidden items-center gap-2 rounded-md border border-border bg-transparent px-3 lg:flex lg:w-[320px]">
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <Input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Type / to search"
+                className="h-8 border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
+              />
+            </div>
+            <HeaderButton><div className="grid h-4 w-4 grid-cols-2 gap-0.5"><span className="rounded-[1px] bg-muted-foreground" /><span className="rounded-[1px] bg-muted-foreground" /><span className="rounded-[1px] bg-muted-foreground" /><span className="rounded-[1px] bg-muted-foreground" /></div></HeaderButton>
+            <HeaderButton className="w-8 px-0"><span className="text-lg leading-none">+</span></HeaderButton>
+            <HeaderButton className="w-8 px-0"><span className="h-4 w-4 rounded-full border border-muted-foreground" /></HeaderButton>
+            <HeaderButton className="w-8 px-0"><GitBranch className="h-4 w-4" /></HeaderButton>
+            <HeaderButton className="w-8 px-0"><Monitor className="h-4 w-4" /></HeaderButton>
+            <Avatar className="h-8 w-8 border border-border">
+              <AvatarImage src="/Frida.png" alt="OnderCampos avatar" />
+              <AvatarFallback>OC</AvatarFallback>
+            </Avatar>
+          </div>
+        </div>
+        <div className="px-4">
+          <ProfileNav selectedTab={selectedTab} onTabChange={setSelectedTab} />
         </div>
       </header>
 
-      <div className="grid min-h-[calc(100vh-56px)] grid-cols-1 xl:grid-cols-[300px_minmax(0,1fr)_320px]">
-        <aside className="border-r border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-6">
-          <div className="mb-10 flex items-center gap-3 text-sm font-semibold">
-            <Avatar className="h-6 w-6">
-              <AvatarFallback className="bg-[var(--color-border)] text-[10px]">OC</AvatarFallback>
-            </Avatar>
-            OnderCampos
-            <ChevronDown className="h-4 w-4 text-[var(--color-text-muted)]" />
-          </div>
-
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Top repositories</h2>
-            <Button className="h-8 rounded-md bg-[var(--color-primary)] px-3 text-xs font-semibold text-[var(--color-primary-foreground)] hover:bg-[var(--color-primary-hover)]">
-              <BookCopy className="h-3.5 w-3.5" />
-              New
-            </Button>
-          </div>
-
-          <Input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Find a repository..."
-            className="mb-4 h-8 rounded-md border-[var(--color-border)] bg-[var(--color-background)] text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-muted)]"
-          />
-
-          <div className="space-y-2">
-            {filteredSidebar.map((repo) => (
-              <button
-                key={repo.id}
-                type="button"
-                className="flex w-full items-start gap-2 rounded-md px-1 py-1.5 text-left text-sm text-[var(--color-text)] transition hover:bg-[rgba(255,255,255,0.03)]"
-              >
-                <RepoBadge accent={repo.accent} />
-                <span className="line-clamp-2">{repo.name}</span>
-              </button>
-            ))}
-          </div>
-
-          <button type="button" className="mt-3 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
-            Show more
-          </button>
-        </aside>
-
-        <main className="px-6 py-10 xl:px-14">
-          <div className="max-w-[805px]">
-            <h1 className="mb-6 text-[40px] font-semibold leading-none tracking-[-0.02em]">Home</h1>
-
-            <Card className="gap-0 rounded-2xl border-[var(--color-border)] bg-[var(--color-surface)] py-0 shadow-[var(--shadow-card)]">
-              <CardContent className="p-4">
-                <textarea
-                  value={prompt}
-                  onChange={(event) => setPrompt(event.target.value)}
-                  placeholder="Ask anything or type @ to add context"
-                  className="min-h-[66px] w-full resize-none bg-transparent text-[22px] leading-8 text-[var(--color-text)] outline-none placeholder:text-[#8f98a2]"
-                />
-                <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Button variant="outline" size="sm" className="h-8 rounded-md border-[var(--color-border)] bg-[rgba(255,255,255,0.02)] text-xs font-semibold text-[var(--color-text)] hover:bg-[rgba(255,255,255,0.05)]">
-                      <MessageSquare className="h-3.5 w-3.5" />
-                      Ask
-                      <ChevronDown className="h-3.5 w-3.5" />
-                    </Button>
-                    <Select value={scope} onValueChange={setScope}>
-                      <SelectTrigger size="sm" className="h-8 rounded-md border-[var(--color-border)] bg-[rgba(255,255,255,0.02)] text-xs font-semibold text-[var(--color-text)]">
-                        <SelectValue placeholder="All repositories" />
-                      </SelectTrigger>
-                      <SelectContent className="border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]">
-                        <SelectItem value="all">All repositories</SelectItem>
-                        <SelectItem value="top">Top repositories</SelectItem>
-                        <SelectItem value="starred">Starred</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button variant="outline" size="icon-sm" className="h-8 w-8 rounded-md border-[var(--color-border)] bg-[rgba(255,255,255,0.02)] text-[var(--color-text)] hover:bg-[rgba(255,255,255,0.05)]">
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button type="button" className="flex items-center gap-1 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
-                          <Bot className="h-4 w-4" />
-                          {visibility}
-                          <ChevronDown className="h-3.5 w-3.5" />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)]">
-                        {[
-                          "Auto",
-                          "Focused",
-                          "Creative",
-                        ].map((item) => (
-                          <DropdownMenuItem key={item} onClick={() => setVisibility(item)} className="cursor-pointer">
-                            {item}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    <button type="button" aria-label="Reset prompt" className="text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
-                      <Sparkles className="h-4 w-4" />
-                    </button>
-                    <button type="button" aria-label="Submit prompt" className="text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
-                      <Play className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="mt-4 flex flex-wrap gap-3">
-              {[
-                { icon: Laptop, text: "Debug" },
-                { icon: Bot, text: "Agent" },
-                { icon: CircleDot, text: "Create issue" },
-                { icon: Home, text: "Write code" },
-                { icon: GitBranch, text: "Git" },
-                { icon: FolderGit2, text: "Pull requests" },
-              ].map((item) => (
-                <Button
-                  key={item.text}
-                  variant="outline"
-                  className="h-9 rounded-full border-[var(--color-border)] bg-[rgba(255,255,255,0.02)] px-4 text-sm text-[var(--color-text)] hover:bg-[rgba(255,255,255,0.05)]"
+      <main className="mx-auto max-w-[1160px] px-6 py-8">
+        <div className="grid gap-8 lg:grid-cols-[296px_minmax(0,1fr)_88px]">
+          <aside>
+            <div className="sticky top-8">
+              <div className="relative mb-4 h-[296px] w-[296px] overflow-hidden rounded-full border border-border bg-card">
+                <Image src="/Frida.png" alt="Onder Francisco Campos Garcia" fill className="object-cover" />
+                <button
+                  type="button"
+                  aria-label="Profile status"
+                  className="absolute bottom-8 right-4 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-[var(--shadow-card)] hover:text-foreground"
                 >
-                  <item.icon className="h-4 w-4" />
-                  {item.text}
-                </Button>
-              ))}
-            </div>
-
-            <div className="mt-4 flex items-center justify-between">
-              <h2 className="text-sm font-semibold">Feed</h2>
-              <Button variant="outline" size="sm" className="h-8 rounded-md border-[var(--color-border)] bg-[rgba(255,255,255,0.02)] px-3 text-xs text-[var(--color-text)] hover:bg-[rgba(255,255,255,0.05)]">
-                <Filter className="h-3.5 w-3.5" />
-                Filter
-              </Button>
-            </div>
-
-            <div className="mt-3 space-y-4">
-              <FeedCard title="Trending repositories" actionText="See more" items={trendingRepos} />
-              <FeedCard title="Recommended for you" items={recommendedRepos} />
-            </div>
-          </div>
-        </main>
-
-        <aside className="px-6 py-9">
-          <div className="space-y-5">
-            <Card className="gap-0 overflow-hidden rounded-xl border-[var(--color-border)] bg-[var(--color-surface)] py-0 shadow-[var(--shadow-card)]">
-              <div className="relative h-[72px] bg-[linear-gradient(135deg,#7adc97_0%,#ffffff_45%,#7adc97_100%)]">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_35%,rgba(255,255,255,0.85),transparent_24%),radial-gradient(circle_at_70%_55%,rgba(76,29,149,0.32),transparent_18%)] opacity-90" />
-                <button type="button" aria-label="Dismiss card" className="absolute right-3 top-3 text-[var(--color-text-muted)]">
-                  ×
+                  <svg viewBox="0 0 16 16" className="h-4 w-4" aria-hidden="true"><path fill="currentColor" d="M8 1.5a6.5 6.5 0 1 0 0 13a6.5 6.5 0 0 0 0-13Zm0 1a5.5 5.5 0 1 1 0 11a5.5 5.5 0 0 1 0-11Zm0 2a.75.75 0 0 1 .75.75v2.19l1.28 1.28a.75.75 0 1 1-1.06 1.06L7.47 8.22A.75.75 0 0 1 7.25 7.7V5.25A.75.75 0 0 1 8 4.5Z" /></svg>
                 </button>
               </div>
-              <CardContent className="p-4">
-                <div className="mb-2 text-xs font-medium uppercase tracking-wide text-[#7d8590]">September 10 · 8:00 AM PT</div>
-                <h3 className="mb-2 text-[28px] font-semibold leading-8">GitHub Copilot Day</h3>
-                <ul className="mb-4 space-y-1 text-sm text-[var(--color-text-muted)]">
-                  <li className="flex gap-2"><span className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--color-success)]" />See how HydraFusion combines AI models to match the right model to the task</li>
-                  <li className="flex gap-2"><span className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--color-success)]" />Learn to automate work, run parallel agents, and use your own models</li>
-                  <li className="flex gap-2"><span className="mt-2 h-1.5 w-1.5 rounded-full bg-[var(--color-success)]" />Turn your best coding approaches into reusable Agent Skills</li>
-                </ul>
-                <Button className="h-8 w-full rounded-md bg-[#f6f8fa] text-xs font-semibold text-[#24292f] hover:bg-white">Set your reminder</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="gap-0 rounded-xl border-[var(--color-border)] bg-[var(--color-surface)] py-0 shadow-[var(--shadow-card)]">
-              <CardContent className="p-4">
-                <h3 className="mb-4 text-lg font-semibold">Latest from our changelog</h3>
-                <div className="space-y-4">
-                  {changelogItems.map((item) => (
-                    <div key={item.id} className="grid grid-cols-[10px_1fr] gap-3">
-                      <div className="flex justify-center pt-1">
-                        <span className="h-2 w-2 rounded-full bg-[var(--color-border)]" />
+              <h1 className="text-[39px] font-semibold leading-[1.1] tracking-[-0.02em]">Onder Francisco Campos Garcia</h1>
+              <p className="mt-1 text-[26px] font-light text-muted-foreground">OnderCampos</p>
+              <Button variant="outline" className="mt-4 h-8 w-full border-border bg-card text-sm font-semibold hover:bg-[#30363d]">
+                Edit profile
+              </Button>
+              <div className="mt-4 flex items-center gap-1.5 text-sm text-muted-foreground">
+                <Users className="h-4 w-4" />
+                <span><span className="text-foreground">2</span> followers · <span className="text-foreground">1</span> following</span>
+              </div>
+              <div className="mt-4 flex items-center gap-2 text-sm text-foreground">
+                <Building2 className="h-4 w-4 text-muted-foreground" />
+                Softtek
+              </div>
+              <div className="mt-6 border-t border-border pt-5">
+                <h2 className="mb-3 text-xl font-semibold">Achievements</h2>
+                <div className="flex items-center gap-2">
+                  {[
+                    ["#f8a8d8", "✨"],
+                    ["#f7c95c", "🤠"],
+                    ["#7ec8ff", "🐺"],
+                    ["#a7ef8a", "🫛"],
+                  ].map(([background, emoji], index) => (
+                    <div key={`${background}-${emoji}`} className="relative">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-white/15 text-3xl" style={{ backgroundColor: background }}>
+                        {emoji}
                       </div>
-                      <div>
-                        <div className="mb-1 text-xs text-[var(--color-text-muted)]">{item.time}</div>
-                        <div className="text-sm leading-6 text-[var(--color-text)]">{item.text}</div>
-                      </div>
+                      {index === 2 ? <span className="absolute -bottom-1 right-0 rounded-full bg-[#d18616] px-1.5 text-[10px] font-bold text-black">x2</span> : null}
                     </div>
                   ))}
                 </div>
-                <button type="button" className="mt-4 text-sm text-[#4493f8] hover:underline">View changelog →</button>
-              </CardContent>
-            </Card>
-          </div>
-        </aside>
-      </div>
+              </div>
+              <div className="mt-5 border-t border-border pt-5">
+                <h2 className="text-xl font-semibold">Organizations</h2>
+              </div>
+            </div>
+          </aside>
+
+          <section>
+            <div className="mb-3 flex items-center justify-between gap-4">
+              <h2 className="text-2xl font-normal">Popular repositories</h2>
+              <button type="button" className="text-xs text-[#2f81f7] hover:underline">Customize your pins</button>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              {filteredRepositories.map((repo) => (
+                <PopularRepositoryCard key={repo.id} repo={repo} />
+              ))}
+            </div>
+
+            <div className="mt-8">
+              <h2 className="mb-3 text-[32px] font-normal leading-none">471 contributions in the last year</h2>
+              <ContributionHeatmap />
+            </div>
+
+            <div className="mt-8">
+              <h2 className="mb-4 text-[32px] font-normal leading-none">Contribution activity</h2>
+              <div className="border-t border-border pt-4 text-sm font-semibold text-[#2f81f7]">September 2026</div>
+            </div>
+          </section>
+
+          <aside className="pt-[424px]">
+            <Select value={selectedYear} onValueChange={setSelectedYear}>
+              <SelectTrigger className="mb-3 h-8 w-full border-[#1f6feb] bg-[#1f6feb] text-sm font-medium text-white hover:bg-[#1158c7] focus-visible:ring-0">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="border-border bg-card text-foreground">
+                <SelectItem value="2026">2026</SelectItem>
+                <SelectItem value="2025">2025</SelectItem>
+                <SelectItem value="2024">2024</SelectItem>
+                <SelectItem value="2023">2023</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="space-y-4 pl-3 text-sm text-muted-foreground">
+              {[
+                "2025",
+                "2024",
+                "2023",
+              ].map((year) => (
+                <button key={year} type="button" onClick={() => setSelectedYear(year)} className="block hover:text-foreground">
+                  {year}
+                </button>
+              ))}
+            </div>
+          </aside>
+        </div>
+      </main>
     </div>
   );
 }
 
 export default function HomePage() {
-  return <GithubDashboardHome state="default" />;
+  return <GithubUserProfileOverview state="default" />;
 }

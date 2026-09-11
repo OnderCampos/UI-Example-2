@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "GitHub-style dashboard home view.",
-    "fullDescription": "Home feed view for a GitHub-style dashboard with a global top bar, repository sidebar, AI prompt composer, feed cards for trending and recommended repositories, and a right rail for event promotion and changelog updates. Supports the default state through props for initial prompt text, repository scope, and assistant mode while keeping search, menu, and action controls interactive with local state.",
+    "shortDescription": "GitHub user profile overview view.",
+    "fullDescription": "Profile overview screen for a developer account with a GitHub-style top navigation bar, profile summary sidebar, popular repository grid, contribution heatmap, activity section, and year selector. Supports the default state through props for the selected profile tab, selected contribution year, and repository search text while keeping tabs, search, buttons, and year selection interactive with local state.",
     "isView": true
   }
 ]
