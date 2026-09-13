@@ -2,12 +2,16 @@
 
 import { useMemo, useState } from "react";
 import {
+  Bell,
   BookOpen,
   Building2,
   FolderKanban,
   Github,
+  Globe,
+  Home,
   Menu,
   Package,
+  Plus,
   Search,
   Star,
   type LucideIcon,
@@ -23,14 +27,27 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
-type UserProfileOverviewState = "default";
+type AppView = "dashboard-home-feed" | "user-profile-overview";
+type ViewStateMap = {
+  "dashboard-home-feed": "default";
+  "user-profile-overview": "default";
+};
+type AppViewProps<T extends AppView> = {
+  view: T;
+  state?: ViewStateMap[T];
+};
+
 type ProfileTab = "overview" | "repositories" | "projects" | "packages" | "stars";
 type ContributionYear = "2026" | "2025" | "2024" | "2023";
 
 type UserProfileOverviewProps = {
-  state?: UserProfileOverviewState;
+  state?: ViewStateMap["user-profile-overview"];
   initialTab?: ProfileTab;
   initialYear?: ContributionYear;
+};
+
+type DashboardHomeFeedProps = {
+  state?: ViewStateMap["dashboard-home-feed"];
 };
 
 type RepositoryItem = {
@@ -40,6 +57,14 @@ type RepositoryItem = {
   languageColor: string;
   type: "Public";
   forkedFrom?: string;
+};
+
+type FeedCard = {
+  id: string;
+  title: string;
+  body: string;
+  meta: string;
+  action: string;
 };
 
 type ProfileTabItem = {
@@ -98,6 +123,30 @@ const popularRepositories: RepositoryItem[] = [
   },
 ];
 
+const dashboardFeedCards: FeedCard[] = [
+  {
+    id: "1",
+    title: "Morning standup summary",
+    body: "Review sprint blockers, confirm the demo scope, and hand off the analytics notes to product.",
+    meta: "Updated 12 minutes ago",
+    action: "Open summary",
+  },
+  {
+    id: "2",
+    title: "Design review",
+    body: "Compare the homepage card spacing against the latest token set and confirm hover treatments.",
+    meta: "Today · 10:30 AM",
+    action: "Review notes",
+  },
+  {
+    id: "3",
+    title: "Customer feedback",
+    body: "Three new comments mention onboarding friction in the account setup flow and search discoverability.",
+    meta: "3 unread insights",
+    action: "See feedback",
+  },
+];
+
 const achievements = [
   { emoji: "🌀", bg: "linear-gradient(135deg,#ffa7c4,#8ec5ff)" },
   { emoji: "🤠", bg: "linear-gradient(135deg,#ffcc66,#f97316)" },
@@ -121,12 +170,20 @@ function buildContributionGrid() {
 
 const contributionGrid = buildContributionGrid();
 
-function ProfileHeader({
+function ChromeHeader({
+  title,
   searchValue,
   onSearchChange,
+  tabs,
+  activeTab,
+  onTabChange,
 }: {
+  title: string;
   searchValue: string;
   onSearchChange: (value: string) => void;
+  tabs?: ProfileTabItem[];
+  activeTab?: ProfileTab;
+  onTabChange?: (tab: ProfileTab) => void;
 }) {
   return (
     <header className="border-b border-border bg-[linear-gradient(90deg,#0d131c_0%,#111926_50%,#0d131c_100%)]">
@@ -135,28 +192,31 @@ function ProfileHeader({
           <Menu className="size-4" />
         </Button>
         <Github className="size-8 text-foreground" />
-        <span className="text-[20px] font-semibold">OnderCampos</span>
+        <span className="text-[20px] font-semibold">{title}</span>
 
-        <nav className="ml-4 flex items-center gap-1 self-end pb-0.5">
-          {profileTabs.map((tab) => (
-            <button
-              key={tab.value}
-              type="button"
-              className={cn(
-                "flex items-center gap-2 border-b-2 border-transparent px-4 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground",
-                tab.value === "overview" && "border-[var(--warning)] text-foreground"
-              )}
-            >
-              <tab.icon className="size-4" />
-              {tab.label}
-              {tab.count && (
-                <span className="rounded-full bg-secondary px-1.5 py-0.5 text-[11px] leading-none text-foreground">
-                  {tab.count}
-                </span>
-              )}
-            </button>
-          ))}
-        </nav>
+        {tabs ? (
+          <nav className="ml-4 flex items-center gap-1 self-end pb-0.5">
+            {tabs.map((tab) => (
+              <button
+                key={tab.value}
+                type="button"
+                onClick={() => onTabChange?.(tab.value)}
+                className={cn(
+                  "flex items-center gap-2 border-b-2 border-transparent px-4 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground",
+                  tab.value === activeTab && "border-[var(--warning)] text-foreground"
+                )}
+              >
+                <tab.icon className="size-4" />
+                {tab.label}
+                {tab.count && (
+                  <span className="rounded-full bg-secondary px-1.5 py-0.5 text-[11px] leading-none text-foreground">
+                    {tab.count}
+                  </span>
+                )}
+              </button>
+            ))}
+          </nav>
+        ) : null}
 
         <div className="ml-auto flex items-center gap-2">
           <div className="relative w-[270px]">
@@ -168,17 +228,31 @@ function ProfileHeader({
               className="h-8 border-border bg-transparent pr-3 pl-9 text-sm placeholder:text-muted-foreground"
             />
           </div>
-          {Array.from({ length: 7 }).map((_, index) => (
-            <Button
-              key={`action-${index + 1}`}
-              variant="outline"
-              size="icon-sm"
-              className="border-border bg-transparent hover:bg-secondary"
-              aria-label={`Header action ${index + 1}`}
-            >
-              <span className="size-3 rounded-[3px] border border-muted-foreground/70" />
-            </Button>
-          ))}
+          {tabs ? (
+            Array.from({ length: 7 }).map((_, index) => (
+              <Button
+                key={`action-${index + 1}`}
+                variant="outline"
+                size="icon-sm"
+                className="border-border bg-transparent hover:bg-secondary"
+                aria-label={`Header action ${index + 1}`}
+              >
+                <span className="size-3 rounded-[3px] border border-muted-foreground/70" />
+              </Button>
+            ))
+          ) : (
+            <>
+              <Button variant="outline" size="icon-sm" className="border-border bg-transparent hover:bg-secondary" aria-label="Go home">
+                <Home className="size-4" />
+              </Button>
+              <Button variant="outline" size="icon-sm" className="border-border bg-transparent hover:bg-secondary" aria-label="Create new item">
+                <Plus className="size-4" />
+              </Button>
+              <Button variant="outline" size="icon-sm" className="border-border bg-transparent hover:bg-secondary" aria-label="Notifications">
+                <Bell className="size-4" />
+              </Button>
+            </>
+          )}
           <Avatar className="size-8 border border-border">
             <AvatarImage src="/Frida.png" alt="OnderCampos" />
             <AvatarFallback>OC</AvatarFallback>
@@ -316,7 +390,14 @@ function UserProfileOverview({ state = "default", initialTab = "overview", initi
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <ProfileHeader searchValue={searchValue} onSearchChange={setSearchValue} />
+      <ChromeHeader
+        title="OnderCampos"
+        searchValue={searchValue}
+        onSearchChange={setSearchValue}
+        tabs={profileTabs}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
 
       <main className="mx-auto max-w-[1180px] px-6 py-8">
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as ProfileTab)} className="gap-0">
@@ -431,6 +512,103 @@ function UserProfileOverview({ state = "default", initialTab = "overview", initi
   );
 }
 
+function DashboardHomeFeed({ state = "default" }: DashboardHomeFeedProps) {
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedCard, setSelectedCard] = useState<string>(dashboardFeedCards[0]?.id ?? "");
+
+  const visibleCards = useMemo(() => {
+    const query = searchValue.toLowerCase();
+    return dashboardFeedCards.filter((card) => `${card.title} ${card.body} ${card.meta}`.toLowerCase().includes(query));
+  }, [searchValue]);
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <ChromeHeader title="Dashboard" searchValue={searchValue} onSearchChange={setSearchValue} />
+
+      <main className="mx-auto max-w-[1180px] px-6 py-8">
+        <div className="mb-8 flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm text-muted-foreground">Workspace overview</p>
+            <h1 className="mt-2 text-5xl font-semibold tracking-[-0.03em]">Home feed</h1>
+          </div>
+          <Button className="h-10 rounded-md bg-primary px-4 font-semibold text-primary-foreground hover:bg-primary/90">
+            New update
+          </Button>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <section className="space-y-4">
+            {visibleCards.map((card) => (
+              <Card key={card.id} className={cn("border-border bg-card shadow-[var(--shadow-card)]", selectedCard === card.id && "ring-1 ring-ring")}>
+                <CardContent className="space-y-4 p-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{card.meta}</p>
+                      <h2 className="mt-2 text-2xl font-semibold">{card.title}</h2>
+                    </div>
+                    <Button variant="outline" className="border-border bg-transparent hover:bg-secondary" onClick={() => setSelectedCard(card.id)}>
+                      {selectedCard === card.id ? "Selected" : "Select"}
+                    </Button>
+                  </div>
+                  <p className="max-w-[60ch] text-base text-muted-foreground">{card.body}</p>
+                  <Button variant="ghost" className="px-0 text-[var(--link)] hover:bg-transparent hover:text-[var(--link)]">
+                    {card.action}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </section>
+
+          <aside className="space-y-4">
+            <Card className="border-border bg-card shadow-[var(--shadow-card)]">
+              <CardContent className="space-y-4 p-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex size-11 items-center justify-center rounded-full bg-secondary">
+                    <Globe className="size-5 text-foreground" />
+                  </div>
+                  <div>
+                    <h2 className="font-semibold">Team pulse</h2>
+                    <p className="text-sm text-muted-foreground">Default dashboard snapshot</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <button type="button" className="rounded-md border border-border bg-background px-3 py-3 text-left hover:bg-secondary">
+                    <div className="text-muted-foreground">Open tasks</div>
+                    <div className="mt-1 text-2xl font-semibold">18</div>
+                  </button>
+                  <button type="button" className="rounded-md border border-border bg-background px-3 py-3 text-left hover:bg-secondary">
+                    <div className="text-muted-foreground">Mentions</div>
+                    <div className="mt-1 text-2xl font-semibold">6</div>
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border bg-card shadow-[var(--shadow-card)]">
+              <CardContent className="space-y-3 p-5">
+                <h2 className="text-lg font-semibold">Quick actions</h2>
+                <Button variant="outline" className="w-full justify-start border-border bg-transparent hover:bg-secondary">Create task</Button>
+                <Button variant="outline" className="w-full justify-start border-border bg-transparent hover:bg-secondary">Invite collaborator</Button>
+                <Button variant="outline" className="w-full justify-start border-border bg-transparent hover:bg-secondary">Export notes</Button>
+              </CardContent>
+            </Card>
+          </aside>
+        </div>
+
+        <div className="sr-only">{state}</div>
+      </main>
+    </div>
+  );
+}
+
+function AppViewRenderer<T extends AppView>({ view, state }: AppViewProps<T>) {
+  if (view === "dashboard-home-feed") {
+    return <DashboardHomeFeed state={state as ViewStateMap["dashboard-home-feed"]} />;
+  }
+
+  return <UserProfileOverview state={state as ViewStateMap["user-profile-overview"]} />;
+}
+
 export default function HomePage() {
-  return <UserProfileOverview state="default" />;
+  return <AppViewRenderer view="user-profile-overview" state="default" />;
 }
