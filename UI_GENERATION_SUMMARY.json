@@ -1,8 +1,0 @@
-[
-  {
-    "relativePath": "src/app/page.tsx",
-    "shortDescription": "Shared home route view renderer for the dashboard home feed and user profile overview screens.",
-    "fullDescription": "Presents the root view through a typed view-and-state renderer that keeps both the dashboard-home-feed and user-profile-overview default states available from one implementation. The route composes a reusable chrome header, repository cards, contribution heatmap, and dashboard feed cards while preserving interactive local state for search, tab selection, feed selection, and contribution year changes.",
-    "isView": true
-  }
-]
