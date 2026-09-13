@@ -2,565 +2,435 @@
 
 import { useMemo, useState } from "react";
 import {
-  Bell,
-  Bot,
-  ChevronDown,
-  Circle,
-  CircleDot,
-  Filter,
-  GitBranch,
+  BookOpen,
+  Building2,
+  FolderKanban,
   Github,
-  Home,
   Menu,
-  Monitor,
-  PackagePlus,
-  Plus,
+  Package,
   Search,
-  Sparkles,
-  SquarePen,
   Star,
-  Telescope,
-  Users,
+  type LucideIcon,
+  UsersRound,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { Kbd } from "@/components/ui/kbd";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
-type FeedState = "default";
+type UserProfileOverviewState = "default";
+type ProfileTab = "overview" | "repositories" | "projects" | "packages" | "stars";
+type ContributionYear = "2026" | "2025" | "2024" | "2023";
 
-type QuickAction = {
-  label: string;
-  icon: typeof Bot;
-  trailing?: boolean;
+type UserProfileOverviewProps = {
+  state?: UserProfileOverviewState;
+  initialTab?: ProfileTab;
+  initialYear?: ContributionYear;
 };
 
-type RepoItem = {
-  owner: string;
+type RepositoryItem = {
   name: string;
   description?: string;
   language: string;
   languageColor: string;
-  stars: string;
-  avatar?: string;
-  badge?: string;
+  type: "Public";
+  forkedFrom?: string;
 };
 
-type FeedGroup = {
-  title: string;
-  accentIcon: typeof Telescope;
-  linkLabel?: string;
-  items: RepoItem[];
+type ProfileTabItem = {
+  value: ProfileTab;
+  label: string;
+  icon: LucideIcon;
+  count?: string;
 };
 
-type TimelineItem = {
-  age: string;
-  title: string;
-};
-
-type DashboardHomeFeedProps = {
-  state?: FeedState;
-};
-
-const topRepositories = [
-  "OnderCampos/CountBoxingSofttek",
-  "Fridaplatform/cp-cloudagents",
-  "OnderCampos/UI-Agent-Example",
-  "Fridaplatform/ReqGen-Backend",
-  "Fridaplatform/ProductPlanner",
-  "Fridaplatform/reqgen_frontend",
-  "OnderCampos/FridaProductPlannerWebBackend",
+const profileTabs: ProfileTabItem[] = [
+  { value: "overview", label: "Overview", icon: BookOpen },
+  { value: "repositories", label: "Repositories", icon: Github, count: "16" },
+  { value: "projects", label: "Projects", icon: FolderKanban },
+  { value: "packages", label: "Packages", icon: Package },
+  { value: "stars", label: "Stars", icon: Star },
 ];
 
-const feedGroups: Record<FeedState, FeedGroup[]> = {
-  default: [
-    {
-      title: "Trending repositories",
-      accentIcon: Telescope,
-      linkLabel: "See more",
-      items: [
-        {
-          owner: "ayghri",
-          name: "i-have-adhd",
-          description:
-            "A skill to stop your coding agent from burying the answer. ADHD-friendly output.",
-          language: "Python",
-          languageColor: "#58A6FF",
-          stars: "33.6k",
-        },
-        {
-          owner: "spotify",
-          name: "portal-ai-plugins",
-          language: "TypeScript",
-          languageColor: "#58A6FF",
-          stars: "716",
-          badge: "Spotify",
-        },
-      ],
-    },
-    {
-      title: "Recommended for you",
-      accentIcon: Star,
-      items: [
-        {
-          owner: "jasonkylelol",
-          name: "graphrag-chinese",
-          description: "支持中文CNCCN 的 microsoft/graphrag",
-          language: "Python",
-          languageColor: "#58A6FF",
-          stars: "51",
-        },
-      ],
-    },
-  ],
-};
-
-const changelogItems: TimelineItem[] = [
+const popularRepositories: RepositoryItem[] = [
   {
-    age: "3 hours ago",
-    title: "Remediate Code Quality findings with agentic autofix",
+    name: "open-interpreter",
+    forkedFrom: "Forked from openinterpreter/openinterpreter",
+    description: "A natural language interface for computers",
+    language: "Python",
+    languageColor: "#388BFD",
+    type: "Public",
   },
   {
-    age: "13 hours ago",
-    title: "Enterprise-managed sandbox in Copilot for JetBrains",
+    name: "CountBoxingSofttek",
+    language: "Python",
+    languageColor: "#388BFD",
+    type: "Public",
   },
   {
-    age: "18 hours ago",
-    title: "GitHub Enterprise Server 3.22 is now generally available",
+    name: "count_colors",
+    language: "Python",
+    languageColor: "#388BFD",
+    type: "Public",
   },
   {
-    age: "Yesterday",
-    title: "New customer portal help.github.com",
+    name: "pushtest",
+    language: "Python",
+    languageColor: "#388BFD",
+    type: "Public",
+  },
+  {
+    name: "SAP-Cleaning-Frontend",
+    language: "TypeScript",
+    languageColor: "#3178C6",
+    type: "Public",
+  },
+  {
+    name: "FridaProductPlannerWebBackend",
+    language: "Python",
+    languageColor: "#388BFD",
+    type: "Public",
   },
 ];
 
-const navigationItems = [
-  { label: "Overview", icon: Home },
-  { label: "Repositories", icon: Github },
-  { label: "Projects", icon: Monitor },
-];
-
-const controlActions = [
-  { icon: Github, label: "Copilot" },
-  { icon: Plus, label: "Add" },
-  { icon: CircleDot, label: "Issues" },
-  { icon: GitBranch, label: "Pull requests" },
-  { icon: PackagePlus, label: "Packages" },
-  { icon: Bell, label: "Notifications" },
+const achievements = [
+  { emoji: "🌀", bg: "linear-gradient(135deg,#ffa7c4,#8ec5ff)" },
+  { emoji: "🤠", bg: "linear-gradient(135deg,#ffcc66,#f97316)" },
+  { emoji: "🧊", bg: "linear-gradient(135deg,#62c4ff,#1d4ed8)", count: "x2" },
+  { emoji: "🫛", bg: "linear-gradient(135deg,#b8ffb4,#4ade80)" },
 ] as const;
 
-const quickActions: QuickAction[] = [
-  { label: "Debug", icon: Sparkles },
-  { label: "Agent", icon: Bot },
-  { label: "Create issue", icon: CircleDot },
-  { label: "Write code", icon: SquarePen, trailing: true },
-  { label: "Git", icon: GitBranch, trailing: true },
-  { label: "Pull requests", icon: GitBranch, trailing: true },
-];
+const contributionLevels = ["#263040", "#0e4429", "#006d32", "#26a641", "#39d353"];
+const monthLabels = ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"];
+const yearOptions: ContributionYear[] = ["2026", "2025", "2024", "2023"];
 
-function DashboardShell({ state = "default" }: DashboardHomeFeedProps) {
-  const [searchValue, setSearchValue] = useState("");
-  const [repoFilter, setRepoFilter] = useState("");
-  const [askValue, setAskValue] = useState("");
-  const [scope, setScope] = useState("All repositories");
-  const [feedFilter, setFeedFilter] = useState("Filter");
-  const [starSelections, setStarSelections] = useState<Record<string, string>>({});
+function buildContributionGrid() {
+  return Array.from({ length: 52 }, (_, week) =>
+    Array.from({ length: 7 }, (_, day) => {
+      const seed = (week * 17 + day * 13 + 7) % 11;
+      const level = seed <= 4 ? 0 : ((week + day * 2) % 4) + 1;
+      return contributionLevels[level];
+    })
+  );
+}
 
-  const groups = feedGroups[state];
+const contributionGrid = buildContributionGrid();
 
-  const filteredTopRepos = useMemo(() => {
-    return topRepositories.filter((repo) =>
-      repo.toLowerCase().includes(repoFilter.toLowerCase())
-    );
-  }, [repoFilter]);
-
-  const filteredGroups = useMemo(() => {
-    return groups.map((group) => ({
-      ...group,
-      items: group.items.filter((item) => {
-        const haystack = `${item.owner}/${item.name} ${item.description ?? ""}`.toLowerCase();
-        return haystack.includes(searchValue.toLowerCase());
-      }),
-    }));
-  }, [groups, searchValue]);
-
-  const toggleStar = (repoKey: string, value: string) => {
-    setStarSelections((current) => ({ ...current, [repoKey]: value }));
-  };
-
+function ProfileHeader({
+  searchValue,
+  onSearchChange,
+}: {
+  searchValue: string;
+  onSearchChange: (value: string) => void;
+}) {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-20 border-b border-border bg-[#0f1620]">
-        <div className="flex h-14 items-center gap-3 px-3">
-          <Button variant="outline" size="icon-sm" className="border-border bg-transparent hover:bg-accent">
-            <Menu className="size-4" />
-          </Button>
-          <div className="flex items-center gap-3 pr-2">
-            <Github className="size-8 text-foreground" />
-            <span className="text-sm font-semibold">Dashboard</span>
-          </div>
-          <div className="ml-auto flex items-center gap-3">
-            <InputGroup className="h-8 w-[210px] border-border bg-background/70 shadow-none">
-              <InputGroupAddon>
-                <Search className="size-4 text-muted-foreground" />
-              </InputGroupAddon>
-              <InputGroupInput
-                value={searchValue}
-                onChange={(event) => setSearchValue(event.target.value)}
-                placeholder="Type / to search"
-                className="h-8 text-sm"
-              />
-              <InputGroupAddon align="inline-end">
-                <Kbd>/</Kbd>
-              </InputGroupAddon>
-            </InputGroup>
-            <div className="flex items-center gap-2">
-              {controlActions.map((action) => (
-                <Button
-                  key={action.label}
-                  variant="outline"
-                  size="icon-sm"
-                  className="border-border bg-transparent hover:bg-accent"
-                  aria-label={action.label}
-                >
-                  <action.icon className="size-4" />
-                </Button>
-              ))}
-            </div>
-            <Avatar className="size-8 border border-border">
-              <AvatarImage src="/Frida.png" alt="OnderCampos" />
-              <AvatarFallback>OC</AvatarFallback>
-            </Avatar>
-          </div>
-        </div>
-      </header>
+    <header className="border-b border-border bg-[linear-gradient(90deg,#0d131c_0%,#111926_50%,#0d131c_100%)]">
+      <div className="mx-auto flex h-[72px] max-w-[1560px] items-center gap-4 px-4">
+        <Button variant="outline" size="icon-sm" className="border-border bg-transparent hover:bg-secondary">
+          <Menu className="size-4" />
+        </Button>
+        <Github className="size-8 text-foreground" />
+        <span className="text-[20px] font-semibold">OnderCampos</span>
 
-      <div className="grid min-h-[calc(100vh-56px)] grid-cols-[300px_minmax(0,1fr)_316px]">
-        <aside className="border-r border-border bg-sidebar">
-          <div className="p-5">
-            <div className="mb-8 flex items-center gap-3">
-              <Avatar className="size-7 border border-border">
-                <AvatarImage src="/Frida.png" alt="OnderCampos" />
-                <AvatarFallback>OC</AvatarFallback>
-              </Avatar>
-              <button type="button" className="flex items-center gap-2 text-sm font-semibold">
-                OnderCampos
-                <ChevronDown className="size-4 text-muted-foreground" />
-              </button>
-            </div>
+        <nav className="ml-4 flex items-center gap-1 self-end pb-0.5">
+          {profileTabs.map((tab) => (
+            <button
+              key={tab.value}
+              type="button"
+              className={cn(
+                "flex items-center gap-2 border-b-2 border-transparent px-4 py-3 text-sm text-muted-foreground transition-colors hover:text-foreground",
+                tab.value === "overview" && "border-[var(--warning)] text-foreground"
+              )}
+            >
+              <tab.icon className="size-4" />
+              {tab.label}
+              {tab.count && (
+                <span className="rounded-full bg-secondary px-1.5 py-0.5 text-[11px] leading-none text-foreground">
+                  {tab.count}
+                </span>
+              )}
+            </button>
+          ))}
+        </nav>
 
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-foreground">Top repositories</h2>
-              <Button className="h-8 rounded-md bg-primary px-3 text-xs font-semibold text-primary-foreground hover:bg-[#36A653]">
-                <Monitor className="size-3.5" />
-                New
-              </Button>
-            </div>
-
+        <div className="ml-auto flex items-center gap-2">
+          <div className="relative w-[270px]">
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              value={repoFilter}
-              onChange={(event) => setRepoFilter(event.target.value)}
-              placeholder="Find a repository..."
-              className="mb-4 h-9 border-border bg-background text-sm shadow-none placeholder:text-muted-foreground"
+              value={searchValue}
+              onChange={(event) => onSearchChange(event.target.value)}
+              placeholder="Type / to search"
+              className="h-8 border-border bg-transparent pr-3 pl-9 text-sm placeholder:text-muted-foreground"
             />
-
-            <nav className="mb-4 space-y-1">
-              {navigationItems.map((item) => (
-                <Button
-                  key={item.label}
-                  variant="ghost"
-                  className="h-8 w-full justify-start gap-2 px-2 text-sm text-muted-foreground hover:bg-accent hover:text-foreground"
-                >
-                  <item.icon className="size-4" />
-                  {item.label}
-                </Button>
-              ))}
-            </nav>
-
-            <div className="space-y-2 text-sm">
-              {filteredTopRepos.map((repo) => (
-                <button
-                  key={repo}
-                  type="button"
-                  className="flex w-full items-start gap-2 rounded-md px-1 py-1.5 text-left text-muted-foreground hover:bg-accent hover:text-foreground"
-                >
-                  <span className="mt-0.5 flex size-4 items-center justify-center rounded-[3px] bg-[#f778ba] text-[10px] font-bold text-white">
-                    F
-                  </span>
-                  <span className="leading-5 break-all">{repo}</span>
-                </button>
-              ))}
-            </div>
-
-            <Button variant="ghost" className="mt-3 h-8 px-1 text-sm text-muted-foreground hover:bg-transparent hover:text-foreground">
-              Show more
+          </div>
+          {Array.from({ length: 7 }).map((_, index) => (
+            <Button
+              key={`action-${index + 1}`}
+              variant="outline"
+              size="icon-sm"
+              className="border-border bg-transparent hover:bg-secondary"
+              aria-label={`Header action ${index + 1}`}
+            >
+              <span className="size-3 rounded-[3px] border border-muted-foreground/70" />
             </Button>
+          ))}
+          <Avatar className="size-8 border border-border">
+            <AvatarImage src="/Frida.png" alt="OnderCampos" />
+            <AvatarFallback>OC</AvatarFallback>
+          </Avatar>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function RepositoryCard({ repository }: { repository: RepositoryItem }) {
+  return (
+    <Card className="gap-0 rounded-lg border-border bg-card py-0 shadow-[var(--shadow-card)]">
+      <CardContent className="flex min-h-[102px] flex-col px-4 py-4">
+        <div className="flex items-start justify-between gap-3">
+          <button type="button" className="text-left text-[20px] leading-6 font-semibold text-[var(--link)] hover:underline">
+            {repository.name}
+          </button>
+          <Badge variant="outline" className="rounded-full border-border px-2 py-0.5 text-[12px] text-muted-foreground">
+            {repository.type}
+          </Badge>
+        </div>
+        {repository.forkedFrom && (
+          <div className="mt-1 text-[13px] text-muted-foreground underline decoration-muted-foreground/40 underline-offset-3">
+            {repository.forkedFrom}
           </div>
-        </aside>
+        )}
+        {repository.description && <p className="mt-4 text-[15px] text-foreground">{repository.description}</p>}
+        <div className="mt-auto pt-4 text-sm text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5">
+            <span className="size-3 rounded-full" style={{ backgroundColor: repository.languageColor }} />
+            {repository.language}
+          </span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
-        <main className="bg-background px-14 py-10">
-          <div className="max-w-[805px]">
-            <h1 className="mb-6 text-[36px] leading-none font-semibold tracking-[-0.02em]">Home</h1>
+function ContributionHeatmap({ selectedYear, onYearChange }: { selectedYear: ContributionYear; onYearChange: (year: ContributionYear) => void }) {
+  return (
+    <div className="mt-8">
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-[32px] leading-9 font-normal">471 contributions in the last year</h3>
+        <div className="flex items-center gap-6 text-sm text-muted-foreground">
+          <button type="button" className="hover:text-foreground">
+            Contribution settings ▾
+          </button>
+        </div>
+      </div>
 
-            <Card className="gap-0 rounded-2xl border-border bg-card py-0 shadow-[0_1px_3px_rgba(0,0,0,0.3)]">
-              <CardContent className="p-4">
-                <textarea
-                  value={askValue}
-                  onChange={(event) => setAskValue(event.target.value)}
-                  placeholder="Ask anything or type @ to add context"
-                  className="min-h-[72px] w-full resize-none bg-transparent text-[30px] leading-[1.32] text-foreground outline-none placeholder:text-[#7d8590]"
-                />
-                <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <Button variant="outline" className="h-8 border-border bg-background px-3 text-sm hover:bg-accent">
-                      <Bot className="size-4" />
-                      Ask
-                      <ChevronDown className="size-4 text-muted-foreground" />
-                    </Button>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="h-8 border-border bg-background px-3 text-sm hover:bg-accent">
-                          <Monitor className="size-4" />
-                          {scope}
-                          <ChevronDown className="size-4 text-muted-foreground" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start" className="w-52 border-border bg-card text-foreground">
-                        {[
-                          "All repositories",
-                          "Top repositories",
-                          "Following",
-                        ].map((option) => (
-                          <DropdownMenuItem key={option} onClick={() => setScope(option)}>
-                            {option}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    <Button variant="outline" size="icon-sm" className="border-border bg-background hover:bg-accent">
-                      <Plus className="size-4" />
-                    </Button>
-                  </div>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <button type="button" className="flex items-center gap-1.5 hover:text-foreground">
-                      <Users className="size-4" />
-                      Auto
-                      <ChevronDown className="size-4" />
-                    </button>
-                    <button type="button" className="hover:text-foreground">
-                      <Sparkles className="size-4" />
-                    </button>
-                    <button type="button" className="hover:text-foreground">
-                      <PackagePlus className="size-4" />
-                    </button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="mt-4 flex flex-wrap gap-3">
-              {quickActions.map((action) => (
-                <Button
-                  key={action.label}
-                  variant="outline"
-                  className="h-9 rounded-full border-border bg-background px-4 text-sm font-medium hover:bg-accent"
-                >
-                  <action.icon className="size-4" />
-                  {action.label}
-                  {action.trailing && <ChevronDown className="size-4 text-muted-foreground" />}
-                </Button>
+      <div className="flex gap-6">
+        <Card className="flex-1 gap-0 rounded-lg border-border bg-background py-0 shadow-none">
+          <CardContent className="px-5 py-4">
+            <div className="mb-3 grid grid-cols-[32px_repeat(12,minmax(0,1fr))] items-center gap-x-4 text-xs text-muted-foreground">
+              <div />
+              {monthLabels.map((month) => (
+                <div key={month}>{month}</div>
               ))}
             </div>
-
-            <div className="mt-4 flex items-center justify-between">
-              <h2 className="text-base font-semibold">Feed</h2>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="h-8 border-border bg-card px-3 text-sm hover:bg-accent">
-                    <Filter className="size-4" />
-                    {feedFilter}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="border-border bg-card text-foreground">
-                  {[
-                    "Filter",
-                    "Following only",
-                    "Starred repositories",
-                  ].map((option) => (
-                    <DropdownMenuItem key={option} onClick={() => setFeedFilter(option)}>
-                      {option}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-
-            <div className="mt-3 space-y-4">
-              {filteredGroups.map((group) => (
-                <Card key={group.title} className="gap-0 rounded-lg border-border bg-card py-0 shadow-[0_1px_3px_rgba(0,0,0,0.3)]">
-                  <CardHeader className="flex flex-row items-center gap-2 px-4 py-4">
-                    <group.accentIcon className="size-4 text-muted-foreground" />
-                    <CardTitle className="text-sm font-medium text-muted-foreground">
-                      {group.title}
-                    </CardTitle>
-                    {group.linkLabel && (
-                      <button type="button" className="text-sm text-[#58A6FF] hover:underline">
-                        · {group.linkLabel}
-                      </button>
-                    )}
-                  </CardHeader>
-                  <CardContent className="px-0 pb-0">
-                    {group.items.map((item, index) => {
-                      const repoKey = `${item.owner}/${item.name}`;
-                      const starred = starSelections[repoKey] ?? "Star";
-                      return (
-                        <div key={repoKey}>
-                          <div className="flex items-start justify-between gap-4 px-4 pb-5">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <Avatar className="size-5 border border-border">
-                                  <AvatarFallback className="bg-muted text-[10px] text-foreground">
-                                    {item.owner.slice(0, 2).toUpperCase()}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <button type="button" className="text-[15px] font-semibold hover:text-[#58A6FF] hover:underline">
-                                  {repoKey}
-                                </button>
-                                {item.badge && (
-                                  <Badge variant="secondary" className="rounded-full bg-[rgba(122,220,151,0.15)] px-2 py-0 text-[11px] text-primary">
-                                    {item.badge}
-                                  </Badge>
-                                )}
-                              </div>
-                              {item.description && (
-                                <p className="mt-2 max-w-[540px] text-[15px] text-foreground">{item.description}</p>
-                              )}
-                              <div className="mt-3 flex items-center gap-4 text-sm text-muted-foreground">
-                                <span className="flex items-center gap-1.5">
-                                  <span
-                                    className="size-3 rounded-full"
-                                    style={{ backgroundColor: item.languageColor }}
-                                  />
-                                  {item.language}
-                                </span>
-                                <span className="flex items-center gap-1.5">
-                                  <Star className="size-3.5" />
-                                  {item.stars}
-                                </span>
-                              </div>
-                            </div>
-                            <ButtonGroup>
-                              <Button
-                                variant="outline"
-                                className="h-7 border-border bg-secondary px-3 text-xs font-semibold hover:bg-accent"
-                                onClick={() => toggleStar(repoKey, starred === "Star" ? "Starred" : "Star")}
-                              >
-                                <Star className={cn("size-3.5", starred === "Starred" && "fill-current text-primary")} />
-                                {starred}
-                              </Button>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button variant="outline" className="h-7 w-8 border-border bg-secondary px-0 hover:bg-accent">
-                                    <ChevronDown className="size-3.5" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="border-border bg-card text-foreground">
-                                  <DropdownMenuItem onClick={() => toggleStar(repoKey, "Star")}>Star</DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => toggleStar(repoKey, "Starred")}>Starred</DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => toggleStar(repoKey, "Unstar")}>Unstar</DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </ButtonGroup>
-                          </div>
-                          {index < group.items.length - 1 && <Separator className="bg-border" />}
-                        </div>
-                      );
-                    })}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </main>
-
-        <aside className="border-l border-border bg-background px-18 py-9">
-          <div className="space-y-6">
-            <Card className="gap-0 overflow-hidden rounded-xl border-border bg-card py-0 shadow-[0_1px_3px_rgba(0,0,0,0.3)]">
-              <div className="relative h-[72px] bg-[linear-gradient(135deg,#d0f5ce_0%,#79df95_35%,#212830_100%)]">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_40%,rgba(255,255,255,0.5),transparent_25%),radial-gradient(circle_at_72%_32%,rgba(122,220,151,0.65),transparent_20%),linear-gradient(135deg,transparent_30%,rgba(255,255,255,0.25)_30%,rgba(255,255,255,0.25)_44%,transparent_44%,transparent_56%,rgba(255,255,255,0.18)_56%,rgba(255,255,255,0.18)_70%,transparent_70%)]" />
-                <button type="button" className="absolute top-3 right-3 text-muted-foreground hover:text-foreground">
-                  ×
-                </button>
+            <div className="grid grid-cols-[32px_1fr] gap-4">
+              <div className="grid grid-rows-7 items-center text-xs text-muted-foreground">
+                <span>Mon</span>
+                <span />
+                <span>Wed</span>
+                <span />
+                <span>Fri</span>
               </div>
-              <CardContent className="p-4">
-                <div className="mb-3 text-xs font-medium tracking-wide text-[#79c0ff] uppercase">
-                  September 10 · 8:00 AM PT
-                </div>
-                <h3 className="mb-3 text-[28px] leading-8 font-semibold">GitHub Copilot Day</h3>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  {[
-                    "See how HydraFusion combines AI models to match the right model to the task",
-                    "Learn to automate work, run parallel agents, and use your own models",
-                    "Turn your best coding approaches into reusable Agent Skills",
-                  ].map((point) => (
-                    <li key={point} className="flex gap-2">
-                      <span className="mt-1.5 size-1.5 rounded-full bg-primary" />
-                      <span>{point}</span>
-                    </li>
+              <div className="flex gap-[3px]">
+                {contributionGrid.map((week, weekIndex) => (
+                  <div key={`week-${selectedYear}-${weekIndex}`} className="grid gap-[3px]">
+                    {week.map((color, dayIndex) => (
+                      <button
+                        key={`cell-${weekIndex}-${dayIndex}`}
+                        type="button"
+                        aria-label={`Contributions for week ${weekIndex + 1}, day ${dayIndex + 1}`}
+                        className="size-[11px] rounded-[2px] border border-black/10"
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
+              <button type="button" className="hover:text-foreground">
+                Learn how we count contributions
+              </button>
+              <div className="flex items-center gap-2">
+                <span>Less</span>
+                <div className="flex gap-[3px]">
+                  {contributionLevels.map((level) => (
+                    <span key={level} className="size-[10px] rounded-[2px]" style={{ backgroundColor: level }} />
                   ))}
-                </ul>
-                <Button className="mt-4 h-8 w-full bg-[#f6f8fa] text-[#24292f] hover:bg-white">
-                  Set your reminder
-                </Button>
-              </CardContent>
-            </Card>
+                </div>
+                <span>More</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-            <Card className="gap-0 rounded-xl border-border bg-card py-0 shadow-[0_1px_3px_rgba(0,0,0,0.3)]">
-              <CardHeader className="px-4 py-4">
-                <CardTitle className="text-base font-semibold">Latest from our changelog</CardTitle>
-              </CardHeader>
-              <CardContent className="px-4 pb-4">
-                <div className="space-y-4">
-                  {changelogItems.map((item) => (
-                    <div key={item.title} className="flex gap-3">
-                      <div className="flex flex-col items-center">
-                        <Circle className="size-3 fill-muted text-muted" />
-                        <div className="mt-1 h-full w-px bg-border last:hidden" />
-                      </div>
-                      <div>
-                        <div className="mb-1 text-xs text-muted-foreground">{item.age}</div>
-                        <button type="button" className="text-left text-[15px] leading-6 hover:text-[#58A6FF] hover:underline">
-                          {item.title}
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <button type="button" className="mt-4 text-sm text-[#58A6FF] hover:underline">
-                  View changelog →
-                </button>
-              </CardContent>
-            </Card>
-          </div>
-        </aside>
+        <div className="flex w-[96px] flex-col gap-1 pt-[2px]">
+          {yearOptions.map((year) => (
+            <button
+              key={year}
+              type="button"
+              onClick={() => onYearChange(year)}
+              className={cn(
+                "rounded-md px-4 py-3 text-left text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
+                year === selectedYear && "bg-[var(--link)] text-white hover:bg-[var(--link)]"
+              )}
+            >
+              {year}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
+function UserProfileOverview({ state = "default", initialTab = "overview", initialYear = "2026" }: UserProfileOverviewProps) {
+  const [activeTab, setActiveTab] = useState<ProfileTab>(initialTab);
+  const [selectedYear, setSelectedYear] = useState<ContributionYear>(initialYear);
+  const [searchValue, setSearchValue] = useState("");
+
+  const visibleRepositories = useMemo(() => {
+    if (activeTab !== "overview") return [];
+
+    return popularRepositories.filter((repository) => {
+      const haystack = `${repository.name} ${repository.description ?? ""} ${repository.language}`.toLowerCase();
+      return haystack.includes(searchValue.toLowerCase());
+    });
+  }, [activeTab, searchValue]);
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <ProfileHeader searchValue={searchValue} onSearchChange={setSearchValue} />
+
+      <main className="mx-auto max-w-[1180px] px-6 py-8">
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as ProfileTab)} className="gap-0">
+          <TabsList className="hidden" />
+
+          <div className="grid grid-cols-[296px_minmax(0,1fr)] gap-8">
+            <aside>
+              <div className="sticky top-8">
+                <div className="relative mx-auto mb-6 size-[260px] overflow-hidden rounded-full border border-border bg-card shadow-[var(--shadow-card)]">
+                  <Avatar className="size-full rounded-full">
+                    <AvatarImage src="/Frida.png" alt="Onder Campos" className="object-cover" />
+                    <AvatarFallback className="text-5xl">OC</AvatarFallback>
+                  </Avatar>
+                  <button
+                    type="button"
+                    className="absolute right-3 bottom-8 flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-[var(--shadow-card)] hover:text-foreground"
+                    aria-label="Status"
+                  >
+                    ◌
+                  </button>
+                </div>
+
+                <div>
+                  <h1 className="text-[48px] leading-[1.05] font-semibold tracking-[-0.02em]">Onder Francisco Campos Garcia</h1>
+                  <div className="mt-2 text-[32px] leading-9 text-muted-foreground">OnderCampos</div>
+                </div>
+
+                <Button variant="outline" className="mt-6 h-9 w-full border-border bg-secondary px-4 text-sm font-semibold hover:bg-[#343d46]">
+                  Edit profile
+                </Button>
+
+                <div className="mt-5 flex items-center gap-1 text-[15px] text-muted-foreground">
+                  <UsersRound className="size-4" />
+                  <button type="button" className="hover:text-foreground">2 followers</button>
+                  <span>·</span>
+                  <button type="button" className="hover:text-foreground">1 following</button>
+                </div>
+
+                <div className="mt-5 flex items-center gap-2 text-[15px] text-foreground">
+                  <Building2 className="size-4 text-muted-foreground" />
+                  <span>Softtek</span>
+                </div>
+
+                <Separator className="my-6" />
+
+                <section>
+                  <h2 className="text-[24px] font-semibold">Achievements</h2>
+                  <div className="mt-4 flex gap-2">
+                    {achievements.map((item, index) => (
+                      <div key={`achievement-${index + 1}`} className="relative">
+                        <div
+                          className="flex size-14 items-center justify-center rounded-full border-2 border-white/30 text-[28px] shadow-[var(--shadow-card)]"
+                          style={{ background: item.bg }}
+                        >
+                          {item.emoji}
+                        </div>
+                        {item.count && (
+                          <span className="absolute right-[-4px] bottom-[-2px] rounded-full bg-[var(--warning)] px-1.5 py-0.5 text-[10px] font-bold text-black">
+                            {item.count}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <Separator className="my-6" />
+
+                <section>
+                  <h2 className="text-[24px] font-semibold">Organizations</h2>
+                </section>
+              </div>
+            </aside>
+
+            <section>
+              <div className="mb-5 flex items-center justify-between">
+                <h2 className="text-[28px] leading-8 font-normal">Popular repositories</h2>
+                <button type="button" className="text-sm text-[var(--link)] hover:underline">
+                  Customize your pins
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                {visibleRepositories.map((repository) => (
+                  <RepositoryCard key={repository.name} repository={repository} />
+                ))}
+              </div>
+
+              <ContributionHeatmap selectedYear={selectedYear} onYearChange={setSelectedYear} />
+
+              <section className="mt-8">
+                <h2 className="text-[34px] leading-10 font-normal">Contribution activity</h2>
+                <div className="mt-5 flex items-center gap-4 text-sm">
+                  <span className="font-semibold text-foreground">September 2026</span>
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+              </section>
+            </section>
+          </div>
+
+          <div className="sr-only">
+            {state}
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="repositories">Repositories</TabsTrigger>
+            <TabsTrigger value="projects">Projects</TabsTrigger>
+            <TabsTrigger value="packages">Packages</TabsTrigger>
+            <TabsTrigger value="stars">Stars</TabsTrigger>
+          </div>
+        </Tabs>
+      </main>
+    </div>
+  );
+}
+
 export default function HomePage() {
-  return <DashboardShell state="default" />;
+  return <UserProfileOverview state="default" />;
 }

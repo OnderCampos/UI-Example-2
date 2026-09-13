@@ -67,6 +67,8 @@
   --chart-3: #d29922;
   --chart-4: #36a653;
   --chart-5: #da3633;
+  --warning: #d29922;
+  --link: #2f81f7;
   --sidebar: #1c2530;
   --sidebar-foreground: #e6edf3;
   --sidebar-primary: #7adc97;
@@ -75,6 +77,9 @@
   --sidebar-accent-foreground: #e6edf3;
   --sidebar-border: #414852;
   --sidebar-ring: #7adc97;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --focus-ring: 0 0 0 2px var(--background), 0 0 0 4px var(--primary);
 }
 
 .dark {
@@ -102,6 +107,8 @@
   --chart-3: #d29922;
   --chart-4: #36a653;
   --chart-5: #da3633;
+  --warning: #d29922;
+  --link: #2f81f7;
   --sidebar: #1c2530;
   --sidebar-foreground: #e6edf3;
   --sidebar-primary: #7adc97;
@@ -110,6 +117,9 @@
   --sidebar-accent-foreground: #e6edf3;
   --sidebar-border: #414852;
   --sidebar-ring: #7adc97;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --focus-ring: 0 0 0 2px var(--background), 0 0 0 4px var(--primary);
 }
 
 @layer base {
