@@ -1,0 +1,8 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Dashboard home feed view with GitHub-style three-column layout.",
+    "fullDescription": "Presents the dashboard-home-feed view in its default state with a top application bar, repository sidebar, central ask and feed area, and right-side news panels. The view initializes interactive search, repository filtering, feed filtering, scope selection, and per-repository star actions from local state while composing shared avatar, button, card, dropdown, input, separator, and badge components.",
+    "isView": true
+  }
+]
