@@ -84,6 +84,16 @@
   --dashboard-primary: #7adc97;
   --dashboard-primary-hover: #36a653;
   --dashboard-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --github-bg: #151b23;
+  --github-surface: #212830;
+  --github-surface-alt: #2e353e;
+  --github-border-subtle: #414852;
+  --github-text-primary: #e6edf3;
+  --github-text-secondary: #c9d1d9;
+  --github-text-muted: #8b949e;
+  --github-accent: #f78166;
+  --github-success: #36a653;
+  --github-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .dark {
