@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "GitHub-style profile overview view for a developer account.",
-    "fullDescription": "Presents the github-user-profile-overview view in its default state with a dark GitHub-inspired top bar, interactive profile navigation tabs, a left profile summary column, a popular repositories grid, and a yearly contribution heatmap with selectable year pills. The view exposes state and tab arguments and keeps visible controls such as the global search field, tab buttons, year selection, and contribution cells interactive through local presentational state.",
+    "shortDescription": "Interactive GitHub-inspired home entry with switchable dashboard and profile views.",
+    "fullDescription": "Renders the github-dashboard-home and github-user-profile-overview views from a single route with a local view selector and explicit state props. The dashboard home view includes the shared GitHub-style top bar, a left home sidebar, an activity feed with selectable filters, and a trending repositories panel, while the profile overview view includes the same top bar, profile navigation tabs, a left profile summary column, a popular repositories grid, and a yearly contribution heatmap with selectable years.",
     "isView": true
   }
 ]

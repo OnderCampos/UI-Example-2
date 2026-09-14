@@ -3,28 +3,28 @@
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import {
-  BadgeCheck,
+  Bell,
+  BookMarked,
   BookOpen,
   Boxes,
   Building2,
+  ChevronDown,
+  Circle,
+  GitBranch,
+  Github,
+  LayoutGrid,
+  Link as LinkIcon,
+  MapPin,
   Menu,
+  Monitor,
+  Package,
+  Plus,
   Search,
   Settings,
+  SmilePlus,
   Star,
   Users,
-  Github,
-  Monitor,
-  Plus,
-  Bell,
-  GitBranch,
-  LayoutGrid,
-  Package,
-  BookMarked,
-  Circle,
-  ChevronDown,
-  MapPin,
-  Link as LinkIcon,
-  SmilePlus,
+  BadgeCheck,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -33,8 +33,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
+type ViewId = "github-dashboard-home" | "github-user-profile-overview";
+type GithubDashboardHomeState = "default";
 type GithubUserProfileOverviewState = "default";
-
 type ProfileTab = "overview" | "repositories" | "projects" | "packages" | "stars";
 
 type Repository = {
@@ -44,6 +45,30 @@ type Repository = {
   languageColor: string;
   visibility: "Public";
   forkedFrom?: string;
+};
+
+type TrendingRepository = {
+  rank: string;
+  name: string;
+  language: string;
+  languageColor: string;
+  starsToday: string;
+};
+
+type FeedItem = {
+  id: string;
+  actor: string;
+  action: string;
+  repository: string;
+  time: string;
+  branch?: string;
+  commits?: string[];
+};
+
+type DashboardEventFilter = "for-you" | "following";
+
+type GithubDashboardHomeProps = {
+  state?: GithubDashboardHomeState;
 };
 
 type GithubUserProfileOverviewProps = {
@@ -98,6 +123,59 @@ const repositories: Repository[] = [
     language: "Python",
     languageColor: "#388bfd",
     visibility: "Public",
+  },
+];
+
+const trendingRepositories: TrendingRepository[] = [
+  {
+    rank: "1",
+    name: "microsoft/vscode",
+    language: "TypeScript",
+    languageColor: "#3178c6",
+    starsToday: "1,204 stars today",
+  },
+  {
+    rank: "2",
+    name: "anthropics/claude-code",
+    language: "Go",
+    languageColor: "#00add8",
+    starsToday: "842 stars today",
+  },
+  {
+    rank: "3",
+    name: "vercel/next.js",
+    language: "JavaScript",
+    languageColor: "#f1e05a",
+    starsToday: "796 stars today",
+  },
+];
+
+const feedItems: FeedItem[] = [
+  {
+    id: "1",
+    actor: "torvalds",
+    action: "pushed to",
+    repository: "torvalds/linux",
+    time: "3 hours ago",
+    branch: "master",
+    commits: [
+      "Merge tag 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc",
+      "Merge tag 'drm-next-2026-09-10' of git://anongit.freedesktop.org/drm/drm",
+    ],
+  },
+  {
+    id: "2",
+    actor: "vercel",
+    action: "released",
+    repository: "vercel/next.js",
+    time: "Yesterday",
+  },
+  {
+    id: "3",
+    actor: "shadcn",
+    action: "starred",
+    repository: "tailwindlabs/tailwindcss",
+    time: "2 days ago",
   },
 ];
 
@@ -168,13 +246,154 @@ function TopbarIcon({ icon: Icon, withChevron = false }: { icon: typeof Menu; wi
   );
 }
 
+function DashboardSidebar() {
+  const [startRepo, setStartRepo] = useState("");
+
+  return (
+    <aside className="space-y-6">
+      <Card className="gap-0 rounded-lg border-border bg-card py-0 shadow-[var(--shadow-card)]">
+        <CardContent className="p-4">
+          <h2 className="text-base font-semibold text-foreground">Home</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Stay in the loop with updates from the people and repositories you follow.</p>
+          <Button className="mt-4 h-8 rounded-md bg-[#238636] px-3 text-sm font-semibold text-white hover:bg-[#2ea043]">Explore repositories</Button>
+        </CardContent>
+      </Card>
+
+      <Card className="gap-0 rounded-lg border-border bg-card py-0 shadow-[var(--shadow-card)]">
+        <CardContent className="p-4">
+          <h3 className="text-sm font-semibold text-foreground">Start a new repository</h3>
+          <Input
+            value={startRepo}
+            onChange={(event) => setStartRepo(event.target.value)}
+            placeholder="Name your repository"
+            className="mt-3 h-9 bg-background"
+          />
+          <Button variant="secondary" className="mt-3 h-8 w-full rounded-md border border-border bg-background text-sm font-medium hover:bg-accent">
+            Create repository
+          </Button>
+        </CardContent>
+      </Card>
+    </aside>
+  );
+}
+
+function ActivityFeed() {
+  const [filter, setFilter] = useState<DashboardEventFilter>("for-you");
+
+  return (
+    <section>
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-foreground">Home</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Stories, updates, and activity from your GitHub network.</p>
+        </div>
+        <div className="flex gap-2 rounded-md border border-border bg-card p-1">
+          {(["for-you", "following"] as const).map((option) => {
+            const isActive = filter === option;
+            return (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setFilter(option)}
+                className={cn(
+                  "rounded-md px-3 py-1.5 text-sm capitalize transition-colors",
+                  isActive ? "bg-background text-foreground" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {option === "for-you" ? "For you" : "Following"}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {feedItems.map((item) => (
+          <Card key={item.id} className="gap-0 rounded-lg border-border bg-card py-0 shadow-[var(--shadow-card)]">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <Avatar className="size-10 border border-border">
+                  <AvatarFallback>{item.actor.slice(0, 2).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm text-foreground">
+                    <span className="font-semibold">{item.actor}</span> {item.action} <span className="font-semibold text-[#2f81f7]">{item.repository}</span>
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">{item.time}</p>
+                  {item.branch ? <p className="mt-3 text-xs text-muted-foreground">{item.branch}</p> : null}
+                  {item.commits ? (
+                    <div className="mt-3 space-y-2 rounded-md border border-border bg-background p-3">
+                      {item.commits.map((commit) => (
+                        <div key={commit} className="flex items-start gap-2 text-sm text-foreground">
+                          <GitBranch className="mt-0.5 size-4 text-muted-foreground" />
+                          <span>{commit}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function TrendingSidebar() {
+  return (
+    <aside>
+      <Card className="gap-0 rounded-lg border-border bg-card py-0 shadow-[var(--shadow-card)]">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-semibold text-foreground">Trending repositories</h2>
+            <Settings className="size-4 text-muted-foreground" />
+          </div>
+          <div className="mt-4 space-y-4">
+            {trendingRepositories.map((repository) => (
+              <div key={repository.name} className="rounded-md border border-transparent p-2 transition-colors hover:border-border hover:bg-background">
+                <p className="text-xs text-muted-foreground">{repository.rank}</p>
+                <button type="button" className="mt-1 text-left text-sm font-semibold text-[#2f81f7] hover:underline">
+                  {repository.name}
+                </button>
+                <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <span className="size-2.5 rounded-full" style={{ backgroundColor: repository.languageColor }} />
+                  <span>{repository.language}</span>
+                  <span>•</span>
+                  <span>{repository.starsToday}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </aside>
+  );
+}
+
+function GithubDashboardHome({ state = "default" }: GithubDashboardHomeProps) {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <GithubTopBar />
+      <main className="mx-auto max-w-[1280px] px-4 py-6">
+        <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)_320px]">
+          <DashboardSidebar />
+          <ActivityFeed />
+          <TrendingSidebar />
+        </div>
+      </main>
+    </div>
+  );
+}
+
 function RepositoryCard({ repository }: { repository: Repository }) {
   return (
     <Card className="gap-0 rounded-lg border-border bg-card py-0 shadow-[var(--shadow-card)]">
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <button className="truncate text-left text-[20px] font-semibold text-[#2f81f7] hover:underline">
+            <button type="button" className="truncate text-left text-[20px] font-semibold text-[#2f81f7] hover:underline">
               {repository.name}
             </button>
             {repository.forkedFrom ? (
@@ -203,11 +422,12 @@ function ContributionsHeatmap() {
       <div className="mb-3 flex items-center justify-between gap-4">
         <h2 className="text-[20px] font-semibold text-foreground">471 contributions in the last year</h2>
         <div className="flex items-center gap-6">
-          <button className="text-sm text-muted-foreground hover:text-foreground">Contribution settings ▾</button>
+          <button type="button" className="text-sm text-muted-foreground hover:text-foreground">Contribution settings ▾</button>
           <div className="hidden flex-col gap-2 text-sm lg:flex">
             {yearOptions.map((year) => (
               <button
                 key={year}
+                type="button"
                 onClick={() => setSelectedYear(year)}
                 className={cn(
                   "w-24 rounded-md px-4 py-2 text-left transition-colors",
@@ -258,7 +478,7 @@ function ContributionsHeatmap() {
         </div>
 
         <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-          <button className="hover:text-foreground">Learn how we count contributions</button>
+          <button type="button" className="hover:text-foreground">Learn how we count contributions</button>
           <div className="flex items-center gap-2">
             <span>Less</span>
             <div className="flex items-center gap-1">
@@ -301,6 +521,7 @@ function GithubUserProfileOverview({ state = "default", initialTab = "overview",
             return (
               <button
                 key={tab.value}
+                type="button"
                 onClick={() => setActiveTab(tab.value)}
                 className={cn(
                   "flex h-12 items-center gap-2 border-b-2 px-4 text-sm whitespace-nowrap transition-colors",
@@ -326,7 +547,7 @@ function GithubUserProfileOverview({ state = "default", initialTab = "overview",
                 <AvatarImage src="/Frida.png" alt="OnderCampos profile" className="object-cover" />
                 <AvatarFallback className="text-4xl">OC</AvatarFallback>
               </Avatar>
-              <button className="absolute bottom-7 right-4 flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-[var(--shadow-card)] hover:text-foreground">
+              <button type="button" className="absolute bottom-7 right-4 flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-[var(--shadow-card)] hover:text-foreground">
                 <SmilePlus className="size-4" />
               </button>
             </div>
@@ -352,6 +573,11 @@ function GithubUserProfileOverview({ state = "default", initialTab = "overview",
               <span>Softtek</span>
             </div>
 
+            <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1.5"><MapPin className="size-4" /><span>Monterrey, Mexico</span></div>
+              <div className="flex items-center gap-1.5"><LinkIcon className="size-4" /><span>github.com/OnderCampos</span></div>
+            </div>
+
             <div className="mt-6 border-t border-border pt-5">
               <h2 className="text-[20px] font-semibold text-foreground">Achievements</h2>
               <div className="mt-3 flex items-center gap-2">
@@ -367,6 +593,10 @@ function GithubUserProfileOverview({ state = "default", initialTab = "overview",
 
             <div className="mt-5 border-t border-border pt-5">
               <h2 className="text-[20px] font-semibold text-foreground">Organizations</h2>
+              <div className="mt-3 flex items-center gap-2">
+                <div className="flex size-8 items-center justify-center rounded-md border border-border bg-card text-xs font-semibold text-foreground">S</div>
+                <div className="flex size-8 items-center justify-center rounded-md border border-border bg-card text-xs font-semibold text-foreground">F</div>
+              </div>
             </div>
           </div>
         </aside>
@@ -374,7 +604,7 @@ function GithubUserProfileOverview({ state = "default", initialTab = "overview",
         <section>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-[20px] font-semibold text-foreground">Popular repositories</h2>
-            <button className="text-sm text-[#2f81f7] hover:underline">Customize your pins</button>
+            <button type="button" className="text-sm text-[#2f81f7] hover:underline">Customize your pins</button>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -399,5 +629,31 @@ function Achievement({ icon, bg }: { icon: string; bg: string }) {
 }
 
 export default function HomePage() {
-  return <GithubUserProfileOverview state="default" />;
+  const [view, setView] = useState<ViewId>("github-user-profile-overview");
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="border-b border-border bg-card/60 px-4 py-3">
+        <div className="mx-auto flex max-w-[1280px] items-center gap-2">
+          <Button
+            variant={view === "github-dashboard-home" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setView("github-dashboard-home")}
+            className="border border-border"
+          >
+            github-dashboard-home
+          </Button>
+          <Button
+            variant={view === "github-user-profile-overview" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => setView("github-user-profile-overview")}
+            className="border border-border"
+          >
+            github-user-profile-overview
+          </Button>
+        </div>
+      </div>
+      {view === "github-dashboard-home" ? <GithubDashboardHome state="default" /> : <GithubUserProfileOverview state="default" />}
+    </div>
+  );
 }
