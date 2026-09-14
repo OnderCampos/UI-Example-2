@@ -1,8 +1,0 @@
-[
-  {
-    "relativePath": "src/app/page.tsx",
-    "shortDescription": "Dashboard home feed view with GitHub-style dark layout.",
-    "fullDescription": "Renders the dashboard-home-feed view in its default state with a top application bar, repository sidebar, AI prompt composer, feed cards for trending and recommended repositories, and a right rail with event and changelog panels. The view uses local interactive state for search, repository filtering, prompt input, scope selection, filter toggling, and visible control states while composing the screen from shared input, card, button, dropdown, separator, and avatar components.",
-    "isView": true
-  }
-]
