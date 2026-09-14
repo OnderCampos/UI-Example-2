@@ -6,6 +6,12 @@
     "isView": true
   },
   {
+    "relativePath": "src/app/github-home-dashboard/page.tsx",
+    "shortDescription": "GitHub-style home dashboard view.",
+    "fullDescription": "Home dashboard view for the github-home-dashboard route in its default state. It renders the GitHub-like left repository rail, central assistant composer and feed, and right sidebar cards by composing the shared GithubHomeDashboard component.",
+    "isView": true
+  },
+  {
     "relativePath": "src/components/github-home-dashboard.tsx",
     "shortDescription": "Reusable GitHub dashboard screen component.",
     "fullDescription": "Presentational dashboard component that supports the github-home-dashboard view in its default state through typed props for user name, repository lists, feed sections, and changelog content. It provides interactive local state for search fields, toolbar selections, and repository action menus while reusing shared button, card, avatar, input, dropdown, and separator primitives.",

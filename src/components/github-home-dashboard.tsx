@@ -5,10 +5,12 @@ import {
   Bell,
   BookOpen,
   ChevronDown,
+  CircleDashed,
   Filter,
   FolderGit2,
   GitBranch,
   Github,
+  GitPullRequest,
   Grip,
   Home,
   Menu,
@@ -22,7 +24,6 @@ import {
   Sparkles,
   Star,
   Telescope,
-  Triangle,
   Users,
   Workflow,
   X,
@@ -270,7 +271,7 @@ export function GithubHomeDashboard({
   const [headerSearch, setHeaderSearch] = useState("Type / to search");
   const [askValue, setAskValue] = useState(askOptions[0]);
   const [scopeValue, setScopeValue] = useState(repositoryScopes[0]);
-  const [modeValue, setModeValue] = useState(runModes[0]);
+  const [modeValue, _setModeValue] = useState(runModes[0]);
 
   const visibleRepositories = useMemo(() => {
     const query = sidebarSearch.toLowerCase();
