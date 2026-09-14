@@ -1,0 +1,8 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "GitHub-style dashboard home view with sidebar, feed, and right rail.",
+    "fullDescription": "Presents the github-dashboard-home view in its default state with a dark application header, repository sidebar, interactive Copilot prompt composer, feed cards for trending and recommended repositories, and a right rail containing an event card and changelog list. The view exposes a state prop for supported screen states and keeps visible controls such as search, selects, prompt entry, repository starring, and reminder actions interactive through local presentational state.",
+    "isView": true
+  }
+]
