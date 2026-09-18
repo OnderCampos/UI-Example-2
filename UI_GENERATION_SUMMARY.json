@@ -1,8 +1,0 @@
-[
-  {
-    "relativePath": "src/app/page.tsx",
-    "shortDescription": "Route-level view switch for the default dashboard home feed and user profile overview screens.",
-    "fullDescription": "Implements a single home route that preserves both generated screen implementations through a serializable view prop. The route renders the dashboard-home-feed default state with a three-column social feed layout, interactive composer, search, trends rail, and filter tabs, and also renders the user-profile-overview default state with a GitHub-inspired header, profile sidebar, popular repositories grid, contribution heatmap, and year selection controls.",
-    "isView": true
-  }
-]
