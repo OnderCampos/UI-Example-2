@@ -7,11 +7,13 @@ import {
   Building2,
   ChevronDown,
   Github,
+  Home,
   Menu,
   Monitor,
   Package,
   Search,
   Star,
+  TrendingUp,
   Users,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -21,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import * as Tabs from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
+type ViewState = "user-profile-overview" | "dashboard-home-feed";
 type ProfileTab = "overview" | "repositories" | "projects" | "packages" | "stars";
 
 type RepositoryItem = {
@@ -52,6 +55,26 @@ type UserProfileOverviewProps = {
   contributionCount?: number;
   contributionMonths?: ContributionMonth[];
   selectedYear?: string;
+};
+
+type DashboardHomeFeedProps = {
+  state?: "default";
+  userName?: string;
+  profileName?: string;
+  headline?: string;
+  posts?: {
+    id: string;
+    author: string;
+    handle: string;
+    time: string;
+    body: string;
+    stats: { replies: string; reposts: string; likes: string };
+  }[];
+  trends?: { label: string; value: string }[];
+};
+
+type HomePageProps = {
+  view?: ViewState;
 };
 
 const defaultRepositories: RepositoryItem[] = [
@@ -131,6 +154,39 @@ const tabItems: { value: ProfileTab; label: string; icon: React.ComponentType<{ 
 
 const yearOptions = ["2026", "2025", "2024", "2023"];
 
+const defaultPosts = [
+  {
+    id: "1",
+    author: "Onder Campos",
+    handle: "@OnderCampos",
+    time: "2h",
+    body: "Spent the morning polishing the dashboard feed layout and afternoon shipping profile overview refinements. The new card spacing feels much tighter now.",
+    stats: { replies: "18", reposts: "7", likes: "86" },
+  },
+  {
+    id: "2",
+    author: "Product Design",
+    handle: "@ProductDesign",
+    time: "5h",
+    body: "Reviewing engagement metrics from this week. The default home feed state is now represented in fixtures so future iterations can extend it without replacing the route.",
+    stats: { replies: "24", reposts: "11", likes: "134" },
+  },
+  {
+    id: "3",
+    author: "Frontend Daily",
+    handle: "@FrontendDaily",
+    time: "8h",
+    body: "A small reminder: interactive controls should always behave immediately, even when the backend does nothing yet. Presentational state still matters.",
+    stats: { replies: "10", reposts: "5", likes: "63" },
+  },
+];
+
+const defaultTrends = [
+  { label: "Profile views", value: "1.2K" },
+  { label: "Repositories starred", value: "84" },
+  { label: "Weekly reach", value: "+18%" },
+];
+
 function ContributionLegendBox({ level }: { level: ContributionDay["level"] }) {
   const tone = {
     0: "bg-[#263040]",
@@ -151,7 +207,7 @@ function UserProfileOverview({
   bio = "Softtek",
   repositories = defaultRepositories,
   contributionCount = 471,
-  contributionMonths = contributionMonths,
+  contributionMonths: months = contributionMonths,
   selectedYear = "2026",
 }: UserProfileOverviewProps) {
   const [activeTab, setActiveTab] = useState<ProfileTab>(selectedTab);
@@ -295,9 +351,9 @@ function UserProfileOverview({
                     <Card key={repository.name} className="gap-0 rounded-md border-border bg-background py-0 shadow-none">
                       <CardContent className="flex min-h-[128px] flex-col p-4">
                         <div className="mb-3 flex items-start justify-between gap-3">
-                          <a href="#" className="text-base font-semibold text-link hover:underline">
+                          <button type="button" className="text-left text-base font-semibold text-link hover:underline">
                             {repository.name}
-                          </a>
+                          </button>
                           <span className="rounded-full border border-border px-2 py-[2px] text-xs text-muted-foreground">
                             {repository.visibility}
                           </span>
@@ -342,7 +398,7 @@ function UserProfileOverview({
                     <CardContent className="p-4">
                       <div className="mb-2 grid grid-cols-[32px_repeat(12,minmax(0,1fr))] items-center gap-x-3 text-xs text-muted-foreground">
                         <span />
-                        {contributionMonths.map((month) => (
+                        {months.map((month) => (
                           <span key={month.label}>{month.label}</span>
                         ))}
                       </div>
@@ -424,6 +480,187 @@ function UserProfileOverview({
   );
 }
 
-export default function HomePage() {
-  return <UserProfileOverview />;
+function DashboardHomeFeed({
+  state = "default",
+  userName = "OnderCampos",
+  profileName = "Onder Campos",
+  headline = "Home",
+  posts = defaultPosts,
+  trends = defaultTrends,
+}: DashboardHomeFeedProps) {
+  const [composerValue, setComposerValue] = useState("What’s happening?");
+  const [searchValue, setSearchValue] = useState("");
+  const [activeFilter, setActiveFilter] = useState<"for-you" | "following">("for-you");
+
+  const filteredPosts = useMemo(() => {
+    if (!searchValue.trim()) return posts;
+
+    return posts.filter((post) =>
+      `${post.author} ${post.handle} ${post.body}`.toLowerCase().includes(searchValue.toLowerCase())
+    );
+  }, [posts, searchValue]);
+
+  return (
+    <main className="min-h-screen bg-background text-foreground">
+      <div className="mx-auto grid min-h-screen max-w-[1260px] grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[240px_minmax(0,1fr)_320px]">
+        <aside className="hidden lg:flex lg:flex-col lg:justify-between">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 px-3 py-2 text-xl font-semibold">
+              <Github className="h-7 w-7" fill="currentColor" />
+              {userName}
+            </div>
+            <Button variant="ghost" className="justify-start gap-3 rounded-full px-3 py-6 text-base">
+              <Home className="h-5 w-5" />
+              Home
+            </Button>
+            <Button variant="ghost" className="justify-start gap-3 rounded-full px-3 py-6 text-base text-muted-foreground hover:text-foreground">
+              <Search className="h-5 w-5" />
+              Explore
+            </Button>
+            <Button variant="ghost" className="justify-start gap-3 rounded-full px-3 py-6 text-base text-muted-foreground hover:text-foreground">
+              <Users className="h-5 w-5" />
+              Communities
+            </Button>
+            <Button className="mt-4 h-12 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground hover:bg-primary-hover">
+              New post
+            </Button>
+          </div>
+
+          <div className="flex items-center gap-3 rounded-full border border-border p-3">
+            <Avatar className="h-10 w-10 border border-border">
+              <AvatarImage src="/Frida.png" alt={profileName} />
+              <AvatarFallback>OC</AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="text-sm font-semibold">{profileName}</p>
+              <p className="text-sm text-muted-foreground">@{userName}</p>
+            </div>
+          </div>
+        </aside>
+
+        <section className="overflow-hidden rounded-[26px] border border-border bg-card/60 backdrop-blur">
+          <header className="border-b border-border">
+            <div className="flex items-center justify-between px-5 py-4">
+              <h1 className="text-[28px] font-semibold">{headline}</h1>
+              <Button variant="outline" size="icon-sm" className="rounded-full border-border bg-transparent">
+                <TrendingUp className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 text-sm">
+              {[
+                { key: "for-you", label: "For you" },
+                { key: "following", label: "Following" },
+              ].map((item) => (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={() => setActiveFilter(item.key as "for-you" | "following")}
+                  className={cn(
+                    "relative px-4 py-4 text-muted-foreground hover:bg-secondary/60 hover:text-foreground",
+                    activeFilter === item.key && "text-foreground"
+                  )}
+                >
+                  {item.label}
+                  {activeFilter === item.key ? <span className="absolute inset-x-8 bottom-0 h-1 rounded-full bg-primary" /> : null}
+                </button>
+              ))}
+            </div>
+          </header>
+
+          <div className="border-b border-border px-5 py-4">
+            <div className="flex gap-4">
+              <Avatar className="h-12 w-12 border border-border">
+                <AvatarImage src="/Frida.png" alt={profileName} />
+                <AvatarFallback>OC</AvatarFallback>
+              </Avatar>
+              <div className="flex-1 space-y-4">
+                <Input
+                  value={composerValue}
+                  onChange={(event) => setComposerValue(event.target.value)}
+                  className="h-auto border-0 bg-transparent px-0 text-xl shadow-none focus-visible:ring-0"
+                  aria-label="Create post"
+                />
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-link">Everyone can reply</div>
+                  <Button className="rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover">
+                    Post
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            {filteredPosts.map((post) => (
+              <article key={post.id} className="border-b border-border px-5 py-4 transition-colors hover:bg-secondary/35">
+                <div className="flex gap-4">
+                  <Avatar className="h-11 w-11 border border-border">
+                    <AvatarFallback>{post.author.slice(0, 2)}</AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2 text-sm">
+                      <span className="font-semibold text-foreground">{post.author}</span>
+                      <span className="text-muted-foreground">{post.handle}</span>
+                      <span className="text-muted-foreground">· {post.time}</span>
+                    </div>
+                    <p className="mt-2 text-[15px] leading-6 text-foreground">{post.body}</p>
+                    <div className="mt-4 flex items-center gap-8 text-sm text-muted-foreground">
+                      <button type="button" className="hover:text-foreground">💬 {post.stats.replies}</button>
+                      <button type="button" className="hover:text-foreground">🔁 {post.stats.reposts}</button>
+                      <button type="button" className="hover:text-foreground">❤ {post.stats.likes}</button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className="hidden">{state}</div>
+        </section>
+
+        <aside className="space-y-5">
+          <div className="rounded-full border border-border bg-card px-4 py-3">
+            <div className="flex items-center gap-3">
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <Input
+                value={searchValue}
+                onChange={(event) => setSearchValue(event.target.value)}
+                placeholder="Search"
+                className="h-auto border-0 bg-transparent px-0 py-0 shadow-none focus-visible:ring-0"
+              />
+            </div>
+          </div>
+
+          <Card className="rounded-[26px] border-border bg-card py-0 shadow-none">
+            <CardContent className="p-5">
+              <h2 className="mb-4 text-2xl font-semibold">Trends for you</h2>
+              <div className="space-y-4">
+                {trends.map((trend) => (
+                  <button key={trend.label} type="button" className="block w-full rounded-xl p-2 text-left hover:bg-secondary/60">
+                    <p className="text-sm text-muted-foreground">Trending now</p>
+                    <p className="font-semibold text-foreground">{trend.label}</p>
+                    <p className="text-sm text-muted-foreground">{trend.value} posts</p>
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-[26px] border-border bg-card py-0 shadow-none">
+            <CardContent className="p-5">
+              <h2 className="mb-4 text-2xl font-semibold">Profile snapshot</h2>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center justify-between"><span className="text-muted-foreground">Display name</span><span>{profileName}</span></div>
+                <div className="flex items-center justify-between"><span className="text-muted-foreground">Handle</span><span>@{userName}</span></div>
+                <div className="flex items-center justify-between"><span className="text-muted-foreground">Visible state</span><span>{state}</span></div>
+              </div>
+            </CardContent>
+          </Card>
+        </aside>
+      </div>
+    </main>
+  );
+}
+
+export default function HomePage({ view = "user-profile-overview" }: HomePageProps) {
+  return view === "dashboard-home-feed" ? <DashboardHomeFeed /> : <UserProfileOverview />;
 }
