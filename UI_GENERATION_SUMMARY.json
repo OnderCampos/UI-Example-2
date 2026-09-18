@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Dashboard home feed view with GitHub-style dark layout.",
-    "fullDescription": "Renders the dashboard-home-feed view in its default state with a GitHub-inspired application header, repository sidebar, central feed composer, trending and recommended repository cards, and a right rail for event and changelog content. The view accepts serializable props for state, user name, search placeholder, and feed sections, while local presentational state keeps search fields, menu selections, and star actions interactive immediately after render.",
+    "shortDescription": "GitHub-style user profile overview view in a dark theme.",
+    "fullDescription": "Renders the user-profile-overview view in its default state with a GitHub-inspired top bar, profile summary sidebar, overview tab navigation, a popular repositories grid, and a yearly contribution activity heatmap. The view accepts serializable props for the selected tab, profile identity, repository cards, contribution totals, contribution month data, and selected year, while local presentational state keeps the search field, tab selection, and year buttons interactive immediately after render.",
     "isView": true
   }
 ]
