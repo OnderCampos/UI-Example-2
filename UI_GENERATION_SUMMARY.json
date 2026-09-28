@@ -1,0 +1,8 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Dashboard home view with a populated repository feed.",
+    "fullDescription": "Renders the dashboard-home view in its populated-default state with a GitHub-style top header, repository sidebar, ask composer, quick action chips, feed sections for trending and recommended repositories, and a right rail for event and changelog cards. The view exposes a state argument for supported visual states and keeps all visible inputs, dropdowns, and action buttons locally interactive.",
+    "isView": true
+  }
+]
