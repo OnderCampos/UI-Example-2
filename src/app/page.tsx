@@ -1,5 +1,5 @@
-import { DashboardHomeView } from "@/components/dashboard-home-view";
+import { UserProfileOverviewView } from "@/components/user-profile-overview-view";
 
 export default function HomePage() {
-  return <DashboardHomeView state="default" />;
+  return <UserProfileOverviewView state="default" />;
 }
