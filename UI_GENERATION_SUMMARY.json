@@ -1,8 +1,0 @@
-[
-  {
-    "relativePath": "src/app/page.tsx",
-    "shortDescription": "Route-backed home entry that supports the dashboard home and user profile overview views.",
-    "fullDescription": "Renders the main application entry as a route-selectable view surface using the optional view search parameter. The route supports the dashboard-home default state with a dark developer dashboard showing overview metrics, recent activity, repository snapshots, and a daily agenda, and it also supports the user-profile-overview default state with a GitHub-inspired profile layout, interactive repository search, tab navigation, and contribution controls. The implementation preserves both default view states in one route-driven entry instead of replacing one screen with static markup.",
-    "isView": true
-  }
-]
