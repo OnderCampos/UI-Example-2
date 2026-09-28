@@ -1,8 +1,8 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Dashboard home view with repository feed and side panels.",
-    "fullDescription": "Renders the dashboard-home view in its default state with a dark developer dashboard layout, top header controls, a left repository sidebar, a central assistant prompt and feed of trending and recommended repositories, plus right rail cards for Copilot Day and changelog updates. The view exposes a state prop and interactive local state for search fields, assistant options, and per-repository star actions.",
+    "shortDescription": "GitHub-style user profile overview view for a developer account.",
+    "fullDescription": "Renders the user-profile-overview view in its default state with a GitHub dark profile layout, top repository search header, tab navigation for overview, repositories, projects, and packages, a profile sidebar with avatar, achievements, and organization details, plus a main column showing popular repositories and annual contribution activity. The view exposes state, selectedTab, and initialSearch props, and keeps the tab selection, repository filtering, and contribution year selection interactive with local state.",
     "isView": true
   }
 ]
