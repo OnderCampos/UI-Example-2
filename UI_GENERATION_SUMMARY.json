@@ -1,0 +1,8 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Dashboard home view with repository feed and side panels.",
+    "fullDescription": "Renders the dashboard-home view in its default state with a dark developer dashboard layout, top header controls, a left repository sidebar, a central assistant prompt and feed of trending and recommended repositories, plus right rail cards for Copilot Day and changelog updates. The view exposes a state prop and interactive local state for search fields, assistant options, and per-repository star actions.",
+    "isView": true
+  }
+]
