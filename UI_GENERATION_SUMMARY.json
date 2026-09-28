@@ -6,6 +6,12 @@
     "isView": true
   },
   {
+    "relativePath": "src/app/dashboard-home/page.tsx",
+    "shortDescription": "Dashboard home route composition.",
+    "fullDescription": "Renders the dashboard-home screen in its default state at the dashboard-home route and keeps the page-level composition separate from the shared dashboard UI implementation.",
+    "isView": true
+  },
+  {
     "relativePath": "src/components/dashboard-home-view.tsx",
     "shortDescription": "Reusable GitHub-style dashboard home screen.",
     "fullDescription": "Presents a three-column dashboard-home screen with a global header, repository sidebar, prompt composer, feed cards, and a right rail for event and changelog content. Supports the default state through props for user name, search placeholder, repository lists, and changelog items while keeping visible controls interactive with local state for prompt text, repository filtering, feed filtering, and repository scope selection.",
