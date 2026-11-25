@@ -2,7 +2,13 @@
   {
     "relativePath": "src/app/page.tsx",
     "shortDescription": "User profile overview view",
-    "fullDescription": "The default user-profile-overview view composes a GitHub-style profile header, developer sidebar, pinned public repositories, and yearly contribution activity using UserProfileOverview.",
+    "fullDescription": "The user-profile-overview default view composes a GitHub-style profile header, developer sidebar, pinned public repositories, and yearly contribution activity using UserProfileOverview.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/app/dashboard/page.tsx",
+    "shortDescription": "Dashboard home view",
+    "fullDescription": "The dashboard-home default view renders DashboardHome with its global header, repository sidebar, Copilot composer, repository feed, event card, and changelog panels.",
     "isView": true
   },
   {
