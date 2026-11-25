@@ -1,0 +1,14 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Dashboard home view",
+    "fullDescription": "The default dashboard-home view composes the GitHub-style header, repository sidebar, Copilot composer, feed cards, and event and changelog panels through DashboardHome.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/components/github-dashboard.tsx",
+    "shortDescription": "Reusable GitHub dashboard composition",
+    "fullDescription": "DashboardHome renders the default repository dashboard state with interactive search fields, repository filtering, star actions, a dismissible event card, and reminder toggling. It accepts a serializable state prop, defaulting to default, and provides reusable feed and repository card composition within the dashboard.",
+    "isView": false
+  }
+]
