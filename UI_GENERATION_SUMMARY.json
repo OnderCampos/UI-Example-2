@@ -1,0 +1,20 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Dashboard home view",
+    "fullDescription": "Default dashboard-home view with repository navigation, Copilot prompt composer, feed repository cards, event detail, and changelog panels. It accepts a serializable state prop with the default state and composes the shared dashboard header and repository cards.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/components/dashboard/dashboard-header.tsx",
+    "shortDescription": "Dashboard header",
+    "fullDescription": "Reusable dark application header with GitHub branding, search input, account control, and locally interactive utility buttons that expose pressed states.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/dashboard/repository-card.tsx",
+    "shortDescription": "Repository feed card",
+    "fullDescription": "Reusable repository collection card accepting a title, repository metadata items, and initial star state. Each card renders repository descriptions, language and star metadata, and an interactive star control.",
+    "isView": false
+  }
+]
