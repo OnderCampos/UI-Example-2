@@ -1,14 +1,20 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Dashboard home view",
-    "fullDescription": "The default dashboard-home view composes the GitHub-style header, repository sidebar, Copilot composer, feed cards, and event and changelog panels through DashboardHome.",
+    "shortDescription": "User profile overview view",
+    "fullDescription": "The default user-profile-overview view composes a GitHub-style profile header, developer sidebar, pinned public repositories, and yearly contribution activity using UserProfileOverview.",
     "isView": true
   },
   {
     "relativePath": "src/components/github-dashboard.tsx",
     "shortDescription": "Reusable GitHub dashboard composition",
     "fullDescription": "DashboardHome renders the default repository dashboard state with interactive search fields, repository filtering, star actions, a dismissible event card, and reminder toggling. It accepts a serializable state prop, defaulting to default, and provides reusable feed and repository card composition within the dashboard.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/github-profile.tsx",
+    "shortDescription": "Reusable user profile overview composition",
+    "fullDescription": "UserProfileOverview renders a developer profile with selectable navigation tabs and contribution years, pinned repository cards, profile metadata, achievement badges, and an activity heatmap. It accepts a serializable state prop that defaults to default for reuse in profile overview screens.",
     "isView": false
   }
 ]

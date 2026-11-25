@@ -1,5 +1,5 @@
-import { DashboardHome } from "@/components/github-dashboard";
+import { UserProfileOverview } from "@/components/github-profile";
 
 export default function HomePage() {
-  return <DashboardHome state="default" />;
+  return <UserProfileOverview state="default" />;
 }
