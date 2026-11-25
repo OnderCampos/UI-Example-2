@@ -6,15 +6,21 @@
     "isView": true
   },
   {
+    "relativePath": "src/app/dashboard/page.tsx",
+    "shortDescription": "Dashboard home",
+    "fullDescription": "Default dashboard-home view with an interactive Following or For you activity feed, filter controls, latest repository updates, popular repositories, and a discovery panel. It accepts a serializable state prop defaulting to default and reuses the shared dashboard header and repository card.",
+    "isView": true
+  },
+  {
     "relativePath": "src/components/dashboard/dashboard-header.tsx",
     "shortDescription": "GitHub application header",
-    "fullDescription": "Reusable dark application header with GitHub branding, configurable username, search field, account control, and interactive utility controls that expose pressed states.",
+    "fullDescription": "Reusable dark application header with GitHub branding, configurable username, search field, account control, and interactive utility controls that expose pressed states. It is shared by the dashboard-home and user-profile-overview views.",
     "isView": false
   },
   {
     "relativePath": "src/components/dashboard/repository-card.tsx",
     "shortDescription": "Repository feed card",
-    "fullDescription": "Reusable repository collection card accepting a title, repository metadata items, and initial star state. Each card renders repository descriptions, language and star metadata, and an interactive star control.",
+    "fullDescription": "Reusable repository collection card accepting a title, repository metadata items, and initial star state. Each card renders repository descriptions, language and star metadata, and an interactive star control; it is used by dashboard-home.",
     "isView": false
   },
   {
