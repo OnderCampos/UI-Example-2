@@ -1,14 +1,20 @@
 [
   {
     "relativePath": "src/app/page.tsx",
-    "shortDescription": "Dashboard home view",
-    "fullDescription": "Renders the default dashboard home screen with repository feed, Copilot prompt area, account repository sidebar, event content, and changelog updates using GitHubDashboard.",
+    "shortDescription": "GitHub user profile overview view",
+    "fullDescription": "Renders the default user profile overview with profile metadata, popular repository cards, annual contribution heatmap, activity heading, and selectable contribution year.",
     "isView": true
   },
   {
     "relativePath": "src/components/github-dashboard.tsx",
     "shortDescription": "Interactive GitHub-style dashboard components",
     "fullDescription": "Provides the reusable GitHubDashboard default-state composition along with repository cards, split action buttons, searchable repository navigation, prompt input, filter control, and dismissible event panel. It accepts a serializable mode prop and can be reused for dashboard states.",
+    "isView": false
+  },
+  {
+    "relativePath": "src/components/github-profile.tsx",
+    "shortDescription": "Interactive GitHub profile overview components",
+    "fullDescription": "Provides a reusable GitHubProfile default-state composition and ProfileHeader with selectable profile tabs, repository data cards, a contribution heatmap, follow button state, and selectable years. The profile accepts mode, repository, and contribution count props for presentational reuse.",
     "isView": false
   }
 ]
