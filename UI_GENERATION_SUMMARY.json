@@ -1,0 +1,14 @@
+[
+  {
+    "relativePath": "src/app/page.tsx",
+    "shortDescription": "Dashboard home view",
+    "fullDescription": "Renders the default dashboard home screen with repository feed, Copilot prompt area, account repository sidebar, event content, and changelog updates using GitHubDashboard.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/components/github-dashboard.tsx",
+    "shortDescription": "Interactive GitHub-style dashboard components",
+    "fullDescription": "Provides the reusable GitHubDashboard default-state composition along with repository cards, split action buttons, searchable repository navigation, prompt input, filter control, and dismissible event panel. It accepts a serializable mode prop and can be reused for dashboard states.",
+    "isView": false
+  }
+]
