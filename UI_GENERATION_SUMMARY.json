@@ -1,8 +1,14 @@
 [
   {
-    "relativePath": "src/app/page.tsx",
+    "relativePath": "src/app/dashboard-home/page.tsx",
+    "shortDescription": "GitHub-style dashboard home view",
+    "fullDescription": "Renders the default dashboard-home route using the shared GitHubDashboard composition, including repository navigation, Copilot prompt controls, feed cards, and sidebar updates.",
+    "isView": true
+  },
+  {
+    "relativePath": "src/app/user-profile-overview/page.tsx",
     "shortDescription": "GitHub user profile overview view",
-    "fullDescription": "Renders the default user profile overview with profile metadata, popular repository cards, annual contribution heatmap, activity heading, and selectable contribution year.",
+    "fullDescription": "Renders the default user-profile-overview route using the shared GitHubProfile composition with profile metadata, repository cards, contribution heatmap, activity summary, and selectable contribution year.",
     "isView": true
   },
   {
